@@ -187,8 +187,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/ai-agent-tracer&type=Date)](https://star-history.com/#yourusername/ai-agent-tracer&Date)
-
----
+### [![Star History Chart](https://api.star-history.com/svg?repos=aurva-io/ai-observability-stack&type=Date)](https://star-history.com/#aurva-io/ai-observability-stack&Date)
 
 **Made with ❤️ by the Aurva**

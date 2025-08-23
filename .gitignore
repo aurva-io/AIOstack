@@ -1,0 +1,24 @@
+# Binaries
+/bin/
+*.o
+*.so
+
+# eBPF
+*.bpf.o
+vmlinux.h
+
+# Go
+vendor/
+*.test
+*.out
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
