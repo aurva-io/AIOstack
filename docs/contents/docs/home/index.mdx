@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: This section provides an overview of how to get started with AI Observability Stack.
+keywords: ["introduction", "guide", "nextjs", "documents"]
+---
+
+
+
+**AI Observability Stack** or AIOStack is an open-source observability tool that automatically discovers, 
+traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF technology, it provides deep visibility into LLM API calls, ML library usage, and AI agent behavior without requiring code changes or application restarts.
+
+## Features
+
+- **Zero-instrumentation tracing**: Automatic detection of AI/ML libraries and LLM calls by workloads using eBPF
+- **Kubernetes-native**: One click deploy as DaemonSet with RBAC and security best practices. One click uninstall.
+- **Multi-runtime support**: Python, Node.js, Java, and Go applications
+- **LLM provider coverage**: OpenAI, Anthropic, Cohere, Hugging Face, and more
+- **ML library detection**: PyTorch, TensorFlow, scikit-learn, transformers, langchain
+- **Real-time dashboards**: Built-in Grafana dashboards and Prometheus/VictoriaMetrics metrics
+- **Real-Time Shadow AI Detection**: Identify unsanctioned AI tool usage and LLM calls from unexpected sources
+- **Agent workflow visualization**: Trace multi-step AI agent executions
+
+
+
+## Prerequisites
+
+- Kubernetes 1.24+ with eBPF support ( EKS, GKE, AKS, etc. )
+- Linux kernel 4.18+ (5.4+ recommended)
+- Helm 3.0+ (for installation)
+- Cluster admin privileges for eBPF programs
+
+<CardGrid>
+  <Card
+    subtitle="Instructions"
+    title="Deployment"
+    description="Follow the quick start guide to install AIOStack and get up and running."
+    href="/docs/installation"
+  />
+  <Card
+    subtitle="Setup"
+    title="Configuration"
+    description="Configure your AIOStack and discover what you can do with it."
+    href="/docs/home/setup"
+    external={false}
+  />
+</CardGrid>
+
+
+
+If you encounter issues:
+
+- Find help on our [Documentation Site](https://ai.staging.aurva.io)
+- Raise an issue on our [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- Join our [Community Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-24000000000000000000000000000000)
+- **Email Support:** support@aurva.io
+
+---
+
+**Note:** The AI Observability Stack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
+
+[![Deploy to Kubernetes](https://img.shields.io/badge/Deploy%20to-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes)](https://github.com/aurva-io/ai-observability-stack)
+

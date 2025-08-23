@@ -1,0 +1,64 @@
+{{- if .Values.postgresql.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: aiostack-postgresql
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: postgresql
+spec:
+  serviceName: aiostack-postgresql
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "aiostack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: postgresql
+  template:
+    metadata:
+      labels:
+        {{- include "aiostack.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: postgresql
+    spec:
+      containers:
+      - name: postgresql
+        image: "{{ .Values.postgresql.image.repository }}:{{ .Values.postgresql.image.tag }}"
+        imagePullPolicy: {{ .Values.postgresql.image.pullPolicy }}
+        ports:
+        - name: postgresql
+          containerPort: 5432
+          protocol: TCP
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aiostack-postgresql
+              key: postgres-password
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.auth.username }}
+        - name: POSTGRES_DB
+          value: {{ .Values.postgresql.auth.database }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          {{- toYaml .Values.postgresql.resources | nindent 10 }}
+  {{- if .Values.postgresql.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.postgresql.persistence.storageClass }}
+      storageClassName: {{ .Values.postgresql.persistence.storageClass }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.postgresql.persistence.size }}
+  {{- else }}
+  volumes:
+  - name: data
+    emptyDir: {}
+  {{- end }}
+{{- end }}

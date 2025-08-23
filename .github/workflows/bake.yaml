@@ -1,0 +1,101 @@
+name: BuildSite
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        description: "tag (optional)"
+        required: false
+      public-ecr:
+        type: boolean
+        description: "public-ecr"
+        default: false
+      private-ecr:
+        type: boolean
+        description: "private-ecr"
+        default: false
+      gcr:
+        type: boolean
+        description: "gcr"
+        default: true
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: get short rev
+        run: |
+          if [[ -n "${{ inputs.tag }}" ]]; then
+            VERSION="${{ inputs.tag }}"
+          else
+            VERSION=$(echo "${{ github.sha }}" | cut -c1-9)
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: set REGISTRIES environment variable
+        run: |
+          if ${{ fromJSON(inputs.public-ecr) }} ; then
+            REGISTRIES="public.ecr.aws/l5a6x1y4"
+          fi
+          if  ${{ fromJSON(inputs.private-ecr) }} ; then
+            if [ -n "${REGISTRIES}" ]; then
+              REGISTRIES="${REGISTRIES},119191042565.dkr.ecr.ap-south-1.amazonaws.com"
+            else
+              REGISTRIES="119191042565.dkr.ecr.ap-south-1.amazonaws.com"
+            fi
+          fi
+          if ${{ fromJSON(inputs.gcr) }} ; then
+            if [ -n "${REGISTRIES}" ]; then
+              REGISTRIES="${REGISTRIES},asia-south1-docker.pkg.dev/aurva-gcp"
+            else
+              REGISTRIES="asia-south1-docker.pkg.dev/aurva-gcp"
+            fi
+          fi
+          echo "REGISTRIES=$REGISTRIES" >> $GITHUB_ENV
+
+      - name: set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: login to ECR (Private)
+        if: ${{ fromJSON(inputs.private-ecr) || fromJSON(inputs.gcr) }}
+        uses: docker/login-action@v3
+        with:
+          registry: 119191042565.dkr.ecr.ap-south-1.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: login to ECR (Public)
+        if: ${{ fromJSON(inputs.public-ecr) }}
+        uses: docker/login-action@v3
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        env:
+          AWS_REGION: ap-south-1
+
+      - name: Login to GCP
+        if: ${{ fromJSON(inputs.gcr) }}
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS_JSON }}"
+
+      - name: authenticate to GCR
+        if: ${{ fromJSON(inputs.gcr) }}
+        run: |
+          gcloud auth configure-docker asia-south1-docker.pkg.dev
+
+      - name: build and push
+        uses: docker/bake-action@v5
+        with:
+          workdir: ./docs
+          files: ./docker-bake.hcl
+          push: true
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max

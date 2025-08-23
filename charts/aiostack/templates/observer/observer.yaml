@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: aiostack-observer
+spec:
+  selector:
+    matchLabels:
+      app: aiostack-observer
+  template:
+    metadata:
+      labels:
+        app: aiostack-observer
+    spec:
+      serviceAccountName: aiostack-observer
+      dnsPolicy: "ClusterFirst"
+      containers:
+      - name: observer
+        image: "{{ .Values.observer.image.repository }}:{{ .Values.observer.image.tag }}"
+        env:
+        {{- toYaml .Values.observer.env | nindent 8 }}
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - SYS_RESOURCE
+            - SYS_PTRACE
+            - NET_ADMIN
+        volumeMounts:
+        - name: host-proc
+          mountPath: /host/proc
+          readOnly: true
+        - name: host-sys
+          mountPath: /host/sys
+          readOnly: true
+        - name: bpf-maps
+          mountPath: /sys/fs/bpf
+        - name: debugfs
+          mountPath: /sys/kernel/debug
+      volumes:
+      - name: host-proc
+        hostPath:
+          path: /proc
+      - name: host-sys
+        hostPath:
+          path: /sys
+      - name: bpf-maps
+        hostPath:
+          path: /sys/fs/bpf
+      - name: debugfs
+        hostPath:
+          path: /sys/kernel/debug

@@ -1,0 +1,217 @@
+---
+title: Installation
+description: This section covers the steps for installing AI Observability Stack for AI agents and ML workloads in Kubernetes.
+keywords:
+  [
+    "steps",
+    "kubernetes",
+    "helm",
+    "ebpf",
+    "monitoring",
+    "ai",
+    "ml",
+    "observability",
+  ]
+---
+
+## Steps
+<Step>
+<StepItem title="Helm Installation (Recommended)">
+
+**Step 1:** Add the AI Observability Stack Helm repository
+
+```bash
+helm repo add ai-observability https://aurva-io.github.io/ai-observability-stack
+helm repo update
+```
+
+**Step 2:** Create a dedicated namespace
+
+```bash
+kubectl create namespace ai-observability
+```
+
+**Step 3:** Install with default configuration
+
+```bash
+helm install ai-observability-stack ai-observability/ai-observability-stack \
+  --namespace ai-observability \
+  --create-namespace
+```
+
+**Step 4:** Install with custom values (recommended for production)
+
+Create a custom values file:
+
+```bash
+cat > custom-values.yaml << 'EOF'
+# AI Observability Stack Configuration
+config:
+  # Tracing configuration
+  tracing:
+    samplingRate: 1.0
+    bufferSize: "64MB"
+
+  # LLM Provider monitoring
+  providers:
+    openai:
+      enabled: true
+      trackCosts: true
+    anthropic:
+      enabled: true
+      trackCosts: true
+    huggingface:
+      enabled: true
+
+  # ML Libraries to monitor
+  libraries:
+    - pytorch
+    - tensorflow
+    - scikit-learn
+    - transformers
+    - langchain
+    - llamaindex
+
+# Resource configuration
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# Metrics export configuration
+prometheus:
+  enabled: true
+  port: 7470
+  path: /metrics
+
+# Health check configuration
+healthCheck:
+  enabled: true
+  port: 8080
+  path: /health
+
+# Security context
+securityContext:
+  privileged: true
+  runAsUser: 0
+  capabilities:
+    add:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - SYS_PTRACE
+
+# Node selector (optional)
+nodeSelector: {}
+  # kubernetes.io/os: linux
+  # node-type: monitoring
+
+# Tolerations for specific nodes
+tolerations: []
+  # - key: "dedicated"
+  #   operator: "Equal"
+  #   value: "monitoring"
+  #   effect: "NoSchedule"
+EOF
+```
+
+Install with custom configuration:
+
+```bash
+helm install ai-observability-stack ai-observability/ai-observability-stack \
+  --namespace ai-observability \
+  --values custom-values.yaml \
+  --wait --timeout=300s
+```
+
+</StepItem>
+</Step>
+
+{/* ---
+
+<Step>
+<StepItem title="Method 2: Manual Installation with kubectl">
+
+**Step 1:** Clone the repository
+
+```bash
+git clone https://github.com/aurva-io/ai-observability-stack.git
+cd ai-observability-stack
+```
+
+**Step 2:** Create namespace
+
+```bash
+kubectl create namespace ai-observability
+```
+
+**Step 3:** Apply RBAC configuration
+
+```bash
+kubectl apply -f manifests/rbac.yaml
+```
+
+**Step 4:** Create ConfigMap with configuration
+
+```bash
+cat > config.yaml << 'EOF'
+tracing:
+  sampling_rate: 1.0
+  buffer_size: "64MB"
+
+providers:
+  openai:
+    enabled: true
+    track_costs: true
+  anthropic:
+    enabled: true
+    track_costs: true
+  huggingface:
+    enabled: true
+
+libraries:
+  - pytorch
+  - tensorflow
+  - scikit-learn
+  - transformers
+  - langchain
+  - llamaindex
+
+export:
+  prometheus:
+    enabled: true
+    port: 7470
+  health_check:
+    enabled: true
+    port: 8080
+EOF
+
+kubectl create configmap ai-observability-config \
+  --from-file=config.yaml=config.yaml \
+  --namespace ai-observability
+```
+
+**Step 5:** Deploy the DaemonSet
+
+```bash
+kubectl apply -f manifests/daemonset.yaml -n ai-observability
+```
+
+**Step 6:** Create Service for metrics
+
+```bash
+kubectl apply -f manifests/service.yaml -n ai-observability
+```
+
+**Step 7:** (Optional) Deploy ServiceMonitor for Prometheus
+
+```bash
+kubectl apply -f manifests/servicemonitor.yaml -n ai-observability
+```
+
+</StepItem>
+</Step>
+--- */}
+

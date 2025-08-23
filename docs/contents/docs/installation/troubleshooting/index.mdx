@@ -1,0 +1,88 @@
+---
+title: Troubleshooting
+description: This section covers solutions to some common issues you may encounter while installing AI Observability Stack
+keywords:
+  [
+    "troubleshooting",
+    "kubernetes",
+    "helm",
+    "ebpf",
+    "monitoring",
+    "ai",
+    "ml",
+    "observability",
+  ]
+---
+<Step>
+<StepItem title="Common Issues">
+
+**Issue: Pods stuck in Pending state**
+
+```bash
+kubectl describe pod -n ai-observability $POD_NAME
+```
+
+Common causes:
+
+- Node doesn't meet kernel requirements
+- Insufficient resources on nodes
+- SecurityContext restrictions
+
+**Issue: eBPF programs failed to load**
+
+Check kernel config:
+
+```bash
+kubectl debug node/NODE_NAME -it --image=ubuntu -- chroot /host bash -c "
+zcat /proc/config.gz | grep -i bpf
+"
+```
+
+Required kernel configs:
+
+- `CONFIG_BPF=y`
+- `CONFIG_BPF_SYSCALL=y`
+- `CONFIG_DEBUG_INFO_BTF=y`
+
+**Issue: Permission denied errors**
+
+Ensure the DaemonSet has proper privileges:
+
+```yaml
+securityContext:
+  privileged: true
+  runAsUser: 0
+  capabilities:
+    add:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - SYS_PTRACE
+```
+
+</StepItem>
+
+<StepItem title="Debug Commands">
+
+**Check resource usage:**
+
+```bash
+kubectl top pods -n ai-observability
+kubectl describe node | grep -A5 "Allocated resources"
+```
+
+**Inspect container filesystem:**
+
+```bash
+kubectl exec -n ai-observability $POD_NAME -- ls -la /sys/fs/bpf/
+kubectl exec -n ai-observability $POD_NAME -- ps aux
+```
+
+**Network connectivity test:**
+
+```bash
+kubectl exec -n ai-observability $POD_NAME -- netstat -tlnp
+kubectl exec -n ai-observability $POD_NAME -- ss -tlnp
+```
+
+</StepItem>
+</Step>

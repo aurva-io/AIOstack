@@ -1,0 +1,110 @@
+# Service for ClickHouse
+{{- if .Values.clickhouse.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostack-clickhouse
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+spec:
+  type: {{ .Values.clickhouse.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.clickhouse.service.httpPort }}
+    targetPort: http-port
+    protocol: TCP
+  - name: native
+    port: {{ .Values.clickhouse.service.nativePort }}
+    targetPort: native-port
+    protocol: TCP
+  - name: postgresql
+    port: {{ .Values.clickhouse.service.postgresqlPort }}
+    targetPort: postgresql-port
+    protocol: TCP
+  selector:
+    {{- include "aiostack.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+
+---
+# ConfigMap for ClickHouse configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiostack-clickhouse-config
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+data:
+  custom.xml: |
+    <yandex>
+      <logger>
+        <level>{{ .Values.clickhouse.config.logLevel }}</level>
+        <console>true</console>
+      </logger>
+      
+      <http_port>8123</http_port>
+      <tcp_port>9000</tcp_port>
+      <postgresql_port>9005</postgresql_port>
+      
+      <!-- Disable interserver communication for single-node setup -->
+      <interserver_http_port remove="remove"/>
+      
+      <!-- Listen only on IPv4 to avoid IPv6 issues -->
+      <listen_host>0.0.0.0</listen_host>
+      
+      <max_connections>4096</max_connections>
+      <keep_alive_timeout>3</keep_alive_timeout>
+      <max_concurrent_queries>100</max_concurrent_queries>
+      
+      <uncompressed_cache_size>8589934592</uncompressed_cache_size>
+      <mark_cache_size>5368709120</mark_cache_size>
+      
+      <timezone>{{ .Values.clickhouse.config.timezone }}</timezone>
+
+      
+      <query_log remove="remove"/>
+      <part_log remove="remove"/>
+      <processors_profile_log remove="remove"/>
+      <trace_log remove="remove"/>
+      <asynchronous_metric_log remove="remove"/>
+      <metric_log remove="remove"/>
+
+      {{- if .Values.clickhouse.config.customSettings }}
+      {{ .Values.clickhouse.config.customSettings | nindent 6 }}
+      {{- end }}
+    </yandex>
+
+---
+# Secret for ClickHouse credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aiostack-clickhouse
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+type: Opaque
+data:
+  {{- if .Values.clickhouse.auth.existingSecret }}
+  # Using existing secret: {{ .Values.clickhouse.auth.existingSecret }}
+  {{- else }}
+  clickhouse-password: {{ .Values.clickhouse.auth.password | b64enc | quote }}
+  {{- end }}
+
+{{- if .Values.clickhouse.customConfig }}
+---
+# Optional: Custom users configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiostack-clickhouse-users
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+data:
+  custom-users.xml: |
+    {{ .Values.clickhouse.users | nindent 4 }}
+{{- end }}
+{{- end }}
