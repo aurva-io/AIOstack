@@ -18,7 +18,46 @@ vendor/
 # IDE
 .vscode/
 .idea/
+*.workspace
 
 # OS
 .DS_Store
 Thumbs.db
+
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/docs/node_modules
+/docs/.pnp
+/docs/.pnp.js
+/docs/.yarn/install-state.gz
+
+# testing
+/docs/coverage
+
+# next.js
+/docs/.next/
+/docs/out/
+
+# production
+/docs/build
+
+# misc
+/docs/.DS_Store
+/docs/*.pem
+
+# debug
+/docs/npm-debug.log*
+/docs/yarn-debug.log*
+/docs/yarn-error.log*
+
+# local env files
+/docs/.env*.local
+
+# vercel
+/docs/.vercel
+
+# typescript
+/docs/*.tsbuildinfo
+/docs/next-env.d.ts
