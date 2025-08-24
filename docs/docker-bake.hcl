@@ -13,7 +13,7 @@ group "default" {
 }
 
 target "ai-stack-docs" {
-  dockerfile = "Dockerfile"
+  dockerfile = "./docs/Dockerfile"
   context    = "."
   args = {
     ENV_TAG = VERSION
