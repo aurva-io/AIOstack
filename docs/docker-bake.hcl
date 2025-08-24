@@ -3,7 +3,7 @@ variable "VERSION" {
 }
 
 variable "REGISTRIES" {
-  default = "public.ecr.aws/l5a6x1y4"
+  default = "asia-south1-docker.pkg.dev/aurva-gcp"
 }
 
 group "default" {
@@ -19,7 +19,7 @@ target "aiostack-docs" {
     ENV_TAG = VERSION
   }
   tags      = get_tags("aiostack-docs")
-  platforms = ["linux/arm64"]
+  platforms = ["linux/amd64", "linux/arm64"]
 }
 
 function "get_tags" {

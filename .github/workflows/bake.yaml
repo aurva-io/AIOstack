@@ -13,11 +13,11 @@ on:
       private-ecr:
         type: boolean
         description: "private-ecr"
-        default: true
+        default: false
       gcr:
         type: boolean
         description: "gcr"
-        default: false
+        default: true
 jobs:
   bake:
     runs-on: ubuntu-latest
