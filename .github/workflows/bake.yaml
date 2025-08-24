@@ -94,7 +94,7 @@ jobs:
         uses: docker/bake-action@v5
         with:
           workdir: ./docs
-          files: ./docs/docker-bake.hcl
+          files: ./docker-bake.hcl
           push: true
           set: |
             *.cache-from=type=gha
