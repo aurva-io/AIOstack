@@ -2,6 +2,12 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../aurva-charts"
+		},
+		{
+			"path": "../aurva-helm-charts"
 		}
 	],
 	"settings": {}

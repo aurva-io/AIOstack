@@ -18,12 +18,12 @@ export function Footer() {
           <div className="hidden text-center md:block">
             <Link
               className="font-semibold"
-              href="https://rubixstudios.com.au"
+              href="https://aurva.io"
               target="_blank"
             >
               <Image
                 src="/logo.svg"
-                alt="Rubix Studios Logo"
+                alt="AI Observability Stack Logo"
                 width={30}
                 height={30}
               />
