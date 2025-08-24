@@ -19,6 +19,7 @@ vendor/
 .vscode/
 .idea/
 *.workspace
+*.code-workspace
 
 # OS
 .DS_Store

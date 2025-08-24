@@ -1,70 +1,53 @@
-FROM node:22-alpine AS base
-
-# Set working directory
+# ---- Base Node ----
+FROM --platform=${BUILDPLATFORM} node:23-alpine AS base
 WORKDIR /app
+COPY package*.json ./
 
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+RUN npm install -g npm@latest && \
+    # Remove old version
+    npm uninstall -g cross-spawn && \
+    npm cache clean --force && \
+    # Find and remove any remaining old versions
+    find /usr/local/lib/node_modules -name "cross-spawn" -type d -exec rm -rf {} + && \
+    # Install new version
+    npm install -g cross-spawn@7.0.5 --force && \
+    # Configure npm
+    npm config set save-exact=true && \
+    npm config set legacy-peer-deps=true
 
-# Copy package files
-COPY package.json package-lock.json* ./
+# ---- Dependencies ----
+FROM --platform=${BUILDPLATFORM} base AS dependencies
+RUN npm ci
 
-# Install dependencies - skip prepare scripts to avoid husky
-RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
-
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy source code
+# ---- Build ----
+FROM --platform=${BUILDPLATFORM} dependencies AS build
 COPY . .
-
-# Set environment variables for build
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-
-# Build the application
 RUN npm run build
 
-# Production image, copy all the files and run next
-FROM base AS runner
+# ---- Production ----
+FROM node:23-alpine AS production
+RUN npm install -g npm@latest && \
+    # Remove old version
+    npm uninstall -g cross-spawn && \
+    npm cache clean --force && \
+    # Find and remove any remaining old versions
+    find /usr/local/lib/node_modules -name "cross-spawn" -type d -exec rm -rf {} + && \
+    # Install new version
+    npm install -g cross-spawn@7.0.5 --force && \
+    # Configure npm
+    npm config set save-exact=true && \
+    npm config set legacy-peer-deps=true
+ARG ENV_TAG
+ENV NEXT_PUBLIC_DOCKER_TAG=$ENV_TAG
 WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+COPY --from=build /app/public ./public
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/next.config.js ./next.config.js
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy public assets
-COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Switch to non-root user
-USER nextjs
-
-# Expose port
+# Expose the port the app will run on
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
-
-# Start the application
-CMD ["node", "server.js"]
+# Start the application after the API is ready
+CMD ["npm", "start"]
