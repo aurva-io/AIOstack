@@ -13,13 +13,13 @@ group "default" {
 }
 
 target "ai-stack-docs" {
-  dockerfile = "./docs/Dockerfile"
+  dockerfile = "./Dockerfile"
   context    = "."
   args = {
     ENV_TAG = VERSION
   }
   tags      = get_tags("ai-stack-docs")
-  platforms = ["linux/amd64"]
+  platforms = ["linux/arm64"]
 }
 
 function "get_tags" {
