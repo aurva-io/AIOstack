@@ -93,9 +93,10 @@ jobs:
       - name: build and push
         uses: docker/bake-action@v5
         with:
+          context: .
+          workdir: ./docs
           files: ./docs/docker-bake.hcl
           push: true
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=max
-          working-directory: ./docs
