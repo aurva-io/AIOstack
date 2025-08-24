@@ -3,22 +3,22 @@ variable "VERSION" {
 }
 
 variable "REGISTRIES" {
-  default = "119191042565.dkr.ecr.ap-south-1.amazonaws.com"
+  default = "public.ecr.aws/l5a6x1y4"
 }
 
 group "default" {
   targets = [
-    "ai-stack-docs"
+    "aiostack-docs"
   ]
 }
 
-target "ai-stack-docs" {
-  dockerfile = "./Dockerfile"
+target "aiostack-docs" {
+  dockerfile = "./docs/Dockerfile"
   context    = "."
   args = {
     ENV_TAG = VERSION
   }
-  tags      = get_tags("ai-stack-docs")
+  tags      = get_tags("aiostack-docs")
   platforms = ["linux/arm64"]
 }
 

@@ -10,5 +10,9 @@
 			"path": "../aurva-helm-charts"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"yaml.schemas": {
+			"https://www.schemastore.org/helmfile.json": "file:///Users/swapnilnair/Desktop/Work/ai-observability-stack/charts/aiostack/templates/serviceaccount.yaml"
+		}
+	}
 }

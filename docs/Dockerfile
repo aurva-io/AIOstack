@@ -8,7 +8,7 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 
 # Copy package files
-COPY package.json package-lock.json* ./
+COPY docs/package.json docs/package-lock.json* ./
 
 # Install dependencies - skip prepare scripts to avoid husky
 RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 
 # Copy source code
-COPY . .
+COPY docs/ .
 
 # Set environment variables for build
 ENV NEXT_TELEMETRY_DISABLED=1

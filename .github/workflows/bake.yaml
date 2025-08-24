@@ -76,7 +76,7 @@ jobs:
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         env:
-          AWS_REGION: us-east-1
+          AWS_REGION: ap-south-1
 
       - name: Login to GCP
         if: ${{ fromJSON(inputs.gcr) }}
