@@ -8,18 +8,18 @@ variable "REGISTRIES" {
 
 group "default" {
   targets = [
-    "aurva-webapp"
+    "ai-stack-docs"
   ]
 }
 
-target "aurva-webapp" {
+target "ai-stack-docs" {
   dockerfile = "Dockerfile"
   context    = "."
   args = {
     ENV_TAG = VERSION
   }
-  tags      = get_tags("aurva-webapp")
-  platforms = ["linux/amd64", "linux/arm64"]
+  tags      = get_tags("ai-stack-docs")
+  platforms = ["linux/amd64"]
 }
 
 function "get_tags" {
