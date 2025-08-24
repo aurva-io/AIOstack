@@ -13,7 +13,7 @@ group "default" {
 }
 
 target "aiostack-docs" {
-  dockerfile = "./docs/Dockerfile"
+  dockerfile = "./Dockerfile"
   context    = "."
   args = {
     ENV_TAG = VERSION
