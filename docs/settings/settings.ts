@@ -9,12 +9,12 @@ export const description = ""
 export const keywords = [
   "Next.js",
   "documentation",
-  "Rubix Studios",
+  "Aurva",
   "open source",
   "SEO",
 ]
 export const urlimage = "/images/og-image.png"
-export const imagealt = "Rubix Studios Documentation"
+export const imagealt = "Aurva Documentation"
 export const twitterhandle = "@Aurva"
 
 export const companyname = "Aurva Inc"

@@ -22,9 +22,14 @@ export const Documents: Paths[] = [
   },
 
   {
-    title: "Navigation",
-    href: "/navigation",
-    heading: "Documents",
+    title: "Overview",
+    href: "/overview",
+    items: [
+      {
+        title: "Architecture",
+        href: "/architecture",
+      },
+    ],
   },
 
   {

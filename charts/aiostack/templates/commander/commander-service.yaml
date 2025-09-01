@@ -1,0 +1,19 @@
+{{- if .Values.commander.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostack-commander
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: commander
+spec:
+  type: {{ .Values.commander.service.type }}
+  ports:
+    - port: {{ .Values.commander.service.port }}
+      targetPort: {{ .Values.commander.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aiostack.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: commander
+{{- end }}

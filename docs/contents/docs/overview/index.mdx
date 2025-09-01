@@ -1,0 +1,246 @@
+---
+title: Overview
+description: Overview of the AI Observability Stack.
+keywords: ["overview", "kubernetes", "nextjs", "documents"]
+---
+
+# Overview
+
+
+
+
+# Aurva AI Observability Stack — Component Design (Open Core)
+
+> Purpose: A deployable, open-core AI observability/DSPM stack that discovers AI apps in Kubernetes, traces their calls to LLMs/providers at the network and SDK layers, classifies/tagging sensitive data, and provides insights.
+
+---
+
+## Table of Contents
+
+1. [High-Level Architecture](#high-level-architecture)
+2. [Components](#components)
+
+   * [Agent (eBPF DaemonSet)](#agent-ebpf-daemonset)
+   * [Controller](#controller)
+   * [Database (PostgreSQL)](#database-postgresql)
+   * [Gateway (Auth + API)](#gateway-auth--api)
+   * [Frontend (Next.js + shadcn/ui)](#frontend-nextjs--shadcnui)
+3. [Data Model & Taxonomy](#data-model--taxonomy)
+4. [Data Flow](#data-flow)
+5. [Discovery, Tagging, Classification](#discovery-tagging-classification)
+6. [Security & Privacy](#security--privacy)
+7. [Performance & Scalability](#performance--scalability)
+8. [Deployments](#deployments)
+9. [Open-Core Split](#open-core-split)
+10. [APIs](#apis)
+11. [K8s Manifests (Skeletons)](#k8s-manifests-skeletons)
+12. [Operational Runbook](#operational-runbook)
+13. [Roadmap](#roadmap)
+14. [Risks & Mitigations](#risks--mitigations)
+
+---
+
+## High-Level Architecture
+
+```
++-------------------------+      +------------------------+      +--------------------+
+|  Frontend (Next.js)     | <--> |  Gateway (Auth/API)    | <--> |  PostgreSQL (DB)   |
++-------------------------+      +------------------------+      +--------------------+
+                                        ^       ^
+                                        |       |
+                                   Insights  Control APIs
+                                        |       |
+                                  +-----+-------+-----+
+                                  |     Commander     |
+                                  |    (Aggregator)   |
+                                  +-----+-------+-----+
+                                        ^       ^
+                         Agent Telemetry|       | Policies/Configs
+                                        |       |
+                         +--------------+-------+--------------+
+                         |           Observer (eBPF)           |
+                         |     (socket/http/dns/ssl tracing)   |
+                         +-------------------------------------+
+```
+
+**Design tenets:** lightweight agent, minimal overhead; privacy-aware collection; stable schemas; robust backpressure; portable (vanilla K8s).
+
+---
+
+## Components
+
+### Agent (eBPF DaemonSet)
+
+**Purpose:** Kernel-level, low-overhead discovery and tracing of AI-related traffic & processes.
+
+**Core capabilities**
+
+* Auto-discover AI apps/sidecars via process args, env, images, and network heuristics.
+* Trace outbound calls (HTTP/gRPC/TCP) to known AI/LLM providers (OpenAI, Anthropic, Google, Azure, local models) via DNS/SNI/IP lists & L7 parsing where safe.
+* Optional SDK hooks (Python/Node/Go) to capture request metadata without payloads.
+* Extract minimal metadata: `timestamp, pod, ns, container, image, proc, dest_host, dest_ip, port, method, path, status, latency_ms, bytes_in/out, sdk/lib, model, operation`.
+* Configurable scrubbing & sampling: PII redaction, field allow/deny, rate caps.
+* Local ring buffer + userspace forwarder (gRPC over uds/TLS) to Controller.
+
+**Operational notes**
+
+* Runs as DaemonSet with hostPID + BPF caps; no rootfs write.
+* Kernel/OS matrix: recent Linux with BPF, cgroup v2; graceful degrade if not.
+* Hot-reload provider lists, patterns, and sampling policies via ConfigMap/CRD.
+
+### Controller
+
+**Purpose:** Ingest, enrich, and persist events; apply policies; compute insights.
+
+**Functions**
+
+* gRPC ingest from Agents with backpressure and auth (mTLS).
+* Enrichment: join with K8s metadata (workload labels, owners, service graph), map provider endpoints → `provider, region, product, model`.
+* Classification pipelines: content-free (metadata) classification; optional SDK signal enrichment for model/version; DSPM tags.
+* Policy engine: discovery rules, tagging rules, block/allow suggestions, anomaly thresholds.
+* Writers: durable queue → Postgres (events, edges, findings); periodic compaction.
+* Schedulers: background jobs for insights, trends, cost estimates, data flow maps.
+
+**Scale units**: stateless worker replicas + queue (in-process or NATS/Redis streams optional). Horizontal scale based on QPS.
+
+### Database (PostgreSQL)
+
+**Purpose:** Single source of truth for metadata, events, relations, and findings.
+
+**Schema accents**
+
+* `workloads(id, cluster, ns, kind, name, labels, owner, first_seen, last_seen)`
+* `endpoints(id, provider, host, product, model, region)`
+* `events(id, ts, workload_id, endpoint_id, method, status, latency_ms, bytes, op, sdk, model, hash)`
+* `data_flows(id, src_workload_id, dst_endpoint_id, first_seen, last_seen, count, p95_latency_ms)`
+* `tags(id, kind, key, value)` and `tag_links(tag_id, subject_kind, subject_id)`
+* `findings(id, created_at, severity, type, subject_kind, subject_id, summary, details)`
+* `tenants(id, name, plan, settings)` with row-level security (RLS) per tenant.
+
+**Indexing**: time + workload; endpoint; composite `(workload_id, ts)`; BRIN on `events.ts` for range scans. Optional Timescale/pg\_partman partitioning for retention.
+
+### Gateway (Auth + API)
+
+**Purpose:** Unified entry for APIs/UI, authN/Z, and query orchestration.
+
+**Capabilities**
+
+* OIDC (GitHub, Google), PATs, and cluster tokens. RBAC: `owner, admin, viewer`.
+* Multi-tenant via RLS; per-tenant rate limits & API keys.
+* GraphQL or REST (REST shown below). Caching for common aggregates.
+* Expose metrics to Prometheus; audit logs.
+
+### Frontend (Next.js)
+
+**Purpose:** UX for discovery, maps, trends, and findings.
+
+**Key views**
+
+* **Inventory**: workloads, models, providers detected; filters by cluster/ns/label.
+* **Map**: service → model/provider data-flow graph with edge volumes/latency.
+* **Timeline**: event volume, p95 latency, error rates by provider/model.
+* **Findings**: policy violations (eg, unknown provider, egress to blocked region).
+* **Tags & Rules**: manage tagging, classification, retention, sampling.
+* **Settings**: tokens, provider catalogs, kernel compatibility, agent rollout.
+
+---
+
+## Data Model & Taxonomy
+
+* **Subjects:** `workload`, `endpoint`, `event`, `data_flow`, `finding`, `tag`.
+* **Providers:** OpenAI, Anthropic, Google, Azure, Together, Cohere, Bedrock, local.
+* **Models:** normalized (`gpt-4.1`, `claude-3.5-sonnet`, etc) + aliases.
+* **Operations:** `chat.completions`, `embeddings`, `batch`, `eval`, `vector.store`.
+* **Tags:** `sensitivity=pii|secret|ip`, `env=prod|stage|dev`, `owner=team-x`.
+* **Severities:** `info, low, medium, high, critical`.
+
+---
+
+## Data Flow
+
+1. **Agent** captures event metadata (kernel + optional SDK hooks).
+2. **Controller** receives, enriches (K8s, provider catalog), queues.
+3. **Controller** writes `events` and updates `data_flows`, raises `findings`.
+4. **Gateway** serves queries with auth; aggregates for UI.
+5. **Frontend** renders maps, lists, and insights; users adjust rules/tags.
+
+---
+
+## Discovery, Tagging, Classification
+
+* **Discovery rules**: heuristics on process args (`OPENAI_API_KEY`), images (`vllm`, `ollama`), outbound hosts (`api.openai.com`), SDK imports.
+* **Tagging**: rule engine (CEL-like) e.g., `if ns=prod and host=*.openai.com => tag(env=prod)`.
+* **Classification**: metadata-only; optional SDK-assisted model identification; region/risk classification for providers (e.g., `region=eu`, `risk=external`).
+* **Insights**: unknown providers, shadow AI usage, cross-border calls, cost hotspots, error spikes, deprecated models.
+
+---
+
+## Security & Privacy
+
+* **Default no-payload**: collect metadata only; payload redaction on by default.
+* **mTLS** everywhere; SPIRE/SDS optional for workload identities.
+* **RLS** per tenant; encryption at rest; secret rotation via K8s + external vaults.
+* **Data minimization**: hash request paths/query if sensitive; opt-in body sampling.
+* **Compliance**: retention policies per tag (`sensitivity=pii` ⇒ shorter retention).
+* **Egress control recommendations**: generate NetworkPolicy/egress rules as PRs.
+
+---
+
+## Performance & Scalability
+
+* Agent target overhead: < 1–2% CPU / < 50MB RAM per node under normal load.
+* Backpressure: bounded agent buffers; drop policies; controller queue.
+* DB: partition `events` by day/week; async compaction & rollups to `data_flows`.
+* Caching: Gateway LRU for hot queries; CDN for static assets.
+* HA: multi-replica Controller/Gateway; Postgres with HA (patroni or cloud-PG).
+
+---
+
+## Deployments
+
+* **Helm charts** per component; umbrella chart for stack.
+* Values: provider catalogs, sampling %, retention, RLS tenant seeds, OIDC config.
+* Postgres as StatefulSet with PVC; optional external hosted PG.
+* Optional addons: Redis/NATS for queueing; Timescale extension for partitions.
+
+---
+
+## Open-Core Split
+
+**Community (OSS)**
+
+* Core Agent, Controller, Gateway, basic UI.
+* Discovery of providers/models; maps; basic findings; local single-tenant.
+
+**Enterprise**
+
+* Multi-cluster, multi-tenant with orgs and SSO/SAML.
+* Advanced classification (custom rule packs), cost attribution, chargeback.
+* Long-term retention & cold storage, partition mgmt UI.
+* Policy as Code bundles; automated PRs for K8s egress/OPA policies.
+* RBAC with fine-grained scopes; audit exports; reports.
+
+---
+
+## APIs
+
+**Auth**
+
+* `POST /v1/auth/token` (OIDC exchange, PAT creation)
+
+**Events & Flows**
+
+* `GET /v1/events?workload=...&from=...&to=...`
+* `GET /v1/flows?cluster=...&ns=...`
+* `GET /v1/providers` / `GET /v1/models`
+
+**Findings & Tags**
+
+* `GET /v1/findings?severity=...`
+* `POST /v1/tags` body: `{subject_kind,id,tags:[{key,value}]}`
+* `POST /v1/rules` body: rule DSL for tagging/classification
+
+**Controller ingest (mTLS)**
+
+* `POST /v1/ingest` (gRPC) messages: `EventBatch { events: [...] }`
+

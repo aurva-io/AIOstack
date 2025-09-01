@@ -1,0 +1,47 @@
+{{- if .Values.commander.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostack-commander
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: commander
+spec:
+  replicas: {{ .Values.commander.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aiostack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: commander
+  template:
+    metadata:
+      labels:
+        {{- include "aiostack.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: commander
+    spec:
+      containers:
+      - name: commander
+        image: "{{ .Values.commander.image.repository }}:{{ .Values.commander.image.tag }}"
+        imagePullPolicy: {{ .Values.commander.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.commander.service.targetPort }}
+          protocol: TCP
+        {{- if .Values.commander.env }}
+        env:
+        {{- toYaml .Values.commander.env | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.commander.resources | nindent 10 }}
+      {{- with .Values.commander.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.commander.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.commander.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
