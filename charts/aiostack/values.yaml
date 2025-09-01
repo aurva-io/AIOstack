@@ -6,7 +6,7 @@ observer:
   namespaceOverride: aiostack-test
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-observer
-    tag: bananav0
+    tag: bananav2
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -85,7 +85,7 @@ commander:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-commander
-    tag: bananav0
+    tag: bananav2
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -102,6 +102,16 @@ commander:
   env:
     - name: COMPANY_ID
       value: "d9525740-beb5-401a-9e35-b487f6b30adc"
+  serviceAccount:
+    # -- Create a service account for the commander
+    create: true
+    # -- Service account name
+    name: aiostack-commander-sa
+    # -- Annotations applied to created service account
+    annotations:
+      # eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/<role-name>
+    # -- Labels applied to created service account
+    labels: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}

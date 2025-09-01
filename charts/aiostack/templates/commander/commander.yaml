@@ -18,6 +18,8 @@ spec:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: commander
     spec:
+      serviceAccountName: aiostack-commander
+      dnsPolicy: ClusterFirst
       containers:
       - name: commander
         image: "{{ .Values.commander.image.repository }}:{{ .Values.commander.image.tag }}"
