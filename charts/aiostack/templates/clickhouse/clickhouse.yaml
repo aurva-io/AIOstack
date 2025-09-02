@@ -1,0 +1,99 @@
+{{- if .Values.clickhouse.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: aiostack-clickhouse
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: clickhouse
+spec:
+  serviceName: aiostack-clickhouse
+  replicas: {{ .Values.clickhouse.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aiostack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: clickhouse
+  template:
+    metadata:
+      labels:
+        {{- include "aiostack.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: clickhouse
+    spec:
+      containers:
+      - name: clickhouse
+        image: "{{ .Values.clickhouse.image.repository }}:{{ .Values.clickhouse.image.tag }}"
+        imagePullPolicy: {{ .Values.clickhouse.image.pullPolicy }}
+        ports:
+        - name: http-port
+          containerPort: 8123
+          protocol: TCP
+        - name: native-port
+          containerPort: 9000
+          protocol: TCP
+        - name: postgresql-port
+          containerPort: 9005
+          protocol: TCP
+        env:
+        - name: CLICKHOUSE_DB
+          value: {{ .Values.clickhouse.auth.database }}
+        - name: CLICKHOUSE_USER
+          value: {{ .Values.clickhouse.auth.username }}
+        - name: CLICKHOUSE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aiostack-clickhouse
+              key: clickhouse-password
+        - name: CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT
+          value: "1"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/clickhouse
+        - name: config
+          mountPath: /etc/clickhouse-server/config.d/
+        {{- if .Values.clickhouse.customConfig }}
+        - name: custom-config
+          mountPath: /etc/clickhouse-server/users.d/
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http-port
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+        resources:
+          {{- toYaml .Values.clickhouse.resources | nindent 10 }}
+      volumes:
+      - name: config
+        configMap:
+          name: aiostack-clickhouse-config
+      {{- if .Values.clickhouse.customConfig }}
+      - name: custom-config
+        configMap:
+          name: aiostack-clickhouse-users
+      {{- end }}
+  {{- if .Values.clickhouse.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.clickhouse.persistence.storageClass }}
+      storageClassName: {{ .Values.clickhouse.persistence.storageClass }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.clickhouse.persistence.size }}
+  {{- else }}
+  volumes:
+  - name: data
+    emptyDir: {}
+  {{- end }}
+{{- end }}
