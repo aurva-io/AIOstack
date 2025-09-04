@@ -62,15 +62,15 @@ data:
       <mark_cache_size>5368709120</mark_cache_size>
       
       <timezone>{{ .Values.clickhouse.config.timezone }}</timezone>
+
       
-      {{- if .Values.clickhouse.config.queryLog }}
-      <query_log>
-        <database>system</database>
-        <table>query_log</table>
-        <flush_interval_milliseconds>7500</flush_interval_milliseconds>
-      </query_log>
-      {{- end }}
-      
+      <query_log remove="remove"/>
+      <part_log remove="remove"/>
+      <processors_profile_log remove="remove"/>
+      <trace_log remove="remove"/>
+      <asynchronous_metric_log remove="remove"/>
+      <metric_log remove="remove"/>
+
       {{- if .Values.clickhouse.config.customSettings }}
       {{ .Values.clickhouse.config.customSettings | nindent 6 }}
       {{- end }}

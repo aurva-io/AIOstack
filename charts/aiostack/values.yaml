@@ -6,7 +6,7 @@ observer:
   namespaceOverride: aiostack-test
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-observer
-    tag: bananav8
+    tag: bananav14
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -85,7 +85,7 @@ commander:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-commander
-    tag: bananav8
+    tag: bananav14
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -104,6 +104,18 @@ commander:
       value: "d9525740-beb5-401a-9e35-b487f6b30adc"
     - name: LOG_ENV
       value: "production"
+    - name: DB_HOST
+      value: "aiostack-clickhouse.aiostack-test.svc.cluster.local"
+    - name: DB_USER
+      value: "aurva"
+    - name: DB_PASSWORD
+      value: "aurvaaiostack"
+    - name: DB_DATABASE
+      value: "aiostack"
+    - name: DB_DEFAULT_DATABASE
+      value: "default"
+    - name: DB_PORT
+      value: "9000"
   serviceAccount:
     # -- Create a service account for the commander
     create: true
