@@ -7,41 +7,41 @@ export const Documents: Paths[] = [
     href: "/home",
     items: [
       {
-        title: "Installation",
-        href: "/installation",
+        title: "Overview",
+        href: "/overview",
       },
-      {
-        title: "Setup",
-        href: "/setup",
-      },
-      {
-        title: "Changelog",
-        href: "/changelog",
-      },
-    ],
-  },
-
-  {
-    title: "Overview",
-    href: "/overview",
-    items: [
-      {
+      { 
         title: "Architecture",
         href: "/architecture",
       },
     ],
+  },    
+  {
+    title: "Installation",
+    href: "/installation",
+    items: [
+      {
+        title: "Pre-requisites",
+        href: "/pre-reqs",
+      },
+      {
+        title: "Steps",
+        href: "/steps",
+      },
+      {
+        title: "Verification",
+        href: "/verification",
+      },
+      {
+        title: "Troubleshooting",
+        href: "/troubleshooting",
+      },
+      {
+        title: "Next Steps",
+        href: "/next-steps",
+      },
+    ],
   },
 
-  {
-    spacer: true,
-  },
-  {
-    title: "Random",
-    href: "/random",
-    heading: "Random",
-  },
 
-  {
-    spacer: true,
-  },
 ]

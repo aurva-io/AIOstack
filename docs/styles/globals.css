@@ -312,3 +312,187 @@ span.katex-html {
     height: 0;
   }
 }
+
+/* Animated background elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  25% {
+    transform: translateX(10px) translateY(-10px);
+  }
+  50% {
+    transform: translateX(-5px) translateY(-20px);
+  }
+  75% {
+    transform: translateX(-10px) translateY(-5px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.1);
+  }
+}
+
+.background-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.floating-shape {
+  position: absolute;
+  opacity: 0.10;
+  animation-duration: 20s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.floating-shape:nth-child(1) {
+  top: 18%;
+  left: 20%;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, #333, #aaa);
+  border-radius: 50%;
+  animation-name: drift;
+  animation-delay: 0s;
+}
+
+.floating-shape:nth-child(2) {
+  top: 20%;
+  right: 15%;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #444, #777);
+  transform: rotate(45deg);
+  animation-name: drift;
+  animation-delay: -5s;
+}
+
+.floating-shape:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(45deg, #222, #555);
+  border-radius: 20%;
+  animation-name: float;
+  animation-delay: -10s;
+}
+
+.floating-shape:nth-child(4) {
+  bottom: 20%;
+  right: 25%;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, #555, #888);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  animation-name: drift;
+  animation-delay: -15s;
+}
+
+.floating-shape:nth-child(5) {
+  top: 45%;
+  left: 10%;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(45deg, #111, #222);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform: rotate(20deg);
+  animation-name: drift;
+  animation-delay: -1s;
+}
+
+.floating-shape:nth-child(6) {
+  top: 60%;
+  right: 10%;
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(45deg, #444, #777);
+  transform: rotate(30deg);
+  animation-name: float;
+  animation-delay: -12s;
+}
+
+.floating-shape:nth-child(7) {
+  top: 15%;
+  left: 50%;
+  width: 35px;
+  height: 35px;
+  background: linear-gradient(45deg, #222, #555);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  animation-name: drift;
+  animation-delay: -3s;
+}
+
+.floating-shape:nth-child(8) {
+  bottom: 40%;
+  left: 70%;
+  width: 55px;
+  height: 55px;
+  background: linear-gradient(45deg, #555, #888);
+  border-radius: 30%;
+  animation-name: float;
+  animation-delay: -18s;
+}
+
+/* Dark mode adjustments */
+.dark .floating-shape {
+  opacity: 0.40;
+}
+
+.dark .floating-shape:nth-child(1) {
+  background: linear-gradient(45deg, #333, #666);
+}
+
+.dark .floating-shape:nth-child(2) {
+  background: linear-gradient(45deg, #444, #777);
+}
+
+.dark .floating-shape:nth-child(3) {
+  background: linear-gradient(45deg, #222, #555);
+}
+
+.dark .floating-shape:nth-child(4) {
+  background: linear-gradient(45deg, #555, #fff);
+}
+
+.dark .floating-shape:nth-child(5) {
+  background: linear-gradient(45deg, #333, #666);
+}
+
+.dark .floating-shape:nth-child(6) {
+  background: linear-gradient(45deg, #444, #777);
+}
+
+.dark .floating-shape:nth-child(7) {
+  background: linear-gradient(45deg, #222, #555);
+}
+
+.dark .floating-shape:nth-child(8) {
+  background: linear-gradient(45deg, #555, #888);
+}

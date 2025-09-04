@@ -1,0 +1,195 @@
+---
+title: Verification
+description: This section covers the verification of AI Observability Stack for AI agents and ML workloads in Kubernetes.
+keywords:
+  [
+    "verification",
+    "kubernetes",
+    "helm",
+    "ebpf",
+    "monitoring",
+    "ai",
+    "ml",
+    "observability",
+  ]
+---
+
+<Step>
+<StepItem title="Check Installation Status">
+
+**Verify pods are running:**
+
+```bash
+kubectl get pods -n ai-observability
+kubectl get daemonset -n ai-observability
+```
+
+Expected output:
+
+```
+NAME                                    READY   STATUS    RESTARTS   AGE
+ai-observability-stack-xxxxx            1/1     Running   0          2m
+ai-observability-stack-yyyyy            1/1     Running   0          2m
+```
+
+**Check logs for any errors:**
+
+```bash
+kubectl logs -n ai-observability -l app=ai-observability-stack --tail=50
+```
+
+</StepItem>
+
+<StepItem title="Test Metrics Endpoint">
+
+**Method 1: Port-forward to test locally**
+
+```bash
+# Get a pod name
+POD_NAME=$(kubectl get pods -n ai-observability -l app=ai-observability-stack -o jsonpath='{.items[0].metadata.name}')
+
+# Port forward to the metrics port
+kubectl port-forward -n ai-observability pod/$POD_NAME 7470:7470
+```
+
+In another terminal, test the metrics endpoint:
+
+```bash
+curl http://localhost:7470/metrics
+```
+
+Expected output should include metrics like:
+
+```
+# HELP ai_llm_requests_total Total number of LLM API requests
+# TYPE ai_llm_requests_total counter
+ai_llm_requests_total{provider="openai",model="gpt-4"} 0
+
+# HELP ai_ml_library_calls_total Total ML library function calls
+# TYPE ai_ml_library_calls_total counter
+ai_ml_library_calls_total{library="pytorch",function="forward"} 0
+```
+
+**Method 2: Test via Service**
+
+```bash
+# Create a test pod
+kubectl run test-pod --rm -i --tty --image=curlimages/curl -- sh
+
+# Inside the test pod:
+curl http://ai-observability-stack.ai-observability.svc.cluster.local:7470/metrics
+```
+
+</StepItem>
+
+<StepItem title="Test Health Check">
+
+Test the health endpoint:
+
+```bash
+# Port forward health check port
+kubectl port-forward -n ai-observability pod/$POD_NAME 8080:8080
+
+# Test health endpoint
+curl http://localhost:8080/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "healthy",
+  "version": "v1.0.0",
+  "ebpf_programs": {
+    "http_tracer": "loaded",
+    "syscall_tracer": "loaded",
+    "ssl_tracer": "loaded"
+  },
+  "monitored_libraries": ["pytorch", "tensorflow", "transformers"],
+  "active_providers": ["openai", "anthropic"]
+}
+```
+
+</StepItem>
+
+<StepItem title="Validate eBPF Program Loading">
+
+Check if eBPF programs are loaded correctly:
+
+```bash
+# Execute on a node to check eBPF programs
+kubectl debug node/NODE_NAME -it --image=ubuntu -- chroot /host bash
+
+# Inside the debug container:
+bpftool prog list | grep ai_observability
+ls /sys/fs/bpf/ai_observability/
+```
+
+Check kernel logs for eBPF-related messages:
+
+```bash
+kubectl logs -n ai-observability pod/$POD_NAME | grep -i ebpf
+```
+
+</StepItem>
+
+<StepItem title="Test with Sample AI Application">
+
+Deploy a test application to generate some metrics:
+
+```bash
+cat > test-app.yaml << 'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-test-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-test-app
+  template:
+    metadata:
+      labels:
+        app: ai-test-app
+    spec:
+      containers:
+      - name: test-app
+        image: python:3.9-slim
+        command: ["/bin/bash"]
+        args: ["-c", "pip install openai requests && python -c \"
+import openai
+import requests
+import time
+import os
+
+while True:
+    try:
+        # Simulate OpenAI API call (will be traced by eBPF)
+        response = requests.post(
+            'https://api.openai.com/v1/models',
+            headers={'Authorization': 'Bearer fake-key'},
+            json={}
+        )
+        print(f'API call made: {response.status_code}')
+    except Exception as e:
+        print(f'Expected error: {e}')
+
+    time.sleep(30)
+\""]
+EOF
+
+kubectl apply -f test-app.yaml
+```
+
+Wait a few minutes, then check metrics again:
+
+```bash
+curl http://localhost:7470/metrics | grep ai_llm_requests_total
+```
+
+</StepItem>
+</Step>
+
+

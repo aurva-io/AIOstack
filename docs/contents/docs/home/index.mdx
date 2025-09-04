@@ -4,11 +4,12 @@ description: This section provides an overview of how to get started with AI Obs
 keywords: ["introduction", "guide", "nextjs", "documents"]
 ---
 
-![Banner](/images/banner.png "Documents")
 
-**AI Observability Stack** is an open-source observability tool that automatically discovers, traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF technology, it provides deep visibility into LLM API calls, ML library usage, and AI agent behavior without requiring code changes or application restarts.
 
-## 🚀 Features
+**AI Observability Stack** or AIOStack is an open-source observability tool that automatically discovers, 
+traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF technology, it provides deep visibility into LLM API calls, ML library usage, and AI agent behavior without requiring code changes or application restarts.
+
+## Features
 
 - **Zero-instrumentation tracing**: Automatic detection of AI/ML libraries and LLM calls by workloads using eBPF
 - **Kubernetes-native**: One click deploy as DaemonSet with RBAC and security best practices. One click uninstall.
@@ -19,11 +20,9 @@ keywords: ["introduction", "guide", "nextjs", "documents"]
 - **Real-Time Shadow AI Detection**: Identify unsanctioned AI tool usage and LLM calls from unexpected sources
 - **Agent workflow visualization**: Trace multi-step AI agent executions
 
-## 🏗️ Architecture
 
-// TODO: Add architecture diagram
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Kubernetes 1.24+ with eBPF support ( EKS, GKE, AKS, etc. )
 - Linux kernel 4.18+ (5.4+ recommended)
@@ -34,50 +33,30 @@ keywords: ["introduction", "guide", "nextjs", "documents"]
   <Card
     subtitle="Instructions"
     title="Deployment"
-    description="Follow the quick start guide to install Documents and get up and running."
-    href="/docs/home/installation"
+    description="Follow the quick start guide to install AIOStack and get up and running."
+    href="/docs/installation"
   />
   <Card
     subtitle="Setup"
     title="Configuration"
-    description="Configure your project layout, metadata, and SEO preferences."
+    description="Configure your AIOStack and discover what you can do with it."
     href="/docs/home/setup"
     external={false}
   />
 </CardGrid>
 
-## Why use Documents?
 
-This kit was built to simplify how teams manage and publish documentation. It works across projects of all sizes—from a single
-readme to enterprise knowledge bases.
 
-With MDX, reusable components, and Tailwind styling, it keeps your workflow efficient without compromising flexibility.
+If you encounter issues:
 
-Use it for:
+- Find help on our [Documentation Site](https://ai.staging.aurva.io)
+- Raise an issue on our [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- Join our [Community Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-24000000000000000000000000000000)
+- **Email Support:** support@aurva.io
 
-- **Product Guides** – Setup, usage, and troubleshooting
-- **Internal Docs** – Processes, policies, and team references
-- **Technical Manuals** – APIs, SDKs, architecture walkthroughs
+---
 
-Customize the UI and structure to match your brand or workflow—no lock-in.
+**Note:** The AI Observability Stack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
 
-## Core Features
+[![Deploy to Kubernetes](https://img.shields.io/badge/Deploy%20to-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes)](https://github.com/aurva-io/ai-observability-stack)
 
-| Feature                   | Description                                                       |
-| ------------------------- | ----------------------------------------------------------------- |
-| **Write in Markdown/MDX** | Combine Markdown with components and Mermaid.js for rich content. |
-| **Flexible Navigation**   | Multi-level menus, page hierarchy, and auto-generated TOCs.       |
-| **Code Support**          | Syntax highlighting, code tabs, and one-click copy.               |
-| **Search**                | Fuzzy matching with highlight and instant results.                |
-| **Responsive Design**     | Built-in light/dark mode with mobile support.                     |
-| **Math + Tables**         | LaTeX rendering and clean table styling.                          |
-| **SEO Defaults**          | Preconfigured meta, Open Graph, and structured data.              |
-| **AI Docs (Upcoming)**    | AI tools for smart search and content generation (coming soon).   |
-
-## Not sure what to do ?
-
-Start with the [Installation Guide](/docs/basic-setup/installation).
-
-## Got questions? Reach out via
-
-- [GitHub](https://github.com/aurva-io/ai-observability-stack)

@@ -4,10 +4,7 @@ export const Documents = [
         title: "Basic Setup",
         href: "/basic-setup",
         items: [
-            {
-                title: "Installation",
-                href: "/installation",
-            },
+
             {
                 title: "Setup",
                 href: "/setup",

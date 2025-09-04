@@ -1,5 +1,5 @@
 export const url = "https://aurva.io"
-export const siteicon = "/icon.png"
+export const siteicon = "/logo.svg"
 
 export const gtm = "GTM-XXXXXXX"
 export const gtmconnected = true

@@ -26,6 +26,7 @@ export function Footer() {
                 alt="AI Observability Stack Logo"
                 width={30}
                 height={30}
+                className="dark:invert"
               />
             </Link>
           </div>

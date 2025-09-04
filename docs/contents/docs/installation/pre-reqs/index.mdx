@@ -1,0 +1,192 @@
+---
+title: Pre-requisites
+description: This section covers the pre-requisites for installing AI Observability Stack for AI agents and ML workloads in Kubernetes.
+keywords:
+  [
+    "pre-requisites",
+    "kubernetes",
+    "helm",
+    "ebpf",
+    "monitoring",
+    "ai",
+    "ml",
+    "observability",
+  ]
+---
+
+
+<Step>
+<StepItem title="Kubernetes Cluster Access">
+
+You need administrative access to a Kubernetes cluster with the following specifications:
+
+- **GKE (Google Kubernetes Engine):** Version 1.24+ with Standard or Autopilot mode
+- **EKS (Amazon Elastic Kubernetes Service):** Version 1.24+
+- **AKS (Azure Kubernetes Service):** Version 1.24+
+- **On-premises:** Any Kubernetes distribution (kubeadm, k3s, etc.)
+
+**Required Permissions:**
+
+- Cluster admin privileges to create DaemonSets
+- Ability to create ServiceAccounts and RBAC resources
+- Permission to deploy privileged containers
+
+Verify cluster access:
+
+```bash
+kubectl cluster-info
+kubectl auth can-i create daemonsets --all-namespaces
+```
+
+</StepItem>
+
+<StepItem title="Node Requirements">
+
+**Linux Kernel Version:**
+
+- Minimum: Linux kernel 5.2+
+- Recommended: Linux kernel 5.8+ for optimal eBPF support
+- Required: eBPF and BTF (BPF Type Format) support enabled
+
+**Node Specifications:**
+
+- CPU: Minimum 1 vCPU per node (2+ vCPU recommended)
+- Memory: Minimum 512Mi available per node
+- Storage: 1Gi free disk space for logs and temporary files
+
+Check kernel version on nodes:
+
+```bash
+kubectl get nodes -o wide
+# Or check on a specific node
+kubectl debug node/NODE_NAME -it --image=busybox -- chroot /host uname -r
+```
+
+Verify eBPF support:
+
+```bash
+kubectl debug node/NODE_NAME -it --image=ubuntu -- chroot /host bash -c "ls /sys/kernel/btf/vmlinux"
+```
+
+</StepItem>
+
+<StepItem title="Required Tools">
+
+**Local Machine Requirements:**
+
+- **kubectl:** Kubernetes command-line tool
+- **Helm 3.8+:** For Helm-based installation
+- **Git:** To clone the repository (optional)
+
+Install kubectl:
+
+```bash
+# Linux
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+# macOS
+brew install kubectl
+
+# Windows
+choco install kubernetes-cli
+```
+
+Install Helm:
+
+```bash
+# Linux/macOS
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# macOS (alternative)
+brew install helm
+
+# Windows
+choco install kubernetes-helm
+```
+
+Verify installations:
+
+```bash
+kubectl version --client
+helm version
+```
+
+</StepItem>
+
+<StepItem title="Network Requirements">
+
+**Cluster Networking:**
+
+- Container Network Interface (CNI) plugin installed
+- Network policies support (recommended for security)
+- Egress access to container registries
+
+**Firewall/Security Groups:**
+
+- Allow inbound traffic on port 7470 (metrics endpoint)
+- Allow inbound traffic on port 8080 (health checks)
+- Outbound HTTPS access for pulling container images
+
+**Service Mesh Compatibility:**
+
+- Istio: Supported with privileged containers
+- Linkerd: Supported with proper annotations
+- Consul Connect: Supported with CNI configuration
+
+</StepItem>
+
+<StepItem title="Container Runtime">
+
+**Supported Container Runtimes:**
+
+- **containerd:** Fully supported (recommended)
+- **CRI-O:** Fully supported
+- **Docker Engine:** Supported (deprecated in newer K8s versions)
+
+Check container runtime:
+
+```bash
+kubectl get nodes -o wide
+# Look at CONTAINER-RUNTIME column
+```
+
+</StepItem>
+
+<StepItem title="Required Knowledge">
+
+**Kubernetes Concepts:**
+
+- Understanding of DaemonSets, ConfigMaps, and Services
+- Basic knowledge of RBAC and ServiceAccounts
+- Familiarity with kubectl commands
+
+**eBPF Basics:**
+
+- Understanding that eBPF programs run in kernel space
+- Knowledge of privileged container requirements
+- Awareness of security implications
+
+**Monitoring Stack:**
+
+- Basic understanding of Prometheus metrics
+- Familiarity with Grafana dashboards (optional)
+- Knowledge of observability concepts
+
+</StepItem>
+</Step>
+
+
+## If you encounter issues:
+
+- Find help on our [Documentation Site](https://ai.staging.aurva.io)
+- Raise an issue on our [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- Join our [Community Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-24000000000000000000000000000000)
+- Email Support: support@aurva.io
+
+---
+
+**Note:** The AI Observability Stack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
+
+[![Deploy to Kubernetes](https://img.shields.io/badge/Deploy%20to-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes)](https://github.com/aurva-io/ai-observability-stack)
+
