@@ -315,7 +315,8 @@ span.katex-html {
 
 /* Animated background elements */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   50% {
@@ -342,7 +343,8 @@ span.katex-html {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.1;
     transform: scale(1);
   }
@@ -365,7 +367,7 @@ span.katex-html {
 
 .floating-shape {
   position: absolute;
-  opacity: 0.10;
+  opacity: 0.1;
   animation-duration: 20s;
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
@@ -462,7 +464,7 @@ span.katex-html {
 
 /* Dark mode adjustments */
 .dark .floating-shape {
-  opacity: 0.40;
+  opacity: 0.4;
 }
 
 .dark .floating-shape:nth-child(1) {

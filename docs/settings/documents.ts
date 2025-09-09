@@ -10,12 +10,12 @@ export const Documents: Paths[] = [
         title: "Why we built AIOStack",
         href: "/overview",
       },
-      { 
+      {
         title: "Architecture",
         href: "/architecture",
       },
     ],
-  },    
+  },
   {
     title: "Installation",
     href: "/installation",
@@ -42,6 +42,4 @@ export const Documents: Paths[] = [
       },
     ],
   },
-
-
 ]
