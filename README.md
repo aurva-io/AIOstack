@@ -1,192 +1,203 @@
-# AI Observability Stack
+# AI Observability Stack (AIOStack)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-blue.svg)](https://kubernetes.io/)
+[![eBPF](https://img.shields.io/badge/eBPF-Powered-green.svg)](https://ebpf.io/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/aurva-io/ai-observability-stack)](https://goreportcard.com/report/github.com/aurva-io/ai-observability-stack)
 
-> **Real-time tracing and observability for AI agents, LLM calls, and ML libraries in Kubernetes environments using eBPF**
+> **🔍 See AI that doesn't want to be seen**  
+> Real-time discovery and monitoring of AI/ML workloads in Kubernetes using eBPF - no code changes required.
 
-AI Observability Stack is an open-source observability tool that automatically discovers, traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF technology, it provides deep visibility into LLM API calls, ML library usage, and AI agent behavior without requiring code changes or application restarts.
 
-## 🚀 Features
+## 🎯 What is AIOStack?
 
-- **Zero-instrumentation tracing**: Automatic detection of AI/ML libraries and LLM calls by workloads using eBPF
-- **Kubernetes-native**: One click deploy as DaemonSet with RBAC and security best practices. One click uninstall.
-- **Multi-runtime support**: Python, Node.js, Java, and Go applications
-- **LLM provider coverage**: OpenAI, Anthropic, Cohere, Hugging Face, and more
-- **ML library detection**: PyTorch, TensorFlow, scikit-learn, transformers, langchain
-- **Real-time dashboards**: Built-in Grafana dashboards and Prometheus/VictoriaMetrics metrics
-- **Real-Time Shadow AI Detection**: Identify unsanctioned AI tool usage and LLM calls from unexpected sources
-- **Agent workflow visualization**: Trace multi-step AI agent executions
+AIOStack automatically discovers and monitors **every AI/ML application** running in your Kubernetes clusters - including the ones your security team doesn't know about.
 
-## 🏗️ Architecture
+**The Problem:** Developers are deploying AI applications faster than ops teams can track them. Traditional monitoring tools miss AI traffic because they don't understand ML protocols or require manual instrumentation.
 
-// TODO: Add architecture diagram
-
-## 📋 Prerequisites
-
-- Kubernetes 1.24+ with eBPF support ( EKS, GKE, AKS, etc. )
-- Linux kernel 4.18+ (5.4+ recommended)
-- Helm 3.0+ (for installation)
-- Cluster admin privileges for eBPF programs
-
-## ⚡ Quick Start
-
-### Install with Helm
+**Our Solution:** eBPF-powered observability that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, automatically classified and monitored in real-time.
 
 ```bash
-# Add the AI Observability Stack Helm repository
-helm repo add av-ai-observability-stack https://github.com/aurva-io/ai-observability-stack/helm-charts
+# Before AIOStack
+$ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+web-server-abc123       1/1     Running   0          2d
+api-backend-def456      1/1     Running   0          1d
+data-processor-ghi789   1/1     Running   0          3h
 
-# Update repository
-helm repo update
-
-# Install AI Observability Stack
-helm install av-ai-observability-stack av-ai-observability-stack/av-ai-observability-stack \
-  --namespace ai-tracing \
-  --create-namespace \
-  --set config.enablePrometheus=true
+# After AIOStack (30 seconds later)
+✅ 3 containers discovered
+🤖 2 AI applications detected
+⚠️  1 shadow AI tool found (data-processor using OpenAI)
+📊 147 LLM API calls in last hour
+💰 $23.45 estimated AI spend today // coming soon
 ```
 
-### Install with kubectl
+## 🚀 Key Features
 
+### 🕵️ **Zero-Touch Discovery**
+- Automatically detects AI/ML applications without code changes
+- Identifies shadow AI tools and unauthorized LLM usage
+- Maps AI data flows across your entire infrastructure
+
+### 🧠 **AI-Aware Monitoring**
+- **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
+- **ML Libraries**: PyTorch, TensorFlow, scikit-learn, transformers, LangChain, llamaindex
+- **AI Frameworks**: MLflow, Weights & Biases, Ray, Kubeflow
+- **Runtime Support**: Python, Node.js, Java, Go applications
+
+### 📊 **Rich Observability**
+- Real-time dashboards with all the features you need to monitor your AI infrastructure
+- AI agent workflow visualization and tracing
+- Cost estimation and usage analytics
+- Shadow AI detection
+- Data flow monitoring
+- PII/sensitive data detection
+- Unauthorized model downloads
+- Zero sensitive data storage - metadata only
+
+### 🔒 **Security & Compliance**
+- Detects AI data exfiltration attempts
+- Monitors for PII/sensitive data in AI calls
+- Tracks unauthorized models running in your cluster
+- Zero sensitive data storage - metadata only
+
+## 🏃‍♂️ Quick Start
+
+### Prerequisites
+- Kubernetes 1.24+ with eBPF support
+- Linux kernel 4.18+ (5.4+ recommended)
+- Cluster admin privileges
+
+### One-Command Installation
 ```bash
-# Clone the repository
-git clone https://github.com/aurva-io/ai-observability-stack.git
-cd ai-observability-stack
-
-# Deploy to Kubernetes
-kubectl apply -f manifests/
+# Install with Helm
+helm repo add aiostack https://charts.aiostack.io
+helm install aiostack aiostack/ai-observability-stack
 ```
 
 ### Verify Installation
-
 ```bash
-# Check if pods are running
-kubectl get pods -n av-ai-observability-stack
+# Check if AIOStack pods are running
+kubectl get pods -n aiostack
 
-# View traces
-kubectl port-forward -n av-ai-observability-stack svc/av-ai-observability-stack-ui 7470:7470
-# Open http://localhost:7470/metrics in your browser
+# Port-forward to access the UI
+kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
+
+# Open http://localhost:3000 in your browser
+```
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Applications  │───▶│   eBPF Agents    │───▶│  Data Pipeline  │
+│                 │    │                  │    │                 │
+│ • Python ML     │    │ • Syscall hooks  │    │ • Classification│
+│ • Node.js AI    │    │ • Network trace  │    │ • Enrichment    │
+│ • Java services │    │ • Process trace  │    │ • Aggregation   │
+│ • Go binaries   │    │ • File I/O trace │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                                        │
+┌─────────────────┐    ┌──────────────────┐             │
+│   Dashboards    │◀───│   ClickHouse     │◀────────────┘
+│                 │    │                  │
+│ • AIOStack UI   │    │ • Time-series DB │
+│ • Web Console   │    │ • 7-30 day       │
+│ • REST APIs     │    │   retention      │
+└─────────────────┘    └──────────────────┘
 ```
 
 ## 🔧 Configuration
 
-The AI Observability Stack can be configured via ConfigMap or Helm values:
+Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
 
-```yaml
-# config.yaml
-tracing:
-  sampling_rate: 1.0
-  buffer_size: "64MB"
+## 📈 Monitoring & Dashboards
 
-providers:
-  openai:
-    enabled: true
-  anthropic:
-    enabled: true
-  huggingface:
-    enabled: true
+### Built-in Dashboards
+- **AI Application Discovery**: Live inventory of all AI/ML workloads
+- **LLM API Analytics**: Usage patterns, latency, error rates by provider
+- **Security Overview**: Shadow AI detection, data flow monitoring
+- **Cost Tracking**: Estimated spend by application and team (coming soon)
+- **Performance Metrics**: Resource utilization for AI workloads (coming soon)
 
-libraries:
-  - pytorch
-  - tensorflow
-  - scikit-learn
-  - transformers
-  - langchain
-  - llamaindex
 
-# Metrics can be exported to Prometheus, VictoriaMetrics, or Grafana
-# Only tracks agent performance, no sensitive data is stored.
-metrics:
-  enabled: true
-```
 
-## 📊 Monitoring & Dashboards
+## 🤝 Contributing
 
-### Prometheus Metrics
+We welcome contributions! Here's how to get started:
 
-The AI Observability Stack exposes the following metrics:
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Write** tests for your changes
+4. **Ensure** all tests pass (`make test`)
+5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+6. **Push** to the branch (`git push origin feature/amazing-feature`)
+7. **Open** a Pull Request
 
-- `ai_llm_requests_total` - Total LLM API requests
-- `ai_llm_request_duration_seconds` - LLM request latency
-- `ai_llm_tokens_used_total` - Token consumption by provider
-- `ai_llm_costs_usd_total` - Estimated costs in USD
-- `ai_ml_library_usage_total` - ML library function calls
-- `ai_agent_workflow_steps_total` - Agent workflow step count
+### Development Guidelines
+- Follow [Go best practices](https://github.com/golang/go/wiki/CodeReviewComments)
+- Update documentation for new features
+- eBPF changes require kernel compatibility testing
 
-## 🛠️ Development
+## 🔒 Security
 
-### Building from Source
+### Security Model
+- eBPF programs run with minimal required capabilities
+- No application data persistence (metadata only)
+- TLS traffic decoded at syscall level (no key access needed)
+- Supports Kubernetes security contexts and Pod Security Standards
 
-```bash
-# Clone repository
-git clone https://github.com/aurva-io/ai-observability-stack.git
-cd ai-observability-stack
+### Reporting Security Issues
+Please report security vulnerabilities to security@aurva.io
 
-# Build eBPF programs
-make build-ebpf
+### Security Audit
+Audit results will be published upon completion.
 
-# Build cross-compiled Go binary
-make build
+## 📚 Documentation
 
-# Build Docker image
-make docker-build
-```
+- **[Installation Guide](https://ai.staging.aurva.io/docs/installation)** - Complete setup walkthrough
+- **[Configuration Reference](https://ai.staging.aurva.io/docs/installation/steps)** - All configuration options
+- **[API Documentation](https://ai.staging.aurva.io/docs/api)** - REST API reference
+- **[Troubleshooting](https://ai.staging.aurva.io/docs/troubleshooting)** - Common issues and solutions
+- **[eBPF Deep Dive](https://ai.staging.aurva.io/docs/ebpf)** - Technical implementation details
 
-### Running Locally
 
-```bash
-# Run tests
-make test
+## 💬 Community & Support
 
-# Run locally (requires sudo for eBPF) and lima VM for arm64 Macs
-sudo ./bin/av-ai-observability-stack --config config.yaml
-```
+- **📖 Documentation**: https://ai.staging.aurva.io
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- **💡 Feature Requests**: [GitHub Discussions](https://github.com/aurva-io/ai-observability-stack/discussions)
+- **💬 Community Chat**: [Join our Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-xyz)
+- **📧 Enterprise Support**: enterprise@aurva.io
 
-### Contributing
+## 📊 Supported Environments
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
-
-## 📖 Documentation
-
-- **[Installation Guide](https://github.com/aurva-io/ai-observability-stack/blob/main/docs/installation.md)** - Detailed setup instructions
-- **[Troubleshooting](https://github.com/aurva-io/ai-observability-stack/blob/main/docs/troubleshooting.md)** - Common issues and solutions
-
-## 🔐 Security Considerations
-
-- eBPF programs run in kernel space with appropriate capabilities
-- No application data is stored, only metadata and metrics
-- TLS/SSL traffic is decoded at the syscall level
-- Supports network policies and Pod Security Standards
-- API keys and sensitive data are never logged
-- We are working on a security audit and will release a security report soon
-- We support EKS, GKE for now, other cloud providers coming soon and best effort
-
-## 🤝 Community & Support
-
-- **Documentation**: https://github.com/aurva-io/ai-observability-stack/blob/main/docs/README.md
-- **Issues**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/aurva-io/ai-observability-stack/discussions)
-- **Slack**: [Join our community](https://join.slack.com/t/av-ai-observability/shared_invite/zt-24000000000000000000000000000000)
+| Platform | Support Level | Notes |
+|----------|---------------|-------|
+| EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
+| GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
+| AKS (Azure) | 🟡 Beta | Coming soon |
+| Kind/Minikube | ✅ Full | Development only |
+| Bare Metal | ✅ Full | Kernel 5.4+ recommended |
 
 ## 📝 License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- [eBPF community](https://ebpf.io/) for the foundational technology
+- [eBPF Foundation](https://ebpf.io/) for the incredible technology
 - [Kubernetes SIG Instrumentation](https://github.com/kubernetes/community/tree/master/sig-instrumentation) for observability standards
-- Contributors and early adopters who helped shape this project
+- Our amazing [contributors](https://github.com/aurva-io/ai-observability-stack/graphs/contributors)
+- Early adopters who provided invaluable feedback
 
 ## ⭐ Star History
 
-### [![Star History Chart](https://api.star-history.com/svg?repos=aurva-io/ai-observability-stack&type=Date)](https://star-history.com/#aurva-io/ai-observability-stack&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=aurva-io/ai-observability-stack&type=Date)](https://star-history.com/#aurva-io/ai-observability-stack&Date)
 
-**Made with ❤️ by the Aurva**
+---
+
+**Made with ❤️ by the [Aurva Team](https://aurva.io)**
+
+*"See what others can't. Secure what others miss."*

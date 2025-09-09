@@ -7,7 +7,7 @@ export const Documents: Paths[] = [
     href: "/home",
     items: [
       {
-        title: "Overview",
+        title: "Why we built AIOStack",
         href: "/overview",
       },
       { 

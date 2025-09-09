@@ -50,7 +50,7 @@ export default function NotFound() {
             Return Home &crarr;
           </Link>
           <Link
-            href="/docs"
+            href="/docs/home"
             className={buttonVariants({ variant: "outline", className: "px-6", size: "lg" })}
           >
             Browse Docs

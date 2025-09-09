@@ -1,9 +1,65 @@
 ---
-title: Overview
-description: Overview of the AI Observability Stack.
+title: Why we built AIOStack
+description: A sneak peak into the why we built this at Aurva
 keywords: ["overview", "kubernetes", "nextjs", "documents"]
 ---
 
-> A deployable, open-core AI observability/DSPM stack that discovers AI apps in Kubernetes, traces their calls to LLMs/providers at the network and SDK layers, classifies/tagging sensitive data, and provides insights.
+### The Security Team's Nightmare
 
+At 3 AM, your phone buzzes. The headline reads: *"Major Enterprise Exposed Customer Data Through AI Chatbot Integration."*
 
+You think: *"That could never be us. We have policies."*
+
+But do you know about the new Chat Interface your summer interns just built? The one that's been sending code snippets (with API keys) to OpenAI for autocompletion?
+
+Do you know about the "image optimization service" that's actually running Stable Diffusion on customer photos?
+
+Do you know about the CI/CD pipeline that queries ChatGPT to write deployment scripts based on your infrastructure configs?
+
+**Your policies don't protect against threats you can't see.**
+
+---
+
+### Why Traditional Monitoring Fails
+
+Application monitoring tools like Datadog and New Relic see what developers want them to see. They require instrumentation. They depend on cooperation. They trust what they're told.
+
+**But AI doesn't announce itself.**
+
+A Python script importing TensorFlow looks identical to one importing requests. An OpenAI API call masquerades as any other HTTPS request. A local ML model disguises itself as a web service.
+
+**The most dangerous AI in your infrastructure is the AI that doesn't want to be found.**
+
+---
+
+### At Last, AI Observability That Actually Observes
+
+We built AIOStack because we were tired of security tools that couldn't secure what they couldn't see.
+
+Our eBPF agents work at the kernel level - deeper than applications, smarter than network monitoring, more thorough than any security scanner you've ever used.
+
+We don't ask permission. We don't require cooperation. We don't trust what we're told.
+
+**We see what is, not what's reported.**
+
+Every TensorFlow import. Every Hugging Face download. Every ChatGPT conversation. Every local model inference. Every AI library call.
+
+In real-time. Across every container. On every node. Without changing a single line of application code.
+
+---
+
+### Your AI Attack Surface Is Larger Than You Think
+
+The average enterprise has more AI applications than their security team knows about.
+
+The average security incident isn't detected until it's too late.
+
+---
+
+### Don't Be Tomorrow's Headline
+
+Every day you operate blind to your AI landscape, you're one API call away from a breach that could have been prevented.
+
+The question isn't whether your organization has shadow AI.
+
+**The question is: do you want to find it before the headlines do?**

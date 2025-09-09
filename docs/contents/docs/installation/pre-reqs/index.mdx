@@ -114,7 +114,7 @@ helm version
 
 </StepItem>
 
-<StepItem title="Network Requirements">
+{/* <StepItem title="Network Requirements">
 
 **Cluster Networking:**
 
@@ -134,14 +134,12 @@ helm version
 - Linkerd: Supported with proper annotations
 - Consul Connect: Supported with CNI configuration
 
-</StepItem>
+</StepItem> */}
 
 <StepItem title="Container Runtime">
 
 **Supported Container Runtimes:**
-
 - **containerd:** Fully supported (recommended)
-- **CRI-O:** Fully supported
 - **Docker Engine:** Supported (deprecated in newer K8s versions)
 
 Check container runtime:
@@ -164,18 +162,13 @@ kubectl get nodes -o wide
 **eBPF Basics:**
 
 - Understanding that eBPF programs run in kernel space
-- Knowledge of privileged container requirements
-- Awareness of security implications
 
-**Monitoring Stack:**
-
-- Basic understanding of Prometheus metrics
-- Familiarity with Grafana dashboards (optional)
-- Knowledge of observability concepts
+**That's it! You're ready to install AIOStack.**
 
 </StepItem>
 </Step>
 
+**Don't worry if you are new to Kubernetes, our steps are designed to be easy to follow :)**
 
 ## If you encounter issues:
 
