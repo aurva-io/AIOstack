@@ -1,0 +1,55 @@
+---
+title: Security and Vulnerability Management
+description: Our commitment to secure and safe images
+keywords: ["overview", "kubernetes", "nextjs", "documents"]
+---
+
+Security is a fundamental pillar of our platform. We take a proactive approach to identifying, assessing, and mitigating potential vulnerabilities across our entire infrastructure. Our commitment extends from secure development practices to comprehensive container image scanning and continuous monitoring.
+
+## Static Application Security Testing (SAST)
+
+We implement comprehensive Static Application Security Testing across all our applications and container images. Our security pipeline includes:
+
+### Automated Vulnerability Scanning
+
+All container images undergo rigorous security scanning using **Trivy**, an industry-leading vulnerability scanner that detects:
+
+- Operating system vulnerabilities
+- Language-specific package vulnerabilities  
+- Infrastructure as Code (IaC) security issues
+- Container image misconfigurations
+- License compliance issues
+
+### Scanning Frequency
+
+- **Pre-deployment**: All images are scanned before being pushed to production
+- **Continuous monitoring**: Regular scans of deployed images to detect newly discovered vulnerabilities
+- **Dependency updates**: Automated scanning triggered by dependency changes
+
+## Container Image Security Reports
+
+Below you'll find links to our latest security scan reports and container image information:
+
+### Production Images
+
+| Service | Image Repository | Latest Scan Report | Vulnerability Status |
+|---------|------------------|-------------------|---------------------|
+| Observer | `public.ecr.aws/l5a6x1y4/aiostack-observer:latest` | [View Report](#) | ✅ No Critical Issues |
+| Commander| `public.ecr.aws/l5a6x1y4/aiostack-commander:latest` | [View Report](#) | ✅ No Critical Issues |
+
+![Banner](/images/trivy_commander.png "Documents")
+
+![Banner2](/images/trivy_observer.png "Documents")
+
+## Transparency and Updates
+
+This page is updated whenever new security scans are completed.
+
+For questions about our security practices or to request additional information, please contact our security team.
+
+---
+
+*This documentation reflects our ongoing commitment to maintaining the highest security standards. We believe in transparency and continuously improving our security posture.*
+
+
+**Last updated: `2025-Sep-11`**

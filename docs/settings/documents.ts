@@ -14,6 +14,10 @@ export const Documents: Paths[] = [
         title: "Architecture",
         href: "/architecture",
       },
+      {
+        title: "Security",
+        href: "/security",
+      },
     ],
   },
   {

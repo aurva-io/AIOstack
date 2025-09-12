@@ -26,30 +26,12 @@ observer:
       value: "aiostack-commander.aiostack-test.svc.cluster.local:8085"
     - name: IS_LOCAL_ENV
       value: "false"
-    - name: MONITORING_ENABLED
-      value: "false"
     - name: TRACE_SSL
       value: "true"
     - name: PROCFS_PATH
       value: "/proc"
-    - name: TRACE_PSQL
-      value: "false"
-    - name: TRACE_SQLSERVER
-      value: "false"
-    - name: TRACE_MYSQL
-      value: "false"
-    - name: TRACE_EGRESS
-      value: "true"
-    - name: TRACE_GO_TLS
-      value: "true"
-    - name: TRACE_ML_SERVICES
-      value: "true"
-    - name: TRACE_HTTP
-      value: "true"
     - name: TRACE_INTERNAL_SVC
       value: "true"
-    - name: INTERNAL_SVC_SAMPLE_INTERVAL
-      value: "0s"
     - name: LOGS_TTL
       value: "30s"
     - name: AGGREGATOR_MAX_CONNECTIONS
@@ -62,8 +44,6 @@ observer:
       value: "true"
     - name: ENABLE_PROFILING
       value: "false"
-    - name: TRACE_AI_PROTOCOL
-      value: "true"
     - name: INTERNAL_SVC_HTTP_SAMPLE_INTERVAL
       value: "0s"
     - name: CONNECTION_CHANNEL_SIZE
@@ -71,14 +51,9 @@ observer:
     - name: SKIP_NAMESPACES
       value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
   serviceAccount:
-    # -- Create a service account for the observer
     create: true
-    # -- Service account name
     name: aiostack-observer-sa
-    # -- Annotations applied to created service account
     annotations:
-      # eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/<role-name>
-    # -- Labels applied to created service account
     labels: {}
 
 commander:
@@ -117,14 +92,9 @@ commander:
     - name: DB_PORT
       value: "9000"
   serviceAccount:
-    # -- Create a service account for the commander
     create: true
-    # -- Service account name
     name: aiostack-commander-sa
-    # -- Annotations applied to created service account
     annotations:
-      # eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/<role-name>
-    # -- Labels applied to created service account
     labels: {}
   nodeSelector: {}
   tolerations: []

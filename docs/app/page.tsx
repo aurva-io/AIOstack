@@ -29,7 +29,7 @@ export default function Home() {
           open-core!
         </p>
 
-        <div className="mb-8 flex flex-wrap gap-4 text-sm">
+        <div className="mb-8 flex  flex-wrap gap-4 text-sm">
           <div className="flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 dark:bg-blue-900">
             <span className="h-2 w-2 rounded-full bg-blue-500"></span>
             <span>eBPF Powered</span>

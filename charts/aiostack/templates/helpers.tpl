@@ -101,9 +101,7 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{/*
-Define the name of the aurva-controller/application.
-*/}}
+{{/**/}}
 {{- define "application.version" -}}
 {{ regexReplaceAll "[^a-zA-Z0-9_\\.\\-]" .Chart.Version "-" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
