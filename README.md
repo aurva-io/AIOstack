@@ -115,12 +115,9 @@ Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to
 ## 📈 Monitoring & Dashboards
 
 ### Built-in Dashboards
-- **AI Application Discovery**: Live inventory of all AI/ML workloads
-- **LLM API Analytics**: Usage patterns, latency, error rates by provider
-- **Security Overview**: Shadow AI detection, data flow monitoring
-- **Cost Tracking**: Estimated spend by application and team (coming soon)
-- **Performance Metrics**: Resource utilization for AI workloads (coming soon)
-
+- **AI Application Discovery**: Live inventory of all AI/ML workloads.
+- **LLM API Analytics**: Track services calling LLM APIs, with request metadata and provider visibility (OpenAI, Anthropic, etc.).
+- **Security Overview**: Shadow AI detection, data flow monitoring.
 
 
 ## 🤝 Contributing
@@ -134,11 +131,6 @@ We welcome contributions! Here's how to get started:
 5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
 6. **Push** to the branch (`git push origin feature/amazing-feature`)
 7. **Open** a Pull Request
-
-### Development Guidelines
-- Follow [Go best practices](https://github.com/golang/go/wiki/CodeReviewComments)
-- Update documentation for new features
-- eBPF changes require kernel compatibility testing
 
 ## 🔒 Security
 
