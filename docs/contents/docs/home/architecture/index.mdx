@@ -5,3 +5,28 @@ keywords: ["architecture", "kubernetes", "nextjs", "documents"]
 ---
 
 ![](/images/arch.png)
+
+## **Observer: The Foundation of AI Visibility**
+
+The **Observer** is a lightweight agent that runs on every node in the Kubernetes cluster as a **DaemonSet**. Its role is to provide continuous, system-wide visibility into AI/ML activity without requiring developers to modify their applications.
+
+At its core, the Observer uses **eBPF (extended Berkeley Packet Filter)** — a Linux kernel technology that allows safe, efficient monitoring of low-level system events such as file access, network communication, and process behavior. Unlike traditional monitoring approaches that depend on application-level instrumentation, eBPF enables us to see what processes are actually doing in real time, directly from the kernel.
+
+Because the Observer runs at this level, it has several key advantages:
+
+* **Unbiased visibility**: It observes what’s really happening on the node, not just what applications report.
+* **Zero friction**: It requires no code changes, no libraries, no developer intervention.
+* **Comprehensive coverage**: Every container and process is monitored automatically, whether it’s training models, running inference, or calling external APIs.
+* **Real-time detection**: Observations are captured as they occur, allowing downstream systems to enrich traffic and build an accurate inventory of AI usage.
+
+---
+
+### **What the Observer Does**
+
+* **Monitors processes**: Tracks which workloads are engaging in AI/ML activities (training, inference, agent communication, etc.).
+* **Connects system events to AI context**: Correlates local activities (like loading frameworks or models) with outbound communications (such as API calls to OpenAI or Hugging Face).
+* **Feeds structured intelligence upstream**: Sends enriched, AI-aware telemetry to the Commander and ClickHouse for storage, querying, and visualization.
+
+---
+
+👉 In short, the Observer acts as the **eyes and ears of the AI observability stack**. By leveraging eBPF and running as a DaemonSet, it ensures **full coverage across the cluster**, making invisible AI workloads visible — all in real time, and without requiring trust in self-reported application data.
