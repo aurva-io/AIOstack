@@ -498,3 +498,36 @@ span.katex-html {
 .dark .floating-shape:nth-child(8) {
   background: linear-gradient(45deg, #555, #888);
 }
+
+/* Logo cube rotation animations */
+@keyframes cube-rotate {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.animate-cube-rotate {
+  animation: cube-rotate 6s ease-in-out infinite;
+}
