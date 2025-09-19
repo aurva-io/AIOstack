@@ -13,7 +13,7 @@
 
 **AIOStack** brings AI activity under runtime security oversight inside your environment. It discovers AI components, monitors model/API calls and model downloads, flags sensitive-data exposure and risky egress, ties actions to accountable owners, and produces evidence for investigations, **without code changes** and **running in-cluster**.
 
-### The Problem:
+## The Problem:
 Teams spin up and wire AI components independently to move fast. The result isn’t malice; it’s pace and decentralization. But security and platform owners are left without an authoritative picture of **what AI exists, what it’s doing, what data it touches, and who is accountable.**
 
 Unknown and unmanaged AI creates real gaps: model calls to third-party LLMs that no one reviews, quiet model downloads into sensitive environments, agents taking actions beyond intent, and data flowing across boundaries without a clear record. 
@@ -27,13 +27,15 @@ When something goes wrong, basic questions - **who did what, with which model, a
 - **Sensitive data exposure:** AI components access or move data beyond policy, with no runtime proof to confirm or contain it.
 - **No accountable owner:** Activities aren’t tied back to a clear workload or service identity.
 
-**Our Solution:** eBPF-powered observability that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, automatically classified and monitored in real-time.
+## How Aurva AIOstack solves this:
+
+**eBPF**-powered visibility that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, every data access; automatically classified and monitored in real-time.
 
 ```bash
-# After AIOStack (30 seconds later)
+# After AIOStack (60 seconds later)
 ✅ 3 containers discovered
 🤖 2 AI applications detected
-⚠️  1 shadow AI tool found (data-processor using OpenAI)
+⚠️ 1 shadow AI tool found (data-processor using OpenAI)
 📊 147 LLM API calls in last hour
 💰 $23.45 estimated AI spend today // coming soon
 ```
@@ -45,18 +47,18 @@ When something goes wrong, basic questions - **who did what, with which model, a
 
 ## Key Features
 
-### 🕵️ **Zero-Touch Discovery**
+#### 🕵️ **Zero-Touch Discovery**
 - Automatically detects AI/ML applications without code changes
 - Identifies shadow AI tools and unauthorized LLM usage
 - Maps AI data flows across your entire infrastructure
 
-### 🧠 **AI-Aware Monitoring**
+#### 🧠 **AI-Aware Monitoring**
 - **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
 - **ML Libraries**: PyTorch, TensorFlow, scikit-learn, transformers, LangChain, llamaindex
 - **AI Frameworks**: MLflow, Weights & Biases, Ray, Kubeflow
 - **Runtime Support**: Python, Node.js, Java, Go applications
 
-### 📊 **Rich Observability**
+#### 📊 **Rich Observability**
 - Real-time dashboards with all the features you need to monitor your AI infrastructure
 - AI agent workflow visualization and tracing
 - Cost estimation and usage analytics
@@ -66,7 +68,7 @@ When something goes wrong, basic questions - **who did what, with which model, a
 - Unauthorized model downloads
 - Zero sensitive data storage - metadata only
 
-### 🔒 **Security & Compliance**
+#### 🔒 **Security & Compliance**
 - Detects AI data exfiltration attempts
 - Monitors for PII/sensitive data in AI calls
 - Tracks unauthorized models running in your cluster
@@ -98,7 +100,7 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 # Open http://localhost:3000 in your browser
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -123,7 +125,7 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 
 Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
 
-## 📈 Monitoring & Dashboards
+## Monitoring & Dashboards
 
 ### Built-in Dashboards
 - **AI Application Discovery**: Live inventory of all AI/ML workloads.
@@ -174,7 +176,7 @@ Audit results will be published upon completion.
 - **💬 Community Chat**: [Join our Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-xyz)
 - **📧 Enterprise Support**: enterprise@aurva.io
 
-## 📊 Supported Environments
+## Supported Environments
 
 | Platform | Support Level | Notes |
 |----------|---------------|-------|
@@ -184,11 +186,11 @@ Audit results will be published upon completion.
 | Kind/Minikube | ✅ Full | Development only |
 | Bare Metal | ✅ Full | Kernel 5.4+ recommended |
 
-## 📝 License
+## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [eBPF Foundation](https://ebpf.io/) for the incredible technology
 - [Kubernetes SIG Instrumentation](https://github.com/kubernetes/community/tree/master/sig-instrumentation) for observability standards
