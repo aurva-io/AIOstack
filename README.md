@@ -1,4 +1,4 @@
-# AI Observability Stack (AIOStack)
+# Aurva AIOStack
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-blue.svg)](https://kubernetes.io/)
@@ -9,22 +9,27 @@
 > Real-time discovery and monitoring of AI/ML workloads in Kubernetes using eBPF - no code changes required.
 
 
-## 🎯 What is AIOStack?
+## What is AIOStack?
 
-AIOStack automatically discovers and monitors **every AI/ML application** running in your Kubernetes clusters - including the ones your security team doesn't know about.
+**AIOStack** brings AI activity under runtime security oversight inside your environment. It discovers AI components, monitors model/API calls and model downloads, flags sensitive-data exposure and risky egress, ties actions to accountable owners, and produces evidence for investigations, **without code changes** and **running in-cluster**.
 
-**The Problem:** Developers are deploying AI applications faster than ops teams can track them. Traditional monitoring tools miss AI traffic because they don't understand ML protocols or require manual instrumentation.
+### The Problem:
+Teams spin up and wire AI components independently to move fast. The result isn’t malice; it’s pace and decentralization. But security and platform owners are left without an authoritative picture of **what AI exists, what it’s doing, what data it touches, and who is accountable.**
+
+Unknown and unmanaged AI creates real gaps: model calls to third-party LLMs that no one reviews, quiet model downloads into sensitive environments, agents taking actions beyond intent, and data flowing across boundaries without a clear record. 
+
+When something goes wrong, basic questions - **who did what, with which model, and where did the data go?** - take hours, not minutes.
+
+- **Unknown inventory:** AI apps, agents, MCP servers/clients, and automations appear across teams with no central register.
+- **Opaque usage & flow:** Model/API calls, volumes, and data movement aren’t visible in a way security can act on quickly.
+- **Unreviewed egress & spend:** Third-party LLM interactions occur without consistent oversight or audit evidence, creating risk and driving up LLM costs.
+- **Autonomous actions:** Agents execute and propagate access on their own, increasing blast radius when intent drifts.
+- **Sensitive data exposure:** AI components access or move data beyond policy, with no runtime proof to confirm or contain it.
+- **No accountable owner:** Activities aren’t tied back to a clear workload or service identity.
 
 **Our Solution:** eBPF-powered observability that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, automatically classified and monitored in real-time.
 
 ```bash
-# Before AIOStack
-$ kubectl get pods
-NAME                    READY   STATUS    RESTARTS   AGE
-web-server-abc123       1/1     Running   0          2d
-api-backend-def456      1/1     Running   0          1d
-data-processor-ghi789   1/1     Running   0          3h
-
 # After AIOStack (30 seconds later)
 ✅ 3 containers discovered
 🤖 2 AI applications detected
@@ -32,8 +37,13 @@ data-processor-ghi789   1/1     Running   0          3h
 📊 147 LLM API calls in last hour
 💰 $23.45 estimated AI spend today // coming soon
 ```
+#### Defaults that matter
 
-## 🚀 Key Features
+- Runs in-cluster; no sensitive data leaves the environment
+- Metadata-only by default; payload capture off; redaction on
+- No application code changes required
+
+## Key Features
 
 ### 🕵️ **Zero-Touch Discovery**
 - Automatically detects AI/ML applications without code changes
@@ -62,12 +72,13 @@ data-processor-ghi789   1/1     Running   0          3h
 - Tracks unauthorized models running in your cluster
 - Zero sensitive data storage - metadata only
 
-## 🏃‍♂️ Quick Start
+## Quick Start
 
 ### Prerequisites
-- Kubernetes 1.24+ with eBPF support
+- Kubernetes 1.24+ 
 - Linux kernel 4.18+ (5.4+ recommended)
-- Cluster admin privileges
+- Cluster admin privileges (DaemonSet with eBPF capabilities)
+- BTF-enabled kernel
 
 ### One-Command Installation
 ```bash
