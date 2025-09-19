@@ -13,6 +13,12 @@
 
 **AIOStack** brings AI activity under runtime security oversight inside your environment. It discovers AI components, monitors model/API calls and model downloads, flags sensitive-data exposure and risky egress, ties actions to accountable owners, and produces evidence for investigations, **without code changes** and **running in-cluster**.
 
+- Discover AI workloads across namespaces and clusters, including "Shadow" AI and "Zombie” AI.
+- Detect runtime AI surfaces: MCP servers, MCP clients (local and server), AI agents, AI services, and AI endpoints.
+- Monitor model/API calls and model downloads with endpoint/provider, status, pricing, volume, and timing.
+- Detect sensitive-data exposure (metadata-only by default).
+- Attribute every action to Pods, Deployments, and ServiceAccounts for accountable ownership.
+
 ## The Problem:
 Teams spin up and wire AI components independently to move fast. The result isn’t malice; it’s pace and decentralization. But security and platform owners are left without an authoritative picture of **what AI exists, what it’s doing, what data it touches, and who is accountable.**
 
@@ -82,6 +88,13 @@ When something goes wrong, basic questions - **who did what, with which model, a
 - Cluster admin privileges (DaemonSet with eBPF capabilities)
 - BTF-enabled kernel
 
+### Sanity checks:
+```
+uname -r
+bpftool version || echo "Install bpftool"
+[ -f /sys/kernel/btf/vmlinux ] || echo "No BTF found (consider BTFHub)"
+```
+
 ### One-Command Installation
 ```bash
 # Install with Helm
@@ -99,6 +112,23 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 
 # Open http://localhost:3000 in your browser
 ```
+
+#### Uninstall
+Visit https://ai.staging.aurva.io/docs/uninstall for steps on uninstalling the collector
+
+## Supported Environments
+
+| Platform | Support Level | Notes |
+|----------|---------------|-------|
+| EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
+| GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
+| AKS (Azure) | ✅ Enterprise Version
+| Kind/Minikube | ✅ Full | Development only |
+| Bare Metal | ✅ Full | Kernel 5.4+ recommended |
+
+## 🔧 Configuration
+
+Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
 
 ## Architecture
 
@@ -120,10 +150,6 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 │ • REST APIs     │    │   retention      │
 └─────────────────┘    └──────────────────┘
 ```
-
-## 🔧 Configuration
-
-Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
 
 ## Monitoring & Dashboards
 
@@ -148,18 +174,21 @@ We welcome contributions! Here's how to get started:
 ## 🔒 Security
 
 ### Security Model
-- eBPF programs run with minimal required capabilities
-- No application data persistence (metadata only)
-- TLS traffic decoded at syscall level (no key access needed)
-- Supports Kubernetes security contexts and Pod Security Standards
+- eBPF programs use only required, minimal capabilities.
+- Aligned with Kubernetes Security Contexts and Pod Security Standards.
 
-### Reporting Security Issues
-Please report security vulnerabilities to security@aurva.io
+**Reporting Vulnerabilities:** security@aurva.io
+**Security Audit:** Results will be published as available.
 
-### Security Audit
-Audit results will be published upon completion.
+### Aurva Cloud Data Handling and Privacy
 
-## 📚 Documentation
+- No TLS key access required. TLS traffic decoded at syscall level.
+- In-cluster operation. Data remains in your environment.
+- Metadata Only:
+  - Request/response bodies are not stored.
+  - Sensitive values are classified in runtime.
+
+## Documentation
 
 - **[Installation Guide](https://ai.staging.aurva.io/docs/installation)** - Complete setup walkthrough
 - **[Configuration Reference](https://ai.staging.aurva.io/docs/installation/steps)** - All configuration options
@@ -167,6 +196,8 @@ Audit results will be published upon completion.
 - **[Troubleshooting](https://ai.staging.aurva.io/docs/troubleshooting)** - Common issues and solutions
 - **[eBPF Deep Dive](https://ai.staging.aurva.io/docs/ebpf)** - Technical implementation details
 
+## Limitations
+While AIOStack offers powerful features, there are certain limitations based on the environment, such as OS support. See the complete list in [Known Limitations].
 
 ## 💬 Community & Support
 
@@ -175,16 +206,6 @@ Audit results will be published upon completion.
 - **💡 Feature Requests**: [GitHub Discussions](https://github.com/aurva-io/ai-observability-stack/discussions)
 - **💬 Community Chat**: [Join our Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-xyz)
 - **📧 Enterprise Support**: enterprise@aurva.io
-
-## Supported Environments
-
-| Platform | Support Level | Notes |
-|----------|---------------|-------|
-| EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
-| GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
-| AKS (Azure) | ✅ Enterprise Version
-| Kind/Minikube | ✅ Full | Development only |
-| Bare Metal | ✅ Full | Kernel 5.4+ recommended |
 
 ## License
 
