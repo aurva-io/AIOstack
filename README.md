@@ -182,7 +182,7 @@ Audit results will be published upon completion.
 |----------|---------------|-------|
 | EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
 | GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
-| AKS (Azure) | 🟡 Beta | Coming soon |
+| AKS (Azure) | ✅ Enterprise Version
 | Kind/Minikube | ✅ Full | Development only |
 | Bare Metal | ✅ Full | Kernel 5.4+ recommended |
 
