@@ -1,4 +1,4 @@
-# AI Observability Stack (AIOStack)
+# Aurva AIOStack
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.24+-blue.svg)](https://kubernetes.io/)
@@ -9,44 +9,62 @@
 > Real-time discovery and monitoring of AI/ML workloads in Kubernetes using eBPF - no code changes required.
 
 
-## 🎯 What is AIOStack?
+## What is AIOStack?
 
-AIOStack automatically discovers and monitors **every AI/ML application** running in your Kubernetes clusters - including the ones your security team doesn't know about.
+**AIOStack** brings AI activity under runtime security oversight inside your environment. It discovers AI components, monitors model/API calls and model downloads, flags sensitive-data exposure and risky egress, ties actions to accountable owners, and produces evidence for investigations, **without code changes** and **running in-cluster**.
 
-**The Problem:** Developers are deploying AI applications faster than ops teams can track them. Traditional monitoring tools miss AI traffic because they don't understand ML protocols or require manual instrumentation.
+- Discover AI workloads across namespaces and clusters, including "Shadow" AI and "Zombie” AI.
+- Detect runtime AI surfaces: MCP servers, MCP clients (local and server), AI agents, AI services, and AI endpoints.
+- Monitor model/API calls and model downloads with endpoint/provider, status, pricing, volume, and timing.
+- Detect sensitive-data exposure (metadata-only by default).
+- Attribute every action to Pods, Deployments, and ServiceAccounts for accountable ownership.
 
-**Our Solution:** eBPF-powered observability that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, automatically classified and monitored in real-time.
+## The Problem:
+Teams spin up and wire AI components independently to move fast. The result isn’t malice; it’s pace and decentralization. But security and platform owners are left without an authoritative picture of **what AI exists, what it’s doing, what data it touches, and who is accountable.**
+
+Unknown and unmanaged AI creates real gaps: model calls to third-party LLMs that no one reviews, quiet model downloads into sensitive environments, agents taking actions beyond intent, and data flowing across boundaries without a clear record. 
+
+When something goes wrong, basic questions - **who did what, with which model, and where did the data go?** - take hours, not minutes.
+
+- **Unknown inventory:** AI apps, agents, MCP servers/clients, and automations appear across teams with no central register.
+- **Opaque usage & flow:** Model/API calls, volumes, and data movement aren’t visible in a way security can act on quickly.
+- **Unreviewed egress & spend:** Third-party LLM interactions occur without consistent oversight or audit evidence, creating risk and driving up LLM costs.
+- **Autonomous actions:** Agents execute and propagate access on their own, increasing blast radius when intent drifts.
+- **Sensitive data exposure:** AI components access or move data beyond policy, with no runtime proof to confirm or contain it.
+- **No accountable owner:** Activities aren’t tied back to a clear workload or service identity.
+
+## How Aurva AIOstack solves this:
+
+**eBPF**-powered visibility that sees AI at the kernel level - every LLM call, every ML library import, every AI data flow, every data access; automatically classified and monitored in real-time.
 
 ```bash
-# Before AIOStack
-$ kubectl get pods
-NAME                    READY   STATUS    RESTARTS   AGE
-web-server-abc123       1/1     Running   0          2d
-api-backend-def456      1/1     Running   0          1d
-data-processor-ghi789   1/1     Running   0          3h
-
-# After AIOStack (30 seconds later)
+# After AIOStack (60 seconds later)
 ✅ 3 containers discovered
 🤖 2 AI applications detected
-⚠️  1 shadow AI tool found (data-processor using OpenAI)
+⚠️ 1 shadow AI tool found (data-processor using OpenAI)
 📊 147 LLM API calls in last hour
 💰 $23.45 estimated AI spend today // coming soon
 ```
+#### Defaults that matter
 
-## 🚀 Key Features
+- Runs in-cluster; no sensitive data leaves the environment
+- Metadata-only by default; payload capture off; redaction on
+- No application code changes required
 
-### 🕵️ **Zero-Touch Discovery**
+## Key Features
+
+#### 🕵️ **Zero-Touch Discovery**
 - Automatically detects AI/ML applications without code changes
 - Identifies shadow AI tools and unauthorized LLM usage
 - Maps AI data flows across your entire infrastructure
 
-### 🧠 **AI-Aware Monitoring**
+#### 🧠 **AI-Aware Monitoring**
 - **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
 - **ML Libraries**: PyTorch, TensorFlow, scikit-learn, transformers, LangChain, llamaindex
 - **AI Frameworks**: MLflow, Weights & Biases, Ray, Kubeflow
 - **Runtime Support**: Python, Node.js, Java, Go applications
 
-### 📊 **Rich Observability**
+#### 📊 **Rich Observability**
 - Real-time dashboards with all the features you need to monitor your AI infrastructure
 - AI agent workflow visualization and tracing
 - Cost estimation and usage analytics
@@ -56,18 +74,26 @@ data-processor-ghi789   1/1     Running   0          3h
 - Unauthorized model downloads
 - Zero sensitive data storage - metadata only
 
-### 🔒 **Security & Compliance**
+#### 🔒 **Security & Compliance**
 - Detects AI data exfiltration attempts
 - Monitors for PII/sensitive data in AI calls
 - Tracks unauthorized models running in your cluster
 - Zero sensitive data storage - metadata only
 
-## 🏃‍♂️ Quick Start
+## Quick Start
 
 ### Prerequisites
-- Kubernetes 1.24+ with eBPF support
+- Kubernetes 1.24+ 
 - Linux kernel 4.18+ (5.4+ recommended)
-- Cluster admin privileges
+- Cluster admin privileges (DaemonSet with eBPF capabilities)
+- BTF-enabled kernel
+
+### Sanity checks:
+```
+uname -r
+bpftool version || echo "Install bpftool"
+[ -f /sys/kernel/btf/vmlinux ] || echo "No BTF found (consider BTFHub)"
+```
 
 ### One-Command Installation
 ```bash
@@ -87,7 +113,24 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 # Open http://localhost:3000 in your browser
 ```
 
-## 🏗️ Architecture
+#### Uninstall
+Visit https://ai.staging.aurva.io/docs/uninstall for steps on uninstalling the collector
+
+## Supported Environments
+
+| Platform | Support Level | Notes |
+|----------|---------------|-------|
+| EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
+| GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
+| AKS (Azure) | ✅ Enterprise Version
+| Kind/Minikube | ✅ Full | Development only |
+| Bare Metal | ✅ Full | Kernel 5.4+ recommended |
+
+## 🔧 Configuration
+
+Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
+
+## Architecture
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -108,11 +151,7 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 └─────────────────┘    └──────────────────┘
 ```
 
-## 🔧 Configuration
-
-Read the [Configuration Guide](https://ai.staging.aurva.io/docs/installation) to get started.
-
-## 📈 Monitoring & Dashboards
+## Monitoring & Dashboards
 
 ### Built-in Dashboards
 - **AI Application Discovery**: Live inventory of all AI/ML workloads.
@@ -135,18 +174,21 @@ We welcome contributions! Here's how to get started:
 ## 🔒 Security
 
 ### Security Model
-- eBPF programs run with minimal required capabilities
-- No application data persistence (metadata only)
-- TLS traffic decoded at syscall level (no key access needed)
-- Supports Kubernetes security contexts and Pod Security Standards
+- eBPF programs use only required, minimal capabilities.
+- Aligned with Kubernetes Security Contexts and Pod Security Standards.
 
-### Reporting Security Issues
-Please report security vulnerabilities to security@aurva.io
+**Reporting Vulnerabilities:** security@aurva.io
+**Security Audit:** Results will be published as available.
 
-### Security Audit
-Audit results will be published upon completion.
+### Aurva Cloud Data Handling and Privacy
 
-## 📚 Documentation
+- No TLS key access required. TLS traffic decoded at syscall level.
+- In-cluster operation. Data remains in your environment.
+- Metadata Only:
+  - Request/response bodies are not stored.
+  - Sensitive values are classified in runtime.
+
+## Documentation
 
 - **[Installation Guide](https://ai.staging.aurva.io/docs/installation)** - Complete setup walkthrough
 - **[Configuration Reference](https://ai.staging.aurva.io/docs/installation/steps)** - All configuration options
@@ -154,6 +196,8 @@ Audit results will be published upon completion.
 - **[Troubleshooting](https://ai.staging.aurva.io/docs/troubleshooting)** - Common issues and solutions
 - **[eBPF Deep Dive](https://ai.staging.aurva.io/docs/ebpf)** - Technical implementation details
 
+## Limitations
+While AIOStack offers powerful features, there are certain limitations based on the environment, such as OS support. See the complete list in [Known Limitations].
 
 ## 💬 Community & Support
 
@@ -163,21 +207,11 @@ Audit results will be published upon completion.
 - **💬 Community Chat**: [Join our Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-xyz)
 - **📧 Enterprise Support**: enterprise@aurva.io
 
-## 📊 Supported Environments
-
-| Platform | Support Level | Notes |
-|----------|---------------|-------|
-| EKS (AWS) | ✅ Full | Tested on EKS 1.24+ |
-| GKE (Google) | ✅ Full | Tested on GKE 1.24+ |
-| AKS (Azure) | 🟡 Beta | Coming soon |
-| Kind/Minikube | ✅ Full | Development only |
-| Bare Metal | ✅ Full | Kernel 5.4+ recommended |
-
-## 📝 License
+## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [eBPF Foundation](https://ebpf.io/) for the incredible technology
 - [Kubernetes SIG Instrumentation](https://github.com/kubernetes/community/tree/master/sig-instrumentation) for observability standards
