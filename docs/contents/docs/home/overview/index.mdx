@@ -4,58 +4,52 @@ description: A sneak peak into the why we built this at Aurva
 keywords: ["overview", "kubernetes", "nextjs", "documents"]
 ---
 
-### The Security Team's Nightmare
+# Introduction
 
-At 3 AM, your phone buzzes. The headline reads: *"Major Enterprise Exposed Customer Data Through AI Chatbot Integration."*
+**Aurva AIOStack** is an open-source platform that gives you a real-time inventory of AI usage—discovering apps/agents/MCPs, tracing model/API calls and model downloads, flagging sensitive-data exposure and risky egress, and tying activity to accountable owners. Using eBPF. No code changes required. No application restarts.
 
-You think: *"That could never be us. We have policies."*
+## Why use AIOStack?
 
-But do you know about the new Chat Interface your summer interns just built? The one that's been sending code snippets (with API keys) to OpenAI for autocompletion?
+AI is being wired up by different teams at high speed. The outcome isn’t malice; it’s pace and decentralization. Security and platform owners are left without an authoritative view of what AI exists, what it’s doing, what data it touches, and who is accountable.
 
-Do you know about the "image optimization service" that's actually running Stable Diffusion on customer photos?
+### The Shadow AI Problem
 
-Do you know about the CI/CD pipeline that queries ChatGPT to write deployment scripts based on your infrastructure configs?
+Traditional tools only reveal what they’re told. They rely on instrumentation and cooperation.
 
-**Your policies don't protect against threats you can't see.**
+AI is different. AI doesn’t self-identify. A TensorFlow import looks like any other import. An OpenAI call hides inside HTTPS. A local model presents as an ordinary service.
 
----
+When something goes wrong, basic questions - who did what, with which model, and where did the data go? - take hours, not minutes.
+- **Unknown inventory:** Apps, agents, MCP servers/clients appear with no central register.
+- **Opaque usage and flow:** Model/API calls and data movement aren’t visible in a way security can act on quickly.
+- **Unreviewed egress and spend:** Third-party LLM calls lack consistent oversight or audit evidence.
+- **Autonomous actions:** Agents exceed intent, increasing blast radius.
+- **Sensitive data exposure:** Access and movement happen outside policy, without runtime proof.
+- **No accountable owner:** Activity isn’t tied back to a clear service or workload identity.
 
-### Why Traditional Monitoring Fails
-
-**Traditional monitoring tools only reveal what they’re told.** They depend on instrumentation and cooperation.
-
-**AI is different.** It doesn’t announce itself—but that’s where the opportunity lies. A Python script importing TensorFlow looks identical to one importing requests. An OpenAI API call masquerades as any other HTTPS request. A local ML model can disguise itself as a web service.
-
-**The story of AI in infrastructure is one of hidden potential.** It’s everywhere, often invisible, shaping workflows and decisions in ways that standard tools can’t capture
-
----
-
-### At Last, AI Observability That Actually Observes
+### AI Visibility That Actually Observes
 
 We built AIOStack to bring clarity where traditional tools fall short.
-
 Our eBPF agents operate at the kernel level—giving you visibility deeper than applications, broader than network monitoring, and more precise than conventional scanners.
-
-**No extra instrumentation. No blind spots.** Just an accurate picture of how AI is being used.
-
-From TensorFlow imports to Hugging Face downloads, from OpenAI requests to local model inferences—we make the invisible visible.
-
+An accurate picture of how AI is being used. From TensorFlow imports to Hugging Face downloads, from OpenAI requests to local model inferences, we make the invisible visible.
 In real time. Across every container. On every node. **Without changing a single line of code.**
 
+
+### Core capabilities
+- Discover AI workloads (apps, agents, MCP servers/clients, services, endpoints) including shadow/zombie AI.
+- Trace model/API calls and model downloads with provider, status, volume, timing, and pricing signals.
+- Detect sensitive-data exposure (metadata-only by default) and risky egress patterns.
+- Attribute every action to a concrete owner (workload or service identity).
+- Ship dashboards and metrics for monitoring and investigations.
+
 ---
 
-### Your AI Attack Surface Is Larger Than You Think
+## Quick Overview
 
-The average enterprise has more AI applications than their security team knows about.
+1) **Observe (runtime signals):** eBPF collector watches process, network, and file activity to see real behavior. No SDKs. No  app changes.  
+2) **Classify (AI awareness):** We identify AI surfaces (LLM endpoints, model downloads, libraries/frameworks, MCP servers/clients) and tag events with rich context.  
+3) **Attribute & Surface:** Events are tied to an owner (workload/service identity) and streamed to dashboards and APIs for inventory, analytics, and alerting.
 
-The average security incident isn't detected until it's too late.
-
----
-
-### Don't Be Tomorrow's Headline
-
-Every day you operate blind to your AI landscape, you're one API call away from a breach that could have been prevented.
-
-The question isn't whether your organization has shadow AI.
-
-**The question is: do you want to find it before the headlines do?**
+### What you’ll see in minutes
+1) Run the collector.  
+2) Open the dashboard to view AI Runtime Inventory and recent LLM/API activity.  
+3) Confirm discovered workloads, top callsites, and owners.
