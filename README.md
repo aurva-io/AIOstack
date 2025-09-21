@@ -99,7 +99,7 @@ bpftool version || echo "Install bpftool"
 ```bash
 # Install with Helm
 helm repo add aiostack https://charts.aiostack.io
-helm install aiostack aiostack/ai-observability-stack
+helm install aiostack aiostack/ai-observability-stack -n aiostack-test
 ```
 
 ### Verify Installation
@@ -114,7 +114,9 @@ kubectl port-forward -n aiostack svc/aiostack-ui 3000:3000
 ```
 
 #### Uninstall
-Visit https://ai.staging.aurva.io/docs/uninstall for steps on uninstalling the collector
+```bash
+helm uinstall aiostack -n aiostack-test
+```
 
 ## Supported Environments
 
