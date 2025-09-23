@@ -1,0 +1,49 @@
+{{- if .Values.outpost.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostack-outpost
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost
+spec:
+  replicas: {{ .Values.outpost.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aiostack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: outpost
+  template:
+    metadata:
+      labels:
+        {{- include "aiostack.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: outpost
+    spec:
+      serviceAccountName: aiostack-outpost
+      dnsPolicy: ClusterFirst
+      containers:
+      - name: outpost
+        image: "{{ .Values.outpost.image.repository }}:{{ .Values.outpost.image.tag }}"
+        imagePullPolicy: {{ .Values.outpost.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.outpost.service.targetPort }}
+          protocol: TCP
+        {{- if .Values.outpost.env }}
+        env:
+        {{- toYaml .Values.outpost.env | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.outpost.resources | nindent 10 }}
+      {{- with .Values.outpost.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.outpost.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.outpost.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

@@ -22,7 +22,7 @@ observer:
   env:
     - name: COMPANY_ID
       value: "d9525740-beb5-401a-9e35-b487f6b30adc"
-    - name: CONTROLLER_URL
+    - name: OUTPOST_URL
       value: "aiostack-commander.aiostack-test.svc.cluster.local:8085"
     - name: IS_LOCAL_ENV
       value: "false"
@@ -65,8 +65,8 @@ commander:
   replicaCount: 1
   service:
     type: ClusterIP
-    port: 8085
-    targetPort: 8085
+    port: 7470
+    targetPort: 7470
   resources:
     requests:
       memory: "128Mi"
@@ -79,21 +79,75 @@ commander:
       value: "d9525740-beb5-401a-9e35-b487f6b30adc"
     - name: LOG_ENV
       value: "production"
-    - name: DB_HOST
-      value: "aiostack-clickhouse.aiostack-test.svc.cluster.local"
-    - name: DB_USER
-      value: "aurva"
-    - name: DB_PASSWORD
-      value: "aurvaaiostack"
-    - name: DB_DATABASE
-      value: "aiostack"
-    - name: DB_DEFAULT_DATABASE
-      value: "default"
-    - name: DB_PORT
-      value: "9000"
+    - name: GLOBAL_DB_URL
+      value: "TODO"
+
   serviceAccount:
     create: true
     name: aiostack-commander-sa
+    annotations:
+    labels: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+emissary:
+  enabled: true
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
+    tag: bananav14
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  env:
+    - name: COMPANY_ID
+      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
+    - name: LOG_ENV
+      value: "production"
+    - name: GLOBAL_DB_URL
+      value: "TODO"
+    - name: GLOBAL_DB_READ_URL
+      value: "TODO"
+
+outpost:
+  enabled: true
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-outpost
+    tag: bananav14
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 7471
+    targetPort: 7471
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  env:
+    - name: COMPANY_ID
+      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
+    - name: LOG_ENV
+      value: "production"
+    - name: COMMANDER_URL
+      value: "aiostack-commander.aiostack-test.svc.cluster.local:7470"
+
+  serviceAccount:
+    create: true
+    name: aiostack-outpost-sa
     annotations:
     labels: {}
   nodeSelector: {}

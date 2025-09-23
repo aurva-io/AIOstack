@@ -44,14 +44,14 @@ kubectl auth can-i create daemonsets --all-namespaces
 
 **Linux Kernel Version:**
 
-- Minimum: Linux kernel 5.2+
+- Minimum: Linux kernel 5.4+
 - Recommended: Linux kernel 5.8+ for optimal eBPF support
 - Required: eBPF and BTF (BPF Type Format) support enabled
 
 **Node Specifications:**
 
-- CPU: Minimum 1 vCPU per node (2+ vCPU recommended)
-- Memory: Minimum 512Mi available per node
+- CPU: Minimum 1 vCPU per node 
+- Memory: Minimum 256Mi available per node
 - Storage: 1Gi free disk space for logs and temporary files
 
 Check kernel version on nodes:
@@ -112,6 +112,19 @@ kubectl version --client
 helm version
 ```
 
+
+
+<Note title="The output should be like this">
+```
+  user-default ~ % kubectl version --client
+  Client Version: v1.29.0
+  Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
+  
+  user-default ~ % helm version
+  version.BuildInfo{Version:"v3.15.2", GitCommit:"1a500d5625419a524fdae4b33de351cc4f58ec35", GitTreeState:"clean", GoVersion:"go1.22.4"}
+```
+</Note>
+
 </StepItem>
 
 {/* <StepItem title="Network Requirements">
@@ -158,10 +171,6 @@ kubectl get nodes -o wide
 - Understanding of DaemonSets, ConfigMaps, and Services
 - Basic knowledge of RBAC and ServiceAccounts
 - Familiarity with kubectl commands
-
-**eBPF Basics:**
-
-- Understanding that eBPF programs run in kernel space
 
 **That's it! You're ready to install AIOStack.**
 

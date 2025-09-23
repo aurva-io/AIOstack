@@ -1,0 +1,19 @@
+{{- if .Values.outpost.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostack-outpost
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost
+spec:
+  type: {{ .Values.outpost.service.type }}
+  ports:
+    - port: {{ .Values.outpost.service.port }}
+      targetPort: {{ .Values.outpost.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aiostack.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: outpost
+{{- end }}
