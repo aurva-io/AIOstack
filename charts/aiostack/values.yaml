@@ -6,7 +6,7 @@ observer:
   namespaceOverride: aiostack-test
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-observer
-    tag: bananav14
+    tag: elderberryv2
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -20,18 +20,32 @@ observer:
   affinity: {}
   dnsPolicy: ClusterFirst
   env:
-    - name: COMPANY_ID
-      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
+    - name: LOG_ENV
+      value: "production"
     - name: OUTPOST_URL
-      value: "aiostack-commander.aiostack-test.svc.cluster.local:8085"
-    - name: IS_LOCAL_ENV
+      value: "aiostack-outpost.aiostack-test.svc.cluster.local:7471"
+    - name: IS_OUTPOST_URL_SECURE
       value: "false"
     - name: TRACE_SSL
       value: "true"
     - name: PROCFS_PATH
       value: "/proc"
+    - name: TRACE_PSQL
+      value: "false"
+    - name: TRACE_SQLSERVER
+      value: "false"
+    - name: TRACE_MYSQL
+      value: "false"
+    - name: TRACE_EGRESS
+      value: "true"
+    - name: TRACE_GO_TLS
+      value: "true"
+    - name: TRACE_HTTP
+      value: "true"
     - name: TRACE_INTERNAL_SVC
       value: "true"
+    - name: INTERNAL_SVC_SAMPLE_INTERVAL
+      value: "0s"
     - name: LOGS_TTL
       value: "30s"
     - name: AGGREGATOR_MAX_CONNECTIONS
@@ -60,7 +74,7 @@ commander:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-commander
-    tag: bananav14
+    tag: elderberryv2
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -75,55 +89,32 @@ commander:
       memory: "256Mi"
       cpu: "500m"
   env:
-    - name: COMPANY_ID
-      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
     - name: LOG_ENV
       value: "production"
     - name: GLOBAL_DB_URL
-      value: "TODO"
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.aiostack-test.svc.cluster.local:5432/global"
+    - name: GLOBAL_CH_URL
+      value: "clickhouse://aurva:aurvaaiostack@aiostack-clickhouse.aiostack-test.svc.cluster.local:9000/default"
+    - name: COMMANDER_PORT
+      value: ":7470"
+    - name: "INSECURE_SKIP_VERIFY"
+      value: "false"
 
   serviceAccount:
     create: true
     name: aiostack-commander-sa
     annotations:
+
     labels: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
 
-emissary:
-  enabled: true
-  image:
-    repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
-    tag: bananav14
-    pullPolicy: IfNotPresent
-  replicaCount: 1
-  service:
-    type: ClusterIP
-    port: 8080
-    targetPort: 8080
-  resources:
-    requests:
-      memory: "128Mi"
-      cpu: "200m"
-    limits:
-      memory: "256Mi"
-      cpu: "500m"
-  env:
-    - name: COMPANY_ID
-      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
-    - name: LOG_ENV
-      value: "production"
-    - name: GLOBAL_DB_URL
-      value: "TODO"
-    - name: GLOBAL_DB_READ_URL
-      value: "TODO"
-
 outpost:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-outpost
-    tag: bananav14
+    tag: elderberryv2
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -139,11 +130,17 @@ outpost:
       cpu: "500m"
   env:
     - name: COMPANY_ID
-      value: "d9525740-beb5-401a-9e35-b487f6b30adc"
+      value: ""
     - name: LOG_ENV
       value: "production"
     - name: COMMANDER_URL
       value: "aiostack-commander.aiostack-test.svc.cluster.local:7470"
+    - name: INSECURE_SKIP_VERIFY
+      value: "false"
+    - name: OUTPOST_PORT
+      value: ":7471"
+    - name: AIOSTACK_VALIDATION_KEY
+      value: ""
 
   serviceAccount:
     create: true
@@ -154,14 +151,156 @@ outpost:
   tolerations: []
   affinity: {}
 
+emissary:
+  enabled: true
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
+    tag: elderberryv2
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "200m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+  env:
+    - name: LOG_ENV
+      value: "production"
+    - name: GLOBAL_DB_URL
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.aiostack-test.svc.cluster.local:5432/global"
+    - name: GLOBAL_DB_READ_URL
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.aiostack-test.svc.cluster.local:5432/global"
+    - name: GLOBAL_CH_URL
+      value: "clickhouse://aurva:aurvaaiostack@aiostack-clickhouse.aiostack-test.svc.cluster.local:9000/default"
+    - name: GLOBAL_ALT_CH_URL
+      value: "clickhouse://aurva:aurvaaiostack@aiostack-clickhouse.aiostack-test.svc.cluster.local:9000/default"
+    - name: PRIVATE_KEY
+      value: ""
+    - name: PUBLIC_KEY
+      value: ""
+    - name: VAULT_PRIVATE_KEY
+      value: ""
+
+  httproute:
+    enabled: true
+    name: aiostack-emissary
+    gateway:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    privateAccess:
+      enabled: false
+      securityPolicy: aurva-private-vpn-alb-access
+    host: "api.staging.aurva.ai"
+    service:
+      name: aiostack-emissary
+      port: 8080
+
+  healthCheckPolicy:
+    enabled: true
+    name: aiostack-emissary
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        requestPath: /unauth/ping
+    serviceName: aiostack-emissary
+
+  serviceAccount:
+    create: true
+    name: aiostack-emissary-sa
+    annotations:
+    labels: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+ui:
+  enabled: true
+  domain: "staging.aurva.ai"
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-ui
+    tag: elderberryv4
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  dnsPolicy: "ClusterFirst"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  env:
+    - name: NEXT_PUBLIC_API_URL
+      value: "https://api.staging.aurva.ai/"
+    - name: VERSION
+      value: "elderberryv2"
+  additionalLabels: {}
+  annotations: {}
+
+  healthCheck:
+    enabled: true
+    path: "/"
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  serviceAccount:
+    create: true
+    name: aiostack-ui-sa
+    annotations:
+    labels: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+
+  httproute:
+    enabled: true
+    name: aiostack-ui
+    gateway:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    privateAccess:
+      enabled: false
+      securityPolicy: aurva-private-vpn-alb-access
+    host: "staging.aurva.ai"
+    service:
+      name: aiostack-ui
+      port: 3000
+
+  healthCheckPolicy:
+    enabled: true
+    name: aiostack-ui
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 3000
+        requestPath: /
+    serviceName: aiostack-ui
+
 postgresql:
-  enabled: false
+  enabled: true
   image:
     repository: postgres
-    tag: "15"
+    tag: "17"
     pullPolicy: IfNotPresent
   auth:
-    postgresPassword: "aurva123"
+    postgresPassword: "aurvaaiostack"
+    username: "postgres"
     database: "global"
   persistence:
     enabled: true
@@ -217,5 +356,3 @@ clickhouse:
           <max_execution_time>300</max_execution_time>
         </default>
       </profiles>
-
-

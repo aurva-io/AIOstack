@@ -1,0 +1,12 @@
+{{- range .Values.gateways }}
+apiVersion: {{ .apiVersion | default "gateway.networking.k8s.io/v1" }}
+kind: Gateway
+metadata:
+  name: {{ .metadata.name | quote }}
+  namespace: {{ .metadata.namespace | default "default" | quote }}
+spec:
+  gatewayClassName: {{ .spec.gatewayClassName | quote }}
+  listeners:
+  {{- toYaml .spec.listeners | nindent 4 }}
+---
+{{- end }}

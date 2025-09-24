@@ -1,6 +1,6 @@
 apiVersion: v2
 name: aiostack
-description: A Helm chart for AIOStack with Observer, Commander,Emissary, Outpost ,PostgreSQL and ClickHouse
+description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary, PostgreSQL and ClickHouse
 type: application
 version: 0.2.0
 appVersion: "1.0.0"

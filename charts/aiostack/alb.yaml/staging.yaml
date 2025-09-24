@@ -1,0 +1,35 @@
+gateways:
+  - apiVersion: gateway.networking.k8s.io/v1
+    metadata:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    spec:
+      gatewayClassName: gke-l7-global-external-managed
+      listeners:
+        - name: https
+          protocol: HTTPS
+          port: 443
+          allowedRoutes:
+            namespaces:
+              from: All
+          tls:
+            mode: Terminate
+            options:
+              networking.gke.io/pre-shared-certs: aiostack-public-stage
+  - apiVersion: gateway.networking.k8s.io/v1beta1
+    metadata:
+      name: aiostack-private-gateway
+      namespace: kube-system
+    spec:
+      gatewayClassName: gke-l7-global-external-managed
+      listeners:
+        - name: https
+          protocol: HTTPS
+          port: 443
+          allowedRoutes:
+            namespaces:
+              from: All
+          tls:
+            mode: Terminate
+            options:
+              networking.gke.io/pre-shared-certs: aurva-staging-private

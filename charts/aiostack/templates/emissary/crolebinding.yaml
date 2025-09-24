@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: aiostack-emissary-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: aiostack-emissary-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: aiostack-emissary
+  namespace: {{ .Release.Namespace }}

@@ -1,0 +1,28 @@
+{{- if .Values.ui.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ include "aiostack-ui.fullname" . }}
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+  {{- include "application.labels" . | nindent 4 }}
+{{- if .Values.ui.additionalLabels }}
+{{ toYaml .Values.ui.additionalLabels | indent 4 }}
+{{- end }}
+{{- if .Values.ui.httproute.enabled }}
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports": {"3000":{}}}'
+{{- end }}
+spec:
+  type: ClusterIP
+  selector:
+{{ include "aiostack-ui.selectorLabels" . | indent 4 }}
+{{- if .Values.ui.podLabels }}
+{{ toYaml .Values.ui.podLabels | indent 4 }}
+{{- end }}
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      name: http
+{{- end }}

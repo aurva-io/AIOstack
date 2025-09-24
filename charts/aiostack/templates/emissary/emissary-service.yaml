@@ -1,0 +1,19 @@
+{{- if .Values.emissary.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: aiostack-emissary
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: emissary
+spec:
+  type: {{ .Values.emissary.service.type }}
+  ports:
+    - port: {{ .Values.emissary.service.port }}
+      targetPort: {{ .Values.emissary.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "aiostack.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: emissary
+{{- end }}

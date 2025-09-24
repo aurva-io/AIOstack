@@ -1,0 +1,49 @@
+{{- if .Values.emissary.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiostack-emissary
+  labels:
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/component: emissary
+spec:
+  replicas: {{ .Values.emissary.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aiostack.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: emissary
+  template:
+    metadata:
+      labels:
+        {{- include "aiostack.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: emissary
+    spec:
+      serviceAccountName: aiostack-emissary
+      dnsPolicy: ClusterFirst
+      containers:
+      - name: emissary
+        image: "{{ .Values.emissary.image.repository }}:{{ .Values.emissary.image.tag }}"
+        imagePullPolicy: {{ .Values.emissary.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.emissary.service.targetPort }}
+          protocol: TCP
+        {{- if .Values.emissary.env }}
+        env:
+        {{- toYaml .Values.emissary.env | nindent 8 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.emissary.resources | nindent 10 }}
+      {{- with .Values.emissary.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.emissary.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.emissary.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

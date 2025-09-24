@@ -1,0 +1,16 @@
+{{- if .Values.ui.healthCheckPolicy.enabled }}
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: {{ .Values.ui.healthCheckPolicy.name }}
+spec:
+  default:
+    logConfig:
+      enabled: {{ .Values.ui.healthCheckPolicy.logConfig.enabled }}
+    config:
+      {{- toYaml .Values.ui.healthCheckPolicy.config | nindent 6 }}
+  targetRef:
+    group: ""
+    kind: Service
+    name: {{ .Values.ui.healthCheckPolicy.serviceName }}
+{{- end }}

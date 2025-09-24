@@ -1,0 +1,32 @@
+{{- if .Values.ui.httproute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.ui.httproute.name }}
+  labels:
+    gateway: {{ .Values.ui.httproute.gateway.name }}
+spec:
+  parentRefs:
+    - name: {{ .Values.ui.httproute.gateway.name }}
+      namespace: {{ .Values.ui.httproute.gateway.namespace }}
+  hostnames:
+    - "{{ .Values.ui.httproute.host }}"
+  rules:
+    - backendRefs:
+        - name: {{ .Values.ui.httproute.service.name }}
+          port: {{ .Values.ui.httproute.service.port }}
+{{- if .Values.ui.httproute.privateAccess.enabled }}
+---
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+  name: {{ .Values.ui.httproute.name }}-private-vpn-access
+spec:
+  default:
+    securityPolicy: {{ .Values.ui.httproute.privateAccess.securityPolicy }}
+  targetRef:
+    group: ""
+    kind: Service
+    name: {{ .Values.ui.httproute.service.name }}
+{{- end }}
+{{- end }}
