@@ -531,3 +531,67 @@ span.katex-html {
 .animate-cube-rotate {
   animation: cube-rotate 8s ease-in-out infinite;
 }
+
+
+@keyframes sparkle-animation {
+  0% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
+                      radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
+  }
+  12.5% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 15% 20%, rgba(124, 58, 237, 0.6), transparent 98% ),
+                      radial-gradient( circle at 85% 75%, rgba(91, 33, 182, 0.4), transparent 98% );
+  }
+  25% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 20% 30%, rgba(124, 58, 237, 0.7), transparent 98% ),
+                      radial-gradient( circle at 80% 70%, rgba(91, 33, 182, 0.3), transparent 98% );
+  }
+  37.5% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 25% 40%, rgba(124, 58, 237, 0.6), transparent 98% ),
+                      radial-gradient( circle at 75% 60%, rgba(91, 33, 182, 0.4), transparent 98% );
+  }
+  50% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 30% 50%, rgba(124, 58, 237, 0.4), transparent 98% ),
+                      radial-gradient( circle at 70% 50%, rgba(91, 33, 182, 0.6), transparent 98% );
+  }
+  62.5% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 25% 60%, rgba(124, 58, 237, 0.5), transparent 98% ),
+                      radial-gradient( circle at 75% 40%, rgba(91, 33, 182, 0.7), transparent 98% );
+  }
+  75% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 20% 70%, rgba(124, 58, 237, 0.3), transparent 98% ),
+                      radial-gradient( circle at 80% 30%, rgba(91, 33, 182, 0.8), transparent 98% );
+  }
+  87.5% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 15% 80%, rgba(124, 58, 237, 0.4), transparent 98% ),
+                      radial-gradient( circle at 85% 20%, rgba(91, 33, 182, 0.6), transparent 98% );
+  }
+  100% {
+    background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                      radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
+                      radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
+  }
+}
+
+.sparkle-purple {
+  background-image: linear-gradient( 0deg, currentColor, currentColor ),
+                    radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
+                    radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: sparkle-animation 4s ease-in-out infinite;
+}
+   
+
+
+
+

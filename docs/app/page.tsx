@@ -1,4 +1,5 @@
 import { Link } from "lib/transition"
+import Image from "next/image"
 
 import { PageRoutes } from "@/lib/pageroutes"
 import { buttonVariants } from "@/components/ui/button"
@@ -18,15 +19,12 @@ export default function Home() {
         <div className="floating-shape"></div>
       </div>
 
-      <section className="flex min-h-[86.5vh] flex-col items-center justify-center px-2 py-8 text-center">
-        <h1 className="mb-4 text-4xl font-bold sm:text-7xl">
-          AI Observability Stack
+      <section className="flex min-h-[86.5vh] flex-col items-center justify-center px-2 py-10 text-center">
+        <h1 className="mt-14 text-4xl font-bold sm:text-6xl">
+        Find Shadow AI <span className="sparkle-purple">Before</span> It Finds Trouble
         </h1>
-        <p className="text-foreground mb-8 max-w-[700px] leading-relaxed sm:text-lg">
-          Zero-instrumentation eBPF monitoring for AI agents, LLM calls, and ML
-          workloads in Kubernetes. Get deep visibility into your AI
-          infrastructure without changing a single line of code. and also...
-          open-core!
+        <p className=" mt-8 text-foreground mb-8 max-w-[700px] leading-relaxed sm:text-lg">
+        Your AI adoption is outpacing your ability to govern it. Regain control with instant visibility into every AI application, API call, and data flow in your organization.
         </p>
 
         <div className="mb-8 flex  flex-wrap gap-4 text-sm">
@@ -47,11 +45,24 @@ export default function Home() {
         <div className="flex items-center gap-5">
           <Link
             href={`/docs${PageRoutes[0].href}`}
-            className={buttonVariants({ className: "px-6", size: "lg" })}
+            className={buttonVariants({ className: "px-4", size: "lg" })}
           >
-            Get Started &crarr;
+            Install Now  &rarr;
           </Link>
         </div>
+        <div className="mt-10 w-full max-w-6xl px-4">
+          <Image
+            src="/hero.png"
+            alt="AI Observability Stack overview"
+            width={1600}
+            height={900}
+            className="mx-auto w-full rounded-xl border border-border/50 shadow-md"
+            priority
+          />
+        </div>
+
+
+
       </section>
     </>
   )
