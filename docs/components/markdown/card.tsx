@@ -115,3 +115,11 @@ export function CardGrid({ children }: PropsWithChildren) {
     </div>
   )
 }
+
+export function CardGridOne({ children }: PropsWithChildren) {
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-1 2xl:grid-cols-3">
+      {children}
+    </div>
+  )
+}
