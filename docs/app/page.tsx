@@ -151,7 +151,7 @@ export default function Home() {
             <h2 className="text-xl font-bold mb-4">
               Introducing 
             </h2>
-            <h2 className="text-8xl font-bold mb-4">
+            <h2 className="text-4xl sm:text-6xl lg:text-8xl font-bold mb-4 text-center max-w-[90%] sm:max-w-[80%] lg:max-w-[70%] mx-auto">
             <span className="sparkle-purple">AIOStack </span> 
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -369,8 +369,11 @@ export default function Home() {
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-purple-100 to-green-400 bg-clip-text ">
-              For the Engineers 
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight py-4 ">
+              How we drive away the <span className="relative">
+                Shadows
+                <span className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-gray-900 via-green-800 to-gray-900 rounded-full"></span>
+              </span>
             </h2>
             <p className="text-xl text-gray-200 max-w-3xl mx-auto">
               Built by engineers, for engineers. Just solid technology that works (mostly).
@@ -452,8 +455,8 @@ export default function Home() {
                 <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
                   <div className="text-gray-400 mb-2"># Deploy in 10 minutes</div>
                   <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
-                  <div className="text-gray-400 mt-4 mb-2"># Start monitoring</div>
-                  <div className="text-purple-400">kubectl apply -f monitoring.yaml</div>
+                  <div className="text-gray-400 mt-4 mb-2"># Start monitoring at</div>
+                  <div className="text-purple-400">http://staging.aurva.ai</div>
                 </div>
               </div>
 
