@@ -70,7 +70,7 @@ export default function Home() {
               The Hidden Costs of Rapid AI Adoption
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-              Companies are racing to deploy AI, but the infrastructure isn't keeping up. Here's what's really happening behind the scenes.
+              Companies are racing to deploy AI, but the infrastructure isn&apos;t keeping up. Here&apos;s what&apos;s really happening behind the scenes.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6">
@@ -102,7 +102,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Security Vulnerabilities</h3>
                   <p className="text-muted-foreground">
                     AI systems often handle sensitive data without proper encryption or access controls. 
-                    Traditional security tools can't monitor AI-specific threats, leaving organizations exposed to data breaches and unauthorized access.
+                    Traditional security tools can&apos;t monitor AI-specific threats, leaving organizations exposed to data breaches and unauthorized access.
                   </p>
                 </div>
               </div>
@@ -119,7 +119,7 @@ export default function Home() {
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Compliance Nightmares</h3>
                   <p className="text-muted-foreground">
                     AI deployments must comply with GDPR, CCPA, and industry regulations, but most lack proper audit trails or data lineage tracking. 
-                    Organizations face hefty fines and legal risks when AI systems can't demonstrate compliance.
+                    Organizations face hefty fines and legal risks when AI systems can&apos;t demonstrate compliance.
                   </p>
                 </div>
               </div>
@@ -135,7 +135,7 @@ export default function Home() {
                 <div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Uncontrolled AI Spending</h3>
                 <p className="text-muted-foreground">
-                  AI API costs spiral out of control without visibility into usage patterns, token consumption, or cost attribution. Organizations discover $5,000+ monthly AI bills they can't track to specific teams or applications, making budget planning impossible.
+                  AI API costs spiral out of control without visibility into usage patterns, token consumption, or cost attribution. Organizations discover $5,000+ monthly AI bills they can&apos;t track to specific teams or applications, making budget planning impossible.
                 </p>
                 </div>
               </div>
@@ -155,7 +155,7 @@ export default function Home() {
             <span className="sparkle-purple">AIOStack </span> 
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Traditional DSPM tools weren't built for AI. Get the visibility you need to prevent costly incidents and ensure compliance.
+              Traditional DSPM tools weren&apos;t built for AI. Get the visibility you need to prevent costly incidents and ensure compliance.
             </p>
           </div>
 
@@ -312,7 +312,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-muted-foreground italic">
-                "The eBPF technology is incredible. We're monitoring 10,000+ AI requests per second with zero performance impact on our applications."
+                "The eBPF technology is incredible. We&apos;re monitoring 10,000+ AI requests per second with zero performance impact on our applications."
               </p>
               <div className="flex text-yellow-400 mt-4">
                 {[...Array(5)].map((_, i) => (
