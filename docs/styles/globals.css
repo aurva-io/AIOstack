@@ -533,65 +533,72 @@ span.katex-html {
 }
 
 
-@keyframes sparkle-animation {
-  0% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
-                      radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
+@keyframes scale {
+  from, to {
+    transform: scale(0);
   }
-  12.5% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 15% 20%, rgba(124, 58, 237, 0.6), transparent 98% ),
-                      radial-gradient( circle at 85% 75%, rgba(91, 33, 182, 0.4), transparent 98% );
-  }
-  25% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 20% 30%, rgba(124, 58, 237, 0.7), transparent 98% ),
-                      radial-gradient( circle at 80% 70%, rgba(91, 33, 182, 0.3), transparent 98% );
-  }
-  37.5% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 25% 40%, rgba(124, 58, 237, 0.6), transparent 98% ),
-                      radial-gradient( circle at 75% 60%, rgba(91, 33, 182, 0.4), transparent 98% );
-  }
+  
   50% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 30% 50%, rgba(124, 58, 237, 0.4), transparent 98% ),
-                      radial-gradient( circle at 70% 50%, rgba(91, 33, 182, 0.6), transparent 98% );
+    transform: scale(1);
   }
-  62.5% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 25% 60%, rgba(124, 58, 237, 0.5), transparent 98% ),
-                      radial-gradient( circle at 75% 40%, rgba(91, 33, 182, 0.7), transparent 98% );
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-  75% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 20% 70%, rgba(124, 58, 237, 0.3), transparent 98% ),
-                      radial-gradient( circle at 80% 30%, rgba(91, 33, 182, 0.8), transparent 98% );
+  
+  to {
+    transform: rotate(180deg);
   }
-  87.5% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 15% 80%, rgba(124, 58, 237, 0.4), transparent 98% ),
-                      radial-gradient( circle at 85% 20%, rgba(91, 33, 182, 0.6), transparent 98% );
+}
+
+
+@keyframes background-pan {
+  from {
+    background-position: 0% center;
   }
-  100% {
-    background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                      radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
-                      radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
+  
+  to {
+    background-position: -200% center;
   }
 }
 
 .sparkle-purple {
-  background-image: linear-gradient( 0deg, currentColor, currentColor ),
-                    radial-gradient( circle at 10% 10%, rgba(124, 58, 237, 0.5), transparent 98% ),
-                    radial-gradient( circle at 90% 80%, rgba(91, 33, 182, 0.5), transparent 98% );
-  background-clip: text;
+  animation: background-pan 3s linear infinite;
+  background: linear-gradient(
+    to right,
+    rgb(5, 142, 108),
+    rgb(1, 125, 131),
+    rgb(169, 43, 243),
+    rgb(5, 142, 108)
+  );
+  background-size: 200%;
   -webkit-background-clip: text;
-  color: transparent;
-  animation: sparkle-animation 4s ease-in-out infinite;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
 }
-   
+
+.magic-star {
+  --size: clamp(20px, 1.5vw, 30px);
+  
+  animation: scale 700ms ease forwards;
+  display: block;
+  height: var(--size);
+  left: var(--star-left);
+  position: absolute;
+  top: var(--star-top);
+  width: var(--size);
+}
+
+.magic-star > svg {
+  animation: rotate 1000ms linear infinite;
+  display: block;
+  opacity: 0.7;
+}
 
 
-
-
+.magic-star > svg > path {
+  fill: rgb(123, 31, 162);
+}
