@@ -6,6 +6,7 @@ import { Settings } from "@/lib/meta"
 import { Footer } from "@/components/navigation/footer"
 import { Navbar } from "@/components/navigation/navbar"
 import { Providers } from "@/components/providers"
+import { ConditionalPadding } from "@/components/conditional-padding"
 
 import "@/styles/globals.css"
 
@@ -58,7 +59,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-regular`}>
         <Providers>
           <Navbar />
-          <main className="h-auto px-5 sm:px-8">{children}</main>
+          <ConditionalPadding>{children}</ConditionalPadding>
           <Footer />
         </Providers>
       </body>

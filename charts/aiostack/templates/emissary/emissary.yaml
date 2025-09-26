@@ -18,7 +18,6 @@ spec:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: emissary
     spec:
-      serviceAccountName: aiostack-emissary
       dnsPolicy: ClusterFirst
       containers:
       - name: emissary

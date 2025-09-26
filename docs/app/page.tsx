@@ -19,12 +19,12 @@ export default function Home() {
         <div className="floating-shape"></div>
       </div>
 
-      <section className="flex min-h-[86.5vh] flex-col items-center justify-center py-10 text-center">
+      <section className="flex min-h-[86.5vh] flex-col items-center justify-center py-10 px-4 text-center">
         <h1 className="mt-14 text-4xl font-bold sm:text-6xl">
-        Find Shadow AI  <span className="sparkle-purple"> Before </span> It Finds Trouble 
+          Find Shadow AI  <span className="sparkle-purple"> Before </span> It Finds Trouble
         </h1>
         <p className=" mt-8 text-foreground mb-8 max-w-[700px] leading-relaxed sm:text-lg">
-        Your AI adoption is outpacing your ability to govern it. Regain control with instant visibility into every AI application, API call, and data flow in your organization.
+          Your AI adoption is outpacing your ability to govern it. Regain control with instant visibility into every AI application, API call, and data flow in your organization.
         </p>
 
         <div className="mb-8 flex  flex-wrap gap-4 text-sm">
@@ -45,7 +45,7 @@ export default function Home() {
         <div className="flex items-center gap-5">
           <Link
             href={`/docs${PageRoutes[0].href}`}
-            className={buttonVariants({ className: "px-4", size: "lg" })} 
+            className={buttonVariants({ className: "px-4", size: "lg" })}
           >
             Install Now  &rarr;
           </Link>
@@ -84,7 +84,7 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Shadow AI Proliferation</h3>
                   <p className="text-muted-foreground">
-                    Teams are deploying AI applications without IT oversight, creating security blind spots and compliance risks. 
+                    Teams are deploying AI applications without IT oversight, creating security blind spots and compliance risks.
                     These shadow AI systems operate outside governance frameworks, making them impossible to monitor or secure.
                   </p>
                 </div>
@@ -101,7 +101,7 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Security Vulnerabilities</h3>
                   <p className="text-muted-foreground">
-                    AI systems often handle sensitive data without proper encryption or access controls. 
+                    AI systems often handle sensitive data without proper encryption or access controls.
                     Traditional security tools can&apos;t monitor AI-specific threats, leaving organizations exposed to data breaches and unauthorized access.
                   </p>
                 </div>
@@ -118,7 +118,7 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Compliance Nightmares</h3>
                   <p className="text-muted-foreground">
-                    AI deployments must comply with GDPR, CCPA, and industry regulations, but most lack proper audit trails or data lineage tracking. 
+                    AI deployments must comply with GDPR, CCPA, and industry regulations, but most lack proper audit trails or data lineage tracking.
                     Organizations face hefty fines and legal risks when AI systems can&apos;t demonstrate compliance.
                   </p>
                 </div>
@@ -133,10 +133,10 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Uncontrolled AI Spending</h3>
-                <p className="text-muted-foreground">
-                  AI API costs spiral out of control without visibility into usage patterns, token consumption, or cost attribution. Organizations discover $5,000+ monthly AI bills they can&apos;t track to specific teams or applications, making budget planning impossible.
-                </p>
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Uncontrolled AI Spending</h3>
+                  <p className="text-muted-foreground">
+                    AI API costs spiral out of control without visibility into usage patterns, token consumption, or cost attribution. Organizations discover $5,000+ monthly AI bills they can&apos;t track to specific teams or applications, making budget planning impossible.
+                  </p>
                 </div>
               </div>
             </div>
@@ -149,10 +149,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-xl font-bold mb-4">
-              Introducing 
+              Introducing
             </h2>
             <h2 className="text-4xl sm:text-6xl lg:text-8xl font-bold mb-4 text-center max-w-[90%] sm:max-w-[80%] lg:max-w-[70%] mx-auto">
-            <span className="sparkle-purple">AIOStack </span> 
+              <span className="sparkle-purple">AIOStack </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Traditional DSPM tools weren&apos;t built for AI. Get the visibility you need to prevent costly incidents and ensure compliance.
@@ -270,7 +270,7 @@ export default function Home() {
         </div>
       </section>
 
-{/* 
+      {/* 
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
@@ -357,7 +357,7 @@ export default function Home() {
           <div className="absolute bottom-20 left-1/4 w-16 h-16 border border-green-400 rounded-full"></div>
           <div className="absolute bottom-32 right-1/3 w-20 h-20 border border-pink-400 rounded-full"></div>
         </div>
-        
+
         {/* Linear grid pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="grid grid-cols-12 h-full">
@@ -381,109 +381,113 @@ export default function Home() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left side - Tech stack */}
-            <div className="space-y-8">
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-6 text-purple-300">Tech Stack</h3>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <div className="w-8 w-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                      </svg>
-                    </div>
-                    <h4 className="font-semibold text-purple-300">eBPF</h4>
-                    <p className="text-sm text-gray-400">Kernel-level monitoring</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 w-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                    </div>
-                    <h4 className="font-semibold text-blue-300">Golang</h4>
-                    <p className="text-sm text-gray-400">High-performance backend</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
-                      </svg>
-                    </div>
-                    <h4 className="font-semibold text-green-300">ClickHouse</h4>
-                    <p className="text-sm text-gray-400">Log Store</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="w-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    </div>
-                    <h4 className="font-semibold text-orange-300">Kubernetes</h4>
-                    <p className="text-sm text-gray-400">Cloud-native deployment</p>
-                  </div>
-                </div>
-              </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-6 text-blue-300">Performance</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Time To First Byte</span>
-                    <span className="text-green-400 font-mono">&lt;10 mins</span>
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
+              <h3 className="text-2xl font-bold mb-6 text-purple-300">Tech Stack</h3>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="w-8 w-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                    </svg>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Throughput</span>
-                    <span className="text-green-400 font-mono">10k+ req/s</span>
+                  <h4 className="font-semibold text-purple-300">eBPF</h4>
+                  <p className="text-sm text-gray-400">Kernel-level monitoring</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-8 w-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                    </svg>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">Memory</span>
-                    <span className="text-green-400 font-mono">&lt;200MB per node</span>
+                  <h4 className="font-semibold text-blue-300">Golang</h4>
+                  <p className="text-sm text-gray-400">High-performance backend</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
+                    </svg>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-300">CPU Overhead</span>
-                    <span className="text-green-400 font-mono">&lt;200mcpu per node</span>
+                  <h4 className="font-semibold text-green-300">ClickHouse</h4>
+                  <p className="text-sm text-gray-400">Log Store</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
                   </div>
+                  <h4 className="font-semibold text-orange-300">Kubernetes</h4>
+                  <p className="text-sm text-gray-400">Cloud-native deployment</p>
                 </div>
               </div>
             </div>
 
-            {/* Right side - Code and deployment */}
-            <div className="space-y-8">
-              <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-6 text-green-300">Quick Deploy</h3>
-                <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
-                  <div className="text-gray-400 mb-2"># Deploy in 10 minutes</div>
-                  <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
-                  <div className="text-gray-400 mt-4 mb-2"># Start monitoring at</div>
-                  <div className="text-purple-400">http://staging.aurva.ai</div>
+
+
+
+
+
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
+              <h3 className="text-2xl font-bold mb-6 text-pink-300">Features</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Zero-code instrumentation</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Real-time alerting</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Multi-cloud support</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">REST APIs</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-gray-300">Included Dashboard</span>
                 </div>
               </div>
+            </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-6 text-pink-300">Features</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">Zero-code instrumentation</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">Real-time alerting</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">Multi-cloud support</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">REST APIs</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                    <span className="text-gray-300">Included Dashboard</span>
-                  </div>
+
+            <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
+              <h3 className="text-2xl font-bold mb-6 text-blue-300">Performance</h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Time To First Byte</span>
+                  <span className="text-green-400 font-mono">&lt;10 mins</span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Throughput</span>
+                  <span className="text-green-400 font-mono">10k+ req/s</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Memory</span>
+                  <span className="text-green-400 font-mono">&lt;200MB per node</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">CPU Overhead</span>
+                  <span className="text-green-400 font-mono">&lt;200mcpu per node</span>
+                </div>
+              </div>
+            </div>
+
+
+
+
+            <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
+              <h3 className="text-2xl font-bold mb-6 text-green-300">Quick Deploy</h3>
+              <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
+                <div className="text-gray-400 mb-2"># Deploy in 10 minutes</div>
+                <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
+                <div className="text-gray-400 mt-4 mb-2"># Start monitoring at</div>
+                <div className="text-purple-400">http://staging.aurva.ai</div>
               </div>
             </div>
           </div>
@@ -521,7 +525,7 @@ export default function Home() {
         </div>
 
 
-                  {/* Bottom CTA */}
+        {/* Bottom CTA */}
         {/* <div className="text-center mt-16">
         <div className="inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-8 py-4">
           <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>

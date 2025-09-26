@@ -22,8 +22,8 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
       - name: commander
-        image: "{{ .Values.commander.image.repository }}:{{ .Values.commander.image.tag }}"
-        imagePullPolicy: {{ .Values.commander.image.pullPolicy }}
+        image: "public.ecr.aws/l5a6x1y4/aiostack-commander:{{ .Values.commander.version }}"
+        imagePullPolicy: "IfNotPresent"
         ports:
         - name: http
           containerPort: {{ .Values.commander.service.targetPort }}

@@ -1,6 +1,5 @@
 # Service for ClickHouse
 {{- if .Values.clickhouse.enabled }}
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -27,7 +26,7 @@ spec:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: clickhouse
 
----
+
 # ConfigMap for ClickHouse configuration
 apiVersion: v1
 kind: ConfigMap

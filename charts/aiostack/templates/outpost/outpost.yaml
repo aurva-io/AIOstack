@@ -22,14 +22,16 @@ spec:
       dnsPolicy: ClusterFirst
       containers:
       - name: outpost
-        image: "{{ .Values.outpost.image.repository }}:{{ .Values.outpost.image.tag }}"
-        imagePullPolicy: {{ .Values.outpost.image.pullPolicy }}
+        image: "public.ecr.aws/l5a6x1y4/aiostack-outpost:{{ .Values.outpost.version }}"
+        imagePullPolicy: "IfNotPresent"
         ports:
         - name: http
           containerPort: {{ .Values.outpost.service.targetPort }}
           protocol: TCP
         {{- if .Values.outpost.env }}
         env:
+        - name: LOG_ENV
+          value: "production"
         {{- toYaml .Values.outpost.env | nindent 8 }}
         {{- end }}
         resources:
