@@ -5,19 +5,25 @@
 [![eBPF](https://img.shields.io/badge/eBPF-Powered-green.svg)](https://ebpf.io/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/aurva-io/ai-observability-stack)](https://goreportcard.com/report/github.com/aurva-io/ai-observability-stack)
 
-> **🔍 See AI that doesn't want to be seen**  
-> Real-time discovery and monitoring of AI/ML workloads in Kubernetes using eBPF - no code changes required.
-
+## Find Shadow AI in your cloud
+It auto-discovers AI components you didn’t know existed and ties each to an owner. No code changes. Runs in-cluster via eBPF.
 
 ## What is AIOStack?
 
 **AIOStack** brings AI activity under runtime security oversight inside your environment. It discovers AI components, monitors model/API calls and model downloads, flags sensitive-data exposure and risky egress, ties actions to accountable owners, and produces evidence for investigations, **without code changes** and **running in-cluster**.
 
-- Discover AI workloads across namespaces and clusters, including "Shadow" AI and "Zombie” AI.
-- Detect runtime AI surfaces: MCP servers, MCP clients (local and server), AI agents, AI services, and AI endpoints.
-- Monitor model/API calls and model downloads with endpoint/provider, status, pricing, volume, and timing.
-- Detect sensitive-data exposure (metadata-only by default).
-- Attribute every action to Pods, Deployments, and ServiceAccounts for accountable ownership.
+### What it finds
+
+- **`Shadow AI`** across namespaces and clusters
+- AI Agents, MCP servers, MCP clients, AI services, vector/embedding stores, LLM endpoints
+- `Zombie AI` (unused, orphaned) that still has access
+- Model downloads and AI egress paths (metadata-only by default)
+
+### What you get
+- Complete map of AI surfaces in EKS/GKE/AKS
+- Accountable ownership through attributing action to Pods, Deployments and ServiceAccounts.
+- Immediate risk cues: unknown owners, internet egress, sensitive-data touchpoints
+- Monitoring of model/API calls and model downloads with endpoint/provider, status, pricing, volume, and timing.
 
 ## The Problem:
 Teams spin up and wire AI components independently to move fast. The result isn’t malice; it’s pace and decentralization. But security and platform owners are left without an authoritative picture of **what AI exists, what it’s doing, what data it touches, and who is accountable.**
