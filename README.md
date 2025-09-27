@@ -65,7 +65,7 @@ When something goes wrong, basic questions - **who did what, with which model, a
 - Maps AI data flows across your entire infrastructure
 
 #### 🧠 **AI-Aware Monitoring**
-- **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
+- **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI, Gemini
 - **ML Libraries**: Scikit-learn, transformers, LangChain, Llamaindex
 - **AI Frameworks**: PyTorch, TensorFlow, Keras
 - **MLOps & Orchestration Tools**: MLflow, Ray, Kubeflow
