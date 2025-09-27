@@ -76,7 +76,6 @@ outpost:
     - name: AIOSTACK_VALIDATION_KEY
       value: ""
 
-
 commander:
   enabled: true
   version: figv0

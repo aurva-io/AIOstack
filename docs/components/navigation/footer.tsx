@@ -23,7 +23,7 @@ export function Footer() {
             >
               <Image
                 src="/logo.svg"
-                alt="AI Observability Stack Logo"
+                alt="AIOStack Logo"
                 width={30}
                 height={30}
                 className="dark:invert"

@@ -14,10 +14,6 @@ export const Documents: Paths[] = [
         title: "Architecture",
         href: "/architecture",
       },
-      {
-        title: "Security",
-        href: "/security",
-      },
     ],
   },
   {
@@ -29,21 +25,24 @@ export const Documents: Paths[] = [
         href: "/pre-reqs",
       },
       {
-        title: "Steps",
+        title: "Quick Start",
         href: "/steps",
       },
       {
         title: "Verification",
         href: "/verification",
       },
-      {
-        title: "Troubleshooting",
-        href: "/troubleshooting",
-      },
-      {
-        title: "Next Steps",
-        href: "/next-steps",
-      },
+
     ],
   },
+  {
+    title: "Miscellaneous",
+    href: "/misc",
+    items: [
+      {
+        title: "Security Notice",
+        href: "/security",
+      },
+    ],
+  }
 ]

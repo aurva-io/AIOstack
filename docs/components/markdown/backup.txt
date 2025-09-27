@@ -53,7 +53,7 @@ export default function Home() {
         <div className="mt-10 w-full max-w-6xl px-4">
           <Image
             src="/hero.png"
-            alt="AI Observability Stack overview"
+            alt="AIOStack overview"
             width={1600}
             height={900}
             className="mx-auto w-full rounded-xl border border-border/50 shadow-md"
@@ -246,7 +246,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-muted-foreground italic">
-                "AI Observability Stack gave us complete visibility into our AI infrastructure. We caught a critical data drift issue that could have cost us millions."
+                "AIOStack gave us complete visibility into our AI infrastructure. We caught a critical data drift issue that could have cost us millions."
               </p>
               <div className="flex text-yellow-400 mt-4">
                 {[...Array(5)].map((_, i) => (
@@ -311,7 +311,7 @@ export default function Home() {
             Ready to Take Control of Your AI?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Join scores of companies already using AI Observability Stack to monitor, secure, and optimize their AI infrastructure.
+            Join scores of companies already using AIOStack to monitor, secure, and optimize their AI infrastructure.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link

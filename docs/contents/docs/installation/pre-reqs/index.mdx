@@ -1,194 +1,131 @@
 ---
-title: Pre-requisites
-description: This section covers the pre-requisites for installing AI Observability Stack for AI agents and ML workloads in Kubernetes.
+title: Prerequisites
+description: Everything you need before installing AIOStack. Quick checklist to get you ready in 2 minutes.
 keywords:
   [
-    "pre-requisites",
+    "prerequisites",
     "kubernetes",
     "helm",
-    "ebpf",
-    "monitoring",
-    "ai",
-    "ml",
-    "observability",
+    "requirements",
+    "setup",
+    "quick start",
   ]
 ---
 
-
 <Step>
-<StepItem title="Kubernetes Cluster Access">
+<StepItem title="Quick Checklist">
 
-You need administrative access to a Kubernetes cluster with the following specifications:
+**Before you start, make sure you have:**
 
-- **GKE (Google Kubernetes Engine):** Version 1.24+ with Standard or Autopilot mode
-- **EKS (Amazon Elastic Kubernetes Service):** Version 1.24+
-- **AKS (Azure Kubernetes Service):** Version 1.24+
-- **On-premises:** Any Kubernetes distribution (kubeadm, k3s, etc.)
+1. **Kubernetes cluster** (version 1.29+)
+2. **kubectl** installed and configured
+3. **Helm 3.x** installed
+4. **Admin access** to your cluster
 
-**Required Permissions:**
-
-- Cluster admin privileges to create DaemonSets
-- Ability to create ServiceAccounts and RBAC resources
-- Permission to deploy privileged containers
-
-Verify cluster access:
-
-```bash
-kubectl cluster-info
-kubectl auth can-i create daemonsets --all-namespaces
-```
 
 </StepItem>
 
-<StepItem title="Node Requirements">
+<StepItem title="Kubernetes Cluster">
 
-**Linux Kernel Version:**
+**Any of these work:**
+- **Cloud:** GKE, EKS, AKS (version 1.29+)
+- **On-premises:** Any Kubernetes distribution ( best effort support)
 
-- Minimum: Linux kernel 5.4+
-- Recommended: Linux kernel 5.8+ for optimal eBPF support
-- Required: eBPF and BTF (BPF Type Format) support enabled
-
-**Node Specifications:**
-
-- CPU: Minimum 1 vCPU per node 
-- Memory: Minimum 256Mi available per node
-- Storage: 1Gi free disk space for logs and temporary files
-
-Check kernel version on nodes:
-
+**Quick test:**
 ```bash
-kubectl get nodes -o wide
-# Or check on a specific node
-kubectl debug node/NODE_NAME -it --image=busybox -- chroot /host uname -r
+kubectl version
 ```
 
-Verify eBPF support:
-
-```bash
-kubectl debug node/NODE_NAME -it --image=ubuntu -- chroot /host bash -c "ls /sys/kernel/btf/vmlinux"
+Expected output:
+```sh
+# Client Version: v1.34.1
+# Kustomize Version: v5.7.1
+# Server Version: v1.33.4-gke.1134000
 ```
 
 </StepItem>
 
 <StepItem title="Required Tools">
 
-**Local Machine Requirements:**
-
-- **kubectl:** Kubernetes command-line tool
-- **Helm 3.8+:** For Helm-based installation
-- **Git:** To clone the repository (optional)
-
-Install kubectl:
-
+**Install kubectl:**
 ```bash
+# macOS
+brew install kubectl
+
 # Linux
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# macOS
-brew install kubectl
 
 # Windows
 choco install kubernetes-cli
 ```
 
-Install Helm:
-
+**Install Helm:**
 ```bash
+# macOS
+brew install helm
+
 # Linux/macOS
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-# macOS (alternative)
-brew install helm
 
 # Windows
 choco install kubernetes-helm
 ```
 
-Verify installations:
-
+**Verify everything works:**
 ```bash
 kubectl version --client
 helm version
 ```
 
-
-
-<Note title="The output should be like this">
+Expected output:
+```sh
+kubectl version --client
+# Client Version: v1.34.1
+# Kustomize Version: v5.7.1
+helm version
+#version.BuildInfo{Version:"v3.15.2", GitCommit:"1a500d5625419a524fdae4b33de351cc4f58ec35", GitTreeState:"clean", GoVersion:"go1.22.4"}
 ```
-  user-default ~ % kubectl version --client
-  Client Version: v1.29.0
-  Kustomize Version: v5.0.4-0.20230601165947-6ce0bf390ce3
-  
-  user-default ~ % helm version
-  version.BuildInfo{Version:"v3.15.2", GitCommit:"1a500d5625419a524fdae4b33de351cc4f58ec35", GitTreeState:"clean", GoVersion:"go1.22.4"}
-```
-</Note>
-
 </StepItem>
 
-{/* <StepItem title="Network Requirements">
+<StepItem title="Cluster Permissions">
 
-**Cluster Networking:**
+**You need admin access to:**
+- Create namespaces
+- Deploy DaemonSets
+- Create ServiceAccounts
 
-- Container Network Interface (CNI) plugin installed
-- Network policies support (recommended for security)
-- Egress access to container registries
-
-**Firewall/Security Groups:**
-
-- Allow inbound traffic on port 7470 (metrics endpoint)
-- Allow inbound traffic on port 8080 (health checks)
-- Outbound HTTPS access for pulling container images
-
-**Service Mesh Compatibility:**
-
-- Istio: Supported with privileged containers
-- Linkerd: Supported with proper annotations
-- Consul Connect: Supported with CNI configuration
-
-</StepItem> */}
-
-<StepItem title="Container Runtime">
-
-**Supported Container Runtimes:**
-- **containerd:** Fully supported (recommended)
-- **Docker Engine:** Supported (deprecated in newer K8s versions)
-
-Check container runtime:
-
+**Test your permissions:**
 ```bash
-kubectl get nodes -o wide
-# Look at CONTAINER-RUNTIME column
+kubectl auth can-i create daemonsets --all-namespaces
 ```
+
+> **Success:** Should return "yes"
 
 </StepItem>
 
-<StepItem title="Required Knowledge">
+<StepItem title="System Requirements">
 
-**Kubernetes Concepts:**
+**Minimum specs per node:**
+- **CPU:** 1 vCPU
+- **Memory:** 256MB available
+- **Kernel:** Linux 5.15+ (most modern clusters have this)
 
-- Understanding of DaemonSets, ConfigMaps, and Services
-- Basic knowledge of RBAC and ServiceAccounts
-- Familiarity with kubectl commands
-
-**That's it! You're ready to install AIOStack.**
+**That's it!** No complex networking or special configurations needed.
 
 </StepItem>
 </Step>
 
-**Don't worry if you are new to Kubernetes, our steps are designed to be easy to follow :)**
+## Need Help?
 
-## If you encounter issues:
+**Can't get something working?**
+- **Email:** support@aurva.io
+- **Docs:** [Full documentation](/docs/home)
 
-- Find help on our [Documentation Site](https://ai.staging.aurva.io)
-- Raise an issue on our [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
-- Join our [Community Slack](https://join.slack.com/t/av-ai-observability/shared_invite/zt-24000000000000000000000000000000)
-- Email Support: support@aurva.io
+**New to Kubernetes?** No worries! Our installation steps are designed to be beginner-friendly.
 
----
+## Ready to Install?
 
-**Note:** The AI Observability Stack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
+Once you've checked off all the items above, you're ready to [install AIOStack](/docs/installation/steps)!
 
-[![Deploy to Kubernetes](https://img.shields.io/badge/Deploy%20to-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes)](https://github.com/aurva-io/ai-observability-stack)
 

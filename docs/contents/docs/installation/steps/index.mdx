@@ -1,9 +1,9 @@
 ---
-title: Installation
-description: This section covers the steps for installing AI Observability Stack for AI agents and ML workloads in Kubernetes.
+title: Quick Start Installation
+description: Get AIOStack running in your Kubernetes cluster in under 5 minutes. Simple, secure, and production-ready.
 keywords:
   [
-    "steps",
+    "quick start",
     "kubernetes",
     "helm",
     "ebpf",
@@ -11,144 +11,131 @@ keywords:
     "ai",
     "ml",
     "observability",
+    "installation",
+    "setup",
   ]
 ---
 
 <Step>
-<StepItem title="Helm Installation (Recommended)">
+<StepItem title="Get up and running in 5 minutes">
 
-**Step 0:** Create an Account and Get Your Credentials
+## Prerequisites
+- Kubernetes cluster (1.20+)
+- Helm 3.x installed
+- kubectl configured
 
-1. Go to [staging.aurva.ai](https://staging.aurva.ai) and sign up for an account.  
-2. After registering, you will receive a **Company ID** and a **Token**.  
-3. Download the **Outpost Service Helm YAML** and add your Company ID and Token to it.  
+---
 
->  Note: Validation happens securely inside your cluster. **No inbound internet access is required**.
+## Step 1: Add the Helm Repository
 
-<img src="/signup_screen.png" alt="Helm Installation Step 0"  width="80%" />
-
-**Step 1:** Add the AI Observability Stack Helm repository
+**One-time setup:**
 
 ```bash
-helm repo add ai-observability https://aurva-io.github.io/ai-observability-stack
+helm repo add aiostack https://charts.aurva.ai/
 helm repo update
+helm repo list
 ```
 
-**Step 2:** Create a dedicated namespace
+> Success! You should see "aiostack" in your repo list
+
+---
+
+## Step 2: Get Your Free Account
+
+**Create your account and grab your credentials:**
+
+1. **Sign up** at [staging.aurva.ai](https://staging.aurva.ai) (takes 30 seconds)
+2. **Copy your credentials** from an email sent to you:
+   - Company ID
+   - AIOStack Validation Key
+
+💡 **Security Note:** All validation happens inside your cluster. No inbound internet access required - your data stays private.
+
+<img src="/signup_screen.png" alt="Account Setup Dashboard" width="80%" />
+
+---
+
+## Step 3: Configure Your Credentials
+
+**Replace the environment variables with your credentials:**
 
 ```bash
-kubectl create namespace ai-observability
+# Extract the default values file
+helm show values testgh/aiostack > values.yaml
+
+# Edit the values.yaml file and replace:
+# In Outpost:
+# - name: COMPANY_ID
+#   value: "<YOUR COMPANY ID>"
+# - name: AIOSTACK_VALIDATION_KEY
+#   value: "<YOUR AIOSTACK VALIDATION KEY>"
+
+# In Observer:
+# - name: OUTPOST_URL
+#   value: "aiostack-outpost.<YOUR NAMESPACE>.svc.cluster.local:7471"
+# - name: IS_OUTPOST_URL_SECURE
+#   value: "false"
 ```
 
-**Step 3:** Install with default configuration
+---
+
+## Step 4: Deploy to Your Cluster
+
 
 ```bash
-helm install ai-observability-stack ai-observability/ai-observability-stack \
-  --namespace ai-observability \
-  --create-namespace
+# Create namespace 
+kubectl create namespace aiostack
 ```
-
-**Step 4:** Install with custom values (recommended for production)
-
-Create a custom values file by modifying the default values.yaml file.
-
-
-**Step 5:** Install with custom configuration:
 
 ```bash
-helm install ai-observability-stack ai-observability/ai-observability-stack \
-  --namespace ai-observability \
-  --values values.yaml 
+# Install with your configured values
+helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values.yaml
 ```
+
+---
+
+## Step 5: Verify Installation
+
+**Check if everything is running:**
+```bash
+kubectl get pods -n aiostack
+```
+
+**Expected output:**
+```
+NAME                     READY   STATUS    RESTARTS   AGE
+aiostack-commander-xxx   1/1     Running   0          2m
+aiostack-emissary-xxx    1/1     Running   0          2m
+aiostack-observer-xxx    1/1     Running   0          2m
+aiostack-outpost-xxx     1/1     Running   0          2m
+aiostack-ui-xxx          1/1     Running   0          2m
+```
+
+---
+
+## 🎉 You're Done!
+
+**Access your dashboard:**
+- **URL:** `http://staging.aurva.ai` 
+- **Login:** Use the email and password you signed up with.
+
+**Next steps:**
+- [Configure data sources](/docs/configuration)
+- [Set up alerts](/docs/alerts)
+- [View your first metrics](/docs/dashboard)
+
+---
+
+## Need Help?
+
+**Common issues:**
+- **Pods not starting?** Check resource limits and node capacity
+- **Can't access dashboard?** Verify your ingress/service configuration
+- **Missing data?** Ensure your applications are instrumented
+
+**Get support:**
+- 📧 Email: support@aurva.ai
+- 📖 Docs: [Full documentation](/docs/home)
 
 </StepItem>
 </Step>
-
-{/* ---
-
-<Step>
-<StepItem title="Method 2: Manual Installation with kubectl">
-
-**Step 1:** Clone the repository
-
-```bash
-git clone https://github.com/aurva-io/ai-observability-stack.git
-cd ai-observability-stack
-```
-
-**Step 2:** Create namespace
-
-```bash
-kubectl create namespace ai-observability
-```
-
-**Step 3:** Apply RBAC configuration
-
-```bash
-kubectl apply -f manifests/rbac.yaml
-```
-
-**Step 4:** Create ConfigMap with configuration
-
-```bash
-cat > config.yaml << 'EOF'
-tracing:
-  sampling_rate: 1.0
-  buffer_size: "64MB"
-
-providers:
-  openai:
-    enabled: true
-    track_costs: true
-  anthropic:
-    enabled: true
-    track_costs: true
-  huggingface:
-    enabled: true
-
-libraries:
-  - pytorch
-  - tensorflow
-  - scikit-learn
-  - transformers
-  - langchain
-  - llamaindex
-
-export:
-  prometheus:
-    enabled: true
-    port: 7470
-  health_check:
-    enabled: true
-    port: 8080
-EOF
-
-kubectl create configmap ai-observability-config \
-  --from-file=config.yaml=config.yaml \
-  --namespace ai-observability
-```
-
-**Step 5:** Deploy the DaemonSet
-
-```bash
-kubectl apply -f manifests/daemonset.yaml -n ai-observability
-```
-
-**Step 6:** Create Service for metrics
-
-```bash
-kubectl apply -f manifests/service.yaml -n ai-observability
-```
-
-**Step 7:** (Optional) Deploy ServiceMonitor for Prometheus
-
-```bash
-kubectl apply -f manifests/servicemonitor.yaml -n ai-observability
-```
-
-</StepItem>
-</Step>
---- */}
-
-
-More methods of installation coming soon.

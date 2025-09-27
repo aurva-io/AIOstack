@@ -24,7 +24,7 @@ export function Logo() {
             height={28}
             loading="lazy"
             decoding="async"
-            className="dark:invert absolute inset-0 backface-hidden rotate-y-180"
+            className="absolute inset-0 backface-hidden rotate-y-180"
           />
         </div>
       </div>

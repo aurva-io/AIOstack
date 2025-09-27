@@ -53,7 +53,7 @@ export default function Home() {
         <div className="mt-10 w-full max-w-6xl px-4">
           <Image
             src="/hero_2.png"
-            alt="AI Observability Stack overview"
+            alt="AIOStack overview"
             width={1600}
             height={900}
             className="mx-auto w-full rounded-xl border border-border/50 shadow-md"
@@ -290,7 +290,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-muted-foreground italic">
-                "AI Observability Stack gave us complete visibility into our AI infrastructure. We caught a critical data drift issue that could have cost us millions."
+                "AIOStack gave us complete visibility into our AI infrastructure. We caught a critical data drift issue that could have cost us millions."
               </p>
               <div className="flex text-yellow-400 mt-4">
                 {[...Array(5)].map((_, i) => (
@@ -386,7 +386,7 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-6 text-purple-300">Tech Stack</h3>
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
-                  <div className="w-8 w-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                     </svg>
@@ -395,7 +395,7 @@ export default function Home() {
                   <p className="text-sm text-gray-400">Kernel-level monitoring</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-8 w-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                     </svg>
@@ -404,7 +404,7 @@ export default function Home() {
                   <p className="text-sm text-gray-400">High-performance backend</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-8 w-8 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
                     </svg>
@@ -413,7 +413,7 @@ export default function Home() {
                   <p className="text-sm text-gray-400">Log Store</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-8 w-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                     </svg>
@@ -484,7 +484,7 @@ export default function Home() {
             <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
               <h3 className="text-2xl font-bold mb-6 text-green-300">Quick Deploy</h3>
               <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
-                <div className="text-gray-400 mb-2"># Deploy in 10 minutes</div>
+                <div className="text-gray-400 mb-2"># Deploy in 2 minutes</div>
                 <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
                 <div className="text-gray-400 mt-4 mb-2"># Start monitoring at</div>
                 <div className="text-purple-400">http://staging.aurva.ai</div>
@@ -503,7 +503,7 @@ export default function Home() {
             Ready to Take Control of Your AI?
           </h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Join scores of companies already using AI Observability Stack to monitor, secure, and optimize their AI infrastructure.
+            Join scores of companies already using AIOStack to monitor, secure, and optimize their AI infrastructure.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link

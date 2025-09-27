@@ -23,7 +23,7 @@ export default function Home() {
           `,
           backgroundSize: '40px 40px'
         }}></div>
-        
+
         {/* Diagonal lines */}
         <div className="absolute inset-0" style={{
           backgroundImage: `
@@ -42,14 +42,14 @@ export default function Home() {
           <div className="w-12 h-1 bg-slate-300 dark:bg-slate-600"></div>
           <div className="w-20 h-1 bg-slate-300 dark:bg-slate-600"></div>
         </div>
-        
+
         {/* Left side stack */}
         <div className="absolute left-20 top-48 space-y-4">
           <div className="w-12 h-1 bg-slate-300 dark:bg-slate-600"></div>
           <div className="w-16 h-1 bg-slate-300 dark:bg-slate-600"></div>
           <div className="w-8 h-1 bg-slate-300 dark:bg-slate-600"></div>
         </div>
-        
+
         {/* Bottom right grid */}
         <div className="absolute bottom-32 right-32 grid grid-cols-2 gap-2">
           <div className="w-2 h-2 bg-slate-300 dark:bg-slate-600"></div>
@@ -63,9 +63,9 @@ export default function Home() {
         {/* Hero section */}
         <div className={`transition-all duration-700 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <h1 className="mb-6 text-4xl font-light tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl md:text-6xl lg:text-7xl">
-            AI Observability Stack
+            AIOStack
           </h1>
-          
+
 
           <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed sm:text-lg md:text-xl mb-12">
             Zero-instrumentation eBPF monitoring for AI agents, LLM calls, and ML
@@ -80,12 +80,12 @@ export default function Home() {
             <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
             <span className="text-sm text-slate-700 dark:text-slate-300">eBPF Powered</span>
           </div>
-          
+
           <div className="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
             <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
             <span className="text-sm text-slate-700 dark:text-slate-300">Kubernetes Native</span>
           </div>
-          
+
           <div className="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
             <span className="w-2 h-2 bg-violet-500 rounded-full"></span>
             <span className="text-sm text-slate-700 dark:text-slate-300">Multi-Cloud Support</span>
@@ -101,7 +101,7 @@ export default function Home() {
             >
               Get Started
             </Link>
-            
+
             <button className="px-6 py-3 text-base font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors">
               Watch Demo
             </button>
