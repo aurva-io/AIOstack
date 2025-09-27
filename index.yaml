@@ -3,13 +3,13 @@ entries:
   aiostack:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-26T16:25:55.87126+05:30"
+    created: "2025-09-27T11:00:00.933667+05:30"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
-    digest: 1ac1f92845c02f632b22c8b944d6fc2d22f3ead35dce43020bcdcd7ec30f83ad
+    digest: 834671df02d5ea8eccab8de0974ecd2dfe8ae6379cb82106e7ec99a9b7bfa532
     name: aiostack
     type: application
     urls:
-    - aiostack-0.2.0.tgz
+    - http://aiostack-public.s3-website.ap-south-1.amazonaws.com/aiostack-0.2.0.tgz
     version: 0.2.0
-generated: "2025-09-26T16:25:55.870018+05:30"
+generated: "2025-09-27T11:00:00.930737+05:30"
