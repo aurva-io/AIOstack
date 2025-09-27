@@ -218,7 +218,7 @@ export default function Home() {
                   <div className="w-6 h-6 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                     <span className="text-red-600 dark:text-red-400 text-sm">!</span>
                   </div>
-                  <p>Data breaches cost $4.45M on average - and AI makes them harder to detect</p>
+                  <p>Data breaches cost a lot of money and AI makes them harder to detect</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center flex-shrink-0 mt-1">

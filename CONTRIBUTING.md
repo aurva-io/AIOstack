@@ -1,6 +1,6 @@
-# Contributing to AV AI Observability Stack
+# Contributing to AV AIOStack
 
-Thank you for your interest in contributing to the AV AI Observability Stack!
+Thank you for your interest in contributing to the AV AIOStack!
 This document outlines how to contribute to this project.
 
 ## How to Contribute

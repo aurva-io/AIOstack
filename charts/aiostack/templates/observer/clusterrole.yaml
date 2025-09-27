@@ -5,18 +5,6 @@ metadata:
   name: aiostack-observer-clusterrole-{{ .Release.Name }}
 rules:
 - apiGroups: [""]
-  resources: ["pods", "services", "nodes"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["batch"]
-  resources: ["jobs"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["networking.k8s.io"]
-  resources: ["ingresses"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["networking.istio.io"]
-  resources: ["virtualservices"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["apps"]
-  resources: ["deployments", "daemonsets", "replicasets"]
+  resources: ["pods"]
   verbs: ["get", "watch", "list"]
 {{- end }}

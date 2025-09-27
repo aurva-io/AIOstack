@@ -37,8 +37,6 @@ observer:
     - name: CONNECTION_CHANNEL_SIZE
       value: "100"
     # The following are for you to modify
-    - name: SKIP_NAMESPACES
-      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
     - name: OUTPOST_URL
       value: "aiostack-outpost.alpha.svc.cluster.local:7471"
     - name: IS_OUTPOST_URL_SECURE
@@ -66,6 +64,8 @@ outpost:
     # The following are for you to modify
     - name: COMMANDER_URL
       value: "aiostack-commander.aiostack-test.svc.cluster.local:7470"
+    - name: SKIP_NAMESPACES
+      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
     - name: INSECURE_SKIP_VERIFY
       value: "false"
     - name: COMPANY_ID
