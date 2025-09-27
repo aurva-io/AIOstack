@@ -1,6 +1,9 @@
+global:
+  namespace: alphabet
+
 observer:
   enabled: true
-  version: elderberryv2
+  version: figv0
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -37,14 +40,16 @@ observer:
     - name: CONNECTION_CHANNEL_SIZE
       value: "100"
     # The following are for you to modify
+    - name: SKIP_NAMESPACES
+      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,alphabet,aiostack,monitoring,gke-mcs"
     - name: OUTPOST_URL
-      value: "aiostack-outpost.alpha.svc.cluster.local:7471"
+      value: "aiostack-outpost.alphabet.svc.cluster.local:7471"
     - name: IS_OUTPOST_URL_SECURE
       value: "false"
 
 outpost:
   enabled: true
-  version: elderberryv2
+  version: figv0
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -63,32 +68,241 @@ outpost:
       value: ":7471"
     # The following are for you to modify
     - name: COMMANDER_URL
-      value: "aiostack-commander.aiostack-test.svc.cluster.local:7470"
-    - name: SKIP_NAMESPACES
-      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
+      value: "aiostack-commander.alphabet.svc.cluster.local:7470"
     - name: INSECURE_SKIP_VERIFY
       value: "false"
     - name: COMPANY_ID
-      value: "08928634-b659-4c01-9d48-f157bf6249f4"
+      value: ""
     - name: AIOSTACK_VALIDATION_KEY
-      value: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb21wYW55SUQiOiIwODkyODYzNC1iNjU5LTRjMDEtOWQ0OC1mMTU3YmY2MjQ5ZjQiLCJmZWF0dXJlcyI6WyJGUkVFIl0sIm1heF9hcHBzIjoyMCwiaXNzIjoiYWlvc3RhY2stcGFhcy13YXJkZW4iLCJzdWIiOiJhdl8wODkyODYzNC1iNjU5LTRjMDEtOWQ0OC1mMTU3YmY2MjQ5ZjQiLCJhdWQiOlsiYWlvc3RhY2stcGFhcy1hcHAiXSwiZXhwIjoxNzU5Njc2OTczLCJpYXQiOjE3NTg0NjczNzN9.j5YKSBpBkq6OyqN2kXwJC_xbSnVLfr55FzGt64O7HiwboU9UG_i0IL3vMCSuylfD6fRmJ46hNsw08-HLqXS4CAwUuK_mUvs000g-K0YdjyXzjwhhre-n7J8L1ltvOgvrgsOm144qKUbcZssdo90i2X9vgvmL9GPBCPZLAEr3245rxMMZ62EtF4q2ImKzVB42EhX2fwEeaM7bpLIomPnjrq7qZRQ_AoUqXpGrU-t4pMPrNpvYt--Rf_r1-X588cUxer_-0997-JX3e9G4bF2CrxiizGpDZNocx2ux9krctR50mxFZrjbJSBou4HbQya1HaZbl3klQ0CABW7mBoAqKJA"
+      value: ""
 
-
-
-
-
-# YOU MAY LEAVE THE FOLLOWING BLOCKS AS IS, ONLY MODIFY THE VALUES IF YOU KNOW WHAT YOU ARE DOING
 commander:
-  enabled: false
+  enabled: true
+  version: figv0
+  replicaCount: 1
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 7470
+    targetPort: 7470
+  serviceAccount:
+    create: true
+    name: aiostack-commander-sa
+    annotations:
+    labels: {}
+  env:
+    - name: LOG_ENV
+      value: "production"
+    - name: GLOBAL_DB_URL
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.alphabet.svc.cluster.local:5432/global"
+    - name: GLOBAL_CH_URL
+      value: "clickhouse://aurva:aurvaaiostack@aiostack-clickhouse.alphabet.svc.cluster.local:9000/default"
+    - name: COMMANDER_PORT
+      value: ":7470"
+    - name: "INSECURE_SKIP_VERIFY"
+      value: "false"
 
 emissary:
-  enabled: false
+  enabled: true
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
+    tag: figv0
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  env:
+    - name: LOG_ENV
+      value: "production"
+    - name: GLOBAL_DB_URL
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.alphabet.svc.cluster.local:5432/global"
+    - name: GLOBAL_DB_READ_URL
+      value: "postgres://postgres:aurvaaiostack@aiostack-postgresql.alphabet.svc.cluster.local:5432/global"
+    - name: GLOBAL_CH_URL
+      value: "clickhouse://aurva:aurvaaiostack@aiostack-clickhouse.alphabet.svc.cluster.local:9000/default"
+    - name: PRIVATE_KEY
+      value: ""
+    - name: PUBLIC_KEY
+      value: ""
+    - name: VAULT_PRIVATE_KEY
+      value: ""
+    - name: SMTP_USERNAME
+      value: ""
+    - name: SMTP_PASSWORD
+      value: ""
+    - name: SMTP_FROM_EMAIL
+      value: ""
+
+  httproute:
+    enabled: true
+    name: aiostack-emissary
+    gateway:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    privateAccess:
+      enabled: false
+      securityPolicy: aurva-private-vpn-alb-access
+    host: "api.staging.aurva.ai"
+    service:
+      name: aiostack-emissary
+      port: 8080
+
+  healthCheckPolicy:
+    enabled: true
+    name: aiostack-emissary
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 8080
+        requestPath: /unauth/ping
+    serviceName: aiostack-emissary
+
+  serviceAccount:
+    create: true
+    name: aiostack-emissary-sa
+    annotations:
+    labels: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
 
 ui:
-  enabled: false
+  enabled: true
+  domain: "staging.aurva.ai"
+  image:
+    repository: public.ecr.aws/l5a6x1y4/aiostack-ui
+    tag: figv0
+    pullPolicy: IfNotPresent
+  replicaCount: 1
+  dnsPolicy: "ClusterFirst"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  env:
+    - name: NEXT_PUBLIC_API_URL
+      value: "https://api.staging.aurva.ai/"
+    - name: VERSION
+      value: "figv0"
+  additionalLabels: {}
+  annotations: {}
+
+  healthCheck:
+    enabled: true
+    path: "/"
+    initialDelaySeconds: 30
+    periodSeconds: 10
+  serviceAccount:
+    create: true
+    name: aiostack-ui-sa
+    annotations:
+    labels: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: 3000
+
+  httproute:
+    enabled: true
+    name: aiostack-ui
+    gateway:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    privateAccess:
+      enabled: false
+      securityPolicy: aurva-private-vpn-alb-access
+    host: "staging.aurva.ai"
+    service:
+      name: aiostack-ui
+      port: 3000
+
+  healthCheckPolicy:
+    enabled: true
+    name: aiostack-ui
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 3000
+        requestPath: /
+    serviceName: aiostack-ui
 
 postgresql:
-  enabled: false
+  enabled: true
+  image:
+    repository: postgres
+    tag: "17"
+    pullPolicy: IfNotPresent
+  auth:
+    postgresPassword: "aurvaaiostack"
+    username: "postgres"
+    database: "global"
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: ""
+  service:
+    type: ClusterIP
+    port: 5432
 
 clickhouse:
-  enabled: false
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: clickhouse/clickhouse-server
+    tag: "24.8-alpine"
+    pullPolicy: IfNotPresent
+  auth:
+    username: "aurva"
+    database: "default"
+    password: "aurvaaiostack"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  persistence:
+    enabled: true
+    size: 20Gi
+  service:
+    type: ClusterIP
+    httpPort: 8123
+    nativePort: 9000
+  config:
+    logLevel: "information"
+    maxMemoryUsage: 0.8
+    maxServerMemoryUsage: 0.9
+    timezone: "UTC"
+    queryLog: false
+    customSettings: |
+      <merge_tree>
+        <max_suspicious_broken_parts>100</max_suspicious_broken_parts>
+        <parts_to_delay_insert>1000</parts_to_delay_insert>
+        <parts_to_throw_insert>3000</parts_to_throw_insert>
+      </merge_tree>
+      <profiles>
+        <default>
+          <max_memory_usage>8000000000</max_memory_usage>
+          <use_uncompressed_cache>0</use_uncompressed_cache>
+          <load_balancing>random</load_balancing>
+          <max_execution_time>300</max_execution_time>
+        </default>
+      </profiles>
+  customConfig: false
