@@ -186,7 +186,7 @@ We welcome contributions! Here's how to get started:
 - eBPF programs use only required, minimal capabilities.
 - Aligned with Kubernetes Security Contexts and Pod Security Standards.
 
-**Reporting Vulnerabilities:** security@aurva.io<br>
+**Reporting Vulnerabilities:** business@aurva.io<br>
 **Security Audit:** Results will be published as available.
 
 ### Aurva Cloud Data Handling and Privacy
