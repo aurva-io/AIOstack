@@ -66,7 +66,7 @@ When something goes wrong, basic questions - **who did what, with which model, a
 
 #### 🧠 **AI-Aware Monitoring**
 - **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
-- **ML Libraries**: Scikit-learn, transformers, LangChain, llamaindex
+- **ML Libraries**: Scikit-learn, transformers, LangChain, Llamaindex
 - **AI Frameworks**: PyTorch, TensorFlow, Keras
 - **MLOps & Orchestration Tools**: MLflow, Ray, Kubeflow
 - **Runtime Support**: Python, Node.js, Java, Go applications
@@ -90,8 +90,8 @@ When something goes wrong, basic questions - **who did what, with which model, a
 ## Quick Start
 
 ### Prerequisites
-- Kubernetes 1.24+ 
-- Linux kernel 4.18+ (5.4+ recommended)
+- Kubernetes 1.29+ 
+- Linux kernel 5.15+ (5.4+ recommended)
 - Cluster admin privileges (DaemonSet with eBPF capabilities)
 - BTF-enabled kernel
 
