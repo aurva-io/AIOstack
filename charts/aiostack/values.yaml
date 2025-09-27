@@ -3,7 +3,7 @@ global:
 
 observer:
   enabled: true
-  version: elderberryv2
+  version: figv0
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -49,7 +49,7 @@ observer:
 
 outpost:
   enabled: true
-  version: elderberryv2
+  version: figv0
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -79,7 +79,7 @@ outpost:
 
 commander:
   enabled: true
-  version: elderberryv2
+  version: figv0
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -109,7 +109,7 @@ emissary:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
-    tag: elderberryv2
+    tag: figv0
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -172,7 +172,7 @@ ui:
   domain: "staging.aurva.ai"
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-ui
-    tag: elderberryv4
+    tag: figv0
     pullPolicy: IfNotPresent
   replicaCount: 1
   dnsPolicy: "ClusterFirst"
@@ -187,7 +187,7 @@ ui:
     - name: NEXT_PUBLIC_API_URL
       value: "https://api.staging.aurva.ai/"
     - name: VERSION
-      value: "elderberryv4"
+      value: "figv0"
   additionalLabels: {}
   annotations: {}
 
@@ -264,7 +264,7 @@ clickhouse:
     pullPolicy: IfNotPresent
   auth:
     username: "aurva"
-    database: "aiostack_logs"
+    database: "default"
     password: "aurvaaiostack"
   resources:
     limits:
@@ -300,3 +300,4 @@ clickhouse:
           <max_execution_time>300</max_execution_time>
         </default>
       </profiles>
+  customConfig: false

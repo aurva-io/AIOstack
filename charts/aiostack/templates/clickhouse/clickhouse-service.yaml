@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/name: aiostack-clickhouse
+    app.kubernetes.io/component: clickhouse
 spec:
   type: {{ .Values.clickhouse.service.type }}
   ports:
@@ -20,9 +20,9 @@ spec:
     protocol: TCP
   selector:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/name: aiostack-clickhouse
+    app.kubernetes.io/component: clickhouse
 
-
+---
 # ConfigMap for ClickHouse configuration
 apiVersion: v1
 kind: ConfigMap
@@ -31,7 +31,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/name: aiostack-clickhouse
+    app.kubernetes.io/component: clickhouse
 data:
   custom.xml: |
     <yandex>
@@ -79,7 +79,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/name: aiostack-clickhouse
+    app.kubernetes.io/component: clickhouse
 type: Opaque
 data:
   {{- if .Values.clickhouse.auth.existingSecret }}
@@ -98,7 +98,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/name: aiostack-clickhouse
+    app.kubernetes.io/component: clickhouse
 data:
   custom-users.xml: |
     {{ .Values.clickhouse.users | nindent 4 }}

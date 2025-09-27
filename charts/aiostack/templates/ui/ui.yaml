@@ -1,4 +1,4 @@
-{{- if .Values.outpost.enabled }}
+{{- if .Values.ui.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,7 +8,7 @@ metadata:
     {{- include "aiostack.labels" . | nindent 4 }}
     app.kubernetes.io/name: aiostack-ui
 spec:
-  replicas: {{ .Values.outpost.replicaCount }}
+  replicas: {{ .Values.ui.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
@@ -19,33 +19,33 @@ spec:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/name: aiostack-ui
     spec:
-      serviceAccountName: {{ .Values.outpost.serviceAccount.name | default "aiostack-ui-sa" }}
+      serviceAccountName: {{ .Values.ui.serviceAccount.name | default "aiostack-ui-sa" }}
       dnsPolicy: ClusterFirst
       containers:
       - name: outpost
-        image: "public.ecr.aws/l5a6x1y4/aiostack-ui:{{ .Values.outpost.version }}"
+        image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
         imagePullPolicy: "IfNotPresent"
         ports:
         - name: http
-          containerPort: {{ .Values.outpost.service.targetPort }}
+          containerPort: {{ .Values.ui.service.targetPort }}
           protocol: TCP
-        {{- if .Values.outpost.env }}
+        {{- if .Values.ui.env }}
         env:
         - name: LOG_ENV
           value: "production"
-        {{- toYaml .Values.outpost.env | nindent 8 }}
+        {{- toYaml .Values.ui.env | nindent 8 }}
         {{- end }}
         resources:
-          {{- toYaml .Values.outpost.resources | nindent 10 }}
-      {{- with .Values.outpost.nodeSelector }}
+          {{- toYaml .Values.ui.resources | nindent 10 }}
+      {{- with .Values.ui.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.outpost.affinity }}
+      {{- with .Values.ui.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.outpost.tolerations }}
+      {{- with .Values.ui.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
