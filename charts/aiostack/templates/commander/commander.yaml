@@ -3,22 +3,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aiostack-commander
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: commander
+    app.kubernetes.io/name: aiostack-commander
 spec:
   replicas: {{ .Values.commander.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: commander
+      app.kubernetes.io/name: aiostack-commander
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: commander
+        app.kubernetes.io/name: aiostack-commander
     spec:
-      serviceAccountName: aiostack-commander
+      serviceAccountName: {{ .Values.commander.serviceAccount.name | default "aiostack-commander-sa" }}
       dnsPolicy: ClusterFirst
       containers:
       - name: commander

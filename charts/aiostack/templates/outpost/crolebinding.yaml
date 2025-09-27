@@ -2,13 +2,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: aiostack-outpost-clusterrolebinding
+  name: aiostack-outpost-clusterrolebinding-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: aiostack-outpost-clusterrole
+  name: aiostack-outpost-clusterrole-{{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
-  name: aiostack-outpost
+  name: {{ .Values.outpost.serviceAccount.name | default "aiostack-outpost-sa" }}
   namespace: {{ .Release.Namespace }}
 {{- end }}

@@ -1,48 +1,51 @@
-{{- if .Values.ui.enabled }}
+{{- if .Values.outpost.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aiostack-ui
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: ui
+    app.kubernetes.io/name: aiostack-ui
 spec:
-  replicas: {{ .Values.ui.replicaCount }}
+  replicas: {{ .Values.outpost.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: ui
+      app.kubernetes.io/name: aiostack-ui
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: ui
+        app.kubernetes.io/name: aiostack-ui
     spec:
-      serviceAccountName: aiostack-ui
+      serviceAccountName: {{ .Values.outpost.serviceAccount.name | default "aiostack-ui-sa" }}
       dnsPolicy: ClusterFirst
       containers:
-      - name: ui
-        image: "{{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}"
-        imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
+      - name: outpost
+        image: "public.ecr.aws/l5a6x1y4/aiostack-ui:{{ .Values.outpost.version }}"
+        imagePullPolicy: "IfNotPresent"
         ports:
         - name: http
-          containerPort: {{ .Values.ui.service.targetPort }}
+          containerPort: {{ .Values.outpost.service.targetPort }}
           protocol: TCP
-        {{- if .Values.ui.env }}
+        {{- if .Values.outpost.env }}
         env:
-        {{- toYaml .Values.ui.env | nindent 8 }}
+        - name: LOG_ENV
+          value: "production"
+        {{- toYaml .Values.outpost.env | nindent 8 }}
         {{- end }}
         resources:
-          {{- toYaml .Values.ui.resources | nindent 10 }}
-      {{- with .Values.ui.nodeSelector }}
+          {{- toYaml .Values.outpost.resources | nindent 10 }}
+      {{- with .Values.outpost.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.ui.affinity }}
+      {{- with .Values.outpost.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.ui.tolerations }}
+      {{- with .Values.outpost.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

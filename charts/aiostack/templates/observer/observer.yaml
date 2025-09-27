@@ -3,16 +3,21 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: aiostack-observer
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
       app: aiostack-observer
+      app.kubernetes.io/name: aiostack-observer
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: aiostack-observer
+        app.kubernetes.io/name: aiostack-observer
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
-      serviceAccountName: aiostack-observer
+      serviceAccountName: {{ .Values.observer.serviceAccount.name | default "aiostack-observer-sa" }}
       dnsPolicy: "ClusterFirst"
       containers:
       - name: observer

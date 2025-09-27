@@ -11,7 +11,7 @@ image:
   repository: asia-south1-docker.pkg.dev/aurva-gcp/aiostack-docs/aiostack-docs
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "dev4"
+  tag: "v0.0.10"
 
 imagePullSecrets: []
 nameOverride: ""

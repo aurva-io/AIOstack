@@ -3,21 +3,22 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: aiostack-clickhouse
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 spec:
   serviceName: aiostack-clickhouse
   replicas: {{ .Values.clickhouse.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: clickhouse
+      app.kubernetes.io/name: aiostack-clickhouse
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: clickhouse
+        app.kubernetes.io/name: aiostack-clickhouse
     spec:
       containers:
       - name: clickhouse
@@ -29,9 +30,6 @@ spec:
           protocol: TCP
         - name: native-port
           containerPort: 9000
-          protocol: TCP
-        - name: postgresql-port
-          containerPort: 9005
           protocol: TCP
         env:
         - name: CLICKHOUSE_DB

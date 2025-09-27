@@ -2,27 +2,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name:  {{ include "aiostack-ui.fullname" . }}
-  namespace: {{ template "application.namespace" $ }}
+  name: aiostack-ui
+  namespace: {{ .Release.Namespace }}
   labels:
-  {{- include "application.labels" . | nindent 4 }}
-{{- if .Values.ui.additionalLabels }}
-{{ toYaml .Values.ui.additionalLabels | indent 4 }}
-{{- end }}
-{{- if .Values.ui.httproute.enabled }}
+    {{- include "aiostack.labels" . | nindent 4 }}
+    app.kubernetes.io/name: aiostack-ui
   annotations:
     cloud.google.com/neg: '{"exposed_ports": {"3000":{}}}'
-{{- end }}
 spec:
   type: ClusterIP
-  selector:
-{{ include "aiostack-ui.selectorLabels" . | indent 4 }}
-{{- if .Values.ui.podLabels }}
-{{ toYaml .Values.ui.podLabels | indent 4 }}
-{{- end }}
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
       name: http
+  selector:
+    app.kubernetes.io/name: aiostack-ui
+    app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

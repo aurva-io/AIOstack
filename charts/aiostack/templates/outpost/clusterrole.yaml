@@ -2,7 +2,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: aiostack-outpost-clusterrole
+  name: aiostack-outpost-clusterrole-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
   resources: ["pods", "services", "nodes"]

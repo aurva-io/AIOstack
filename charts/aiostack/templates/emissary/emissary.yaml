@@ -3,21 +3,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aiostack-emissary
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: emissary
+    app.kubernetes.io/name: aiostack-emissary
 spec:
   replicas: {{ .Values.emissary.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: emissary
+      app.kubernetes.io/name: aiostack-emissary
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: emissary
+        app.kubernetes.io/name: aiostack-emissary
     spec:
+      serviceAccountName: {{ .Values.emissary.serviceAccount.name | default "aiostack-emissary-sa" }}
       dnsPolicy: ClusterFirst
       containers:
       - name: emissary

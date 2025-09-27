@@ -3,21 +3,22 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: aiostack-postgresql
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/name: aiostack-postgresql
 spec:
   serviceName: aiostack-postgresql
   replicas: 1
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: postgresql
+      app.kubernetes.io/name: aiostack-postgresql
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: postgresql
+        app.kubernetes.io/name: aiostack-postgresql
     spec:
       containers:
       - name: postgresql

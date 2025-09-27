@@ -3,22 +3,23 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: aiostack-outpost
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: outpost
+    app.kubernetes.io/name: aiostack-outpost
 spec:
   replicas: {{ .Values.outpost.replicaCount }}
   selector:
     matchLabels:
       {{- include "aiostack.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: outpost
+      app.kubernetes.io/name: aiostack-outpost
   template:
     metadata:
       labels:
         {{- include "aiostack.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: outpost
+        app.kubernetes.io/name: aiostack-outpost
     spec:
-      serviceAccountName: aiostack-outpost
+      serviceAccountName: {{ .Values.outpost.serviceAccount.name | default "aiostack-outpost-sa" }}
       dnsPolicy: ClusterFirst
       containers:
       - name: outpost

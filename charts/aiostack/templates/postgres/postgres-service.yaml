@@ -3,9 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: aiostack-postgresql
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/name: aiostack-postgresql
 spec:
   type: {{ .Values.postgresql.service.type }}
   ports:
@@ -15,5 +16,5 @@ spec:
       name: postgresql
   selector:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/name: aiostack-postgresql
 {{- end }}

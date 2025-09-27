@@ -1,12 +1,12 @@
-# Service for ClickHouse
 {{- if .Values.clickhouse.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
   name: aiostack-clickhouse
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 spec:
   type: {{ .Values.clickhouse.service.type }}
   ports:
@@ -18,13 +18,9 @@ spec:
     port: {{ .Values.clickhouse.service.nativePort }}
     targetPort: native-port
     protocol: TCP
-  - name: postgresql
-    port: {{ .Values.clickhouse.service.postgresqlPort }}
-    targetPort: postgresql-port
-    protocol: TCP
   selector:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 
 
 # ConfigMap for ClickHouse configuration
@@ -32,9 +28,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: aiostack-clickhouse-config
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 data:
   custom.xml: |
     <yandex>
@@ -57,8 +54,6 @@ data:
       <keep_alive_timeout>3</keep_alive_timeout>
       <max_concurrent_queries>100</max_concurrent_queries>
       
-      <uncompressed_cache_size>8589934592</uncompressed_cache_size>
-      <mark_cache_size>5368709120</mark_cache_size>
       
       <timezone>{{ .Values.clickhouse.config.timezone }}</timezone>
 
@@ -81,9 +76,10 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: aiostack-clickhouse
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 type: Opaque
 data:
   {{- if .Values.clickhouse.auth.existingSecret }}
@@ -99,9 +95,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: aiostack-clickhouse-users
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: clickhouse
+    app.kubernetes.io/name: aiostack-clickhouse
 data:
   custom-users.xml: |
     {{ .Values.clickhouse.users | nindent 4 }}

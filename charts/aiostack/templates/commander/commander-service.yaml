@@ -3,9 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: aiostack-commander
+  namespace: {{ .Release.Namespace }}
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
-    app.kubernetes.io/component: commander
+    app.kubernetes.io/name: aiostack-commander
 spec:
   type: {{ .Values.commander.service.type }}
   ports:
@@ -15,5 +16,5 @@ spec:
       name: http
   selector:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: commander
+    app.kubernetes.io/name: aiostack-commander
 {{- end }}
