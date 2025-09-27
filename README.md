@@ -66,8 +66,9 @@ When something goes wrong, basic questions - **who did what, with which model, a
 
 #### 🧠 **AI-Aware Monitoring**
 - **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI
-- **ML Libraries**: PyTorch, TensorFlow, scikit-learn, transformers, LangChain, llamaindex
-- **AI Frameworks**: MLflow, Weights & Biases, Ray, Kubeflow
+- **ML Libraries**: Scikit-learn, transformers, LangChain, llamaindex
+- **AI Frameworks**: PyTorch, TensorFlow, Keras
+- **MLOps & Orchestration Tools**: MLflow, Ray, Kubeflow
 - **Runtime Support**: Python, Node.js, Java, Go applications
 
 #### 📊 **Rich Observability**
