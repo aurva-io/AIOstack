@@ -3,13 +3,13 @@ entries:
   aiostack:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-09-28T11:57:43.413348+05:30"
+    created: "2025-09-28T12:09:47.813503+05:30"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
-    digest: 1c39266c07e6685626647edec6766dd19758f8096535c67857d103dbea8f15c6
+    digest: 84fc7e9c5ac3530aa4661ccb5b5c0c9de651abb7a9ea1726a1aa1817b8124960
     name: aiostack
     type: application
     urls:
     - https://charts.aurva.ai/aiostack-0.2.0.tgz
     version: 0.2.0
-generated: "2025-09-28T11:57:43.412871+05:30"
+generated: "2025-09-28T12:09:47.813038+05:30"
