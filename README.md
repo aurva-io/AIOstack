@@ -110,13 +110,13 @@ kubectl get pods -n aiostack
 
 ## Documentation
 
-- **[Installation Guide](https://staging.aurva.ai/docs/installation)** - Complete setup walkthrough
+- **[Installation Guide](https://ai.staging.aurva.io/docs/installation/steps)** - Complete setup walkthrough
 
 
 
 ## Support
 
-- **📖 Documentation**: https://staging.aurva.ai
+- **📖 Documentation**: https://ai.staging.aurva.io
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
 - **📧 Support**: support@aurva.io
 
@@ -126,8 +126,8 @@ Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ## ⭐ Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=aurva-io/ai-observability-stack&type=Date)]
-(https://star-history.com/#aurva-io/ai-observability-stack&Date)
+![Star History Chart](https://api.star-history.com/svg?repos=aurva-io/ai-observability-stack&type=Date)
+
 ---
 
 **Made with ❤️ by [Aurva](https://aurva.io)**
