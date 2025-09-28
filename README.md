@@ -4,7 +4,7 @@
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.29+-blue.svg)](https://kubernetes.io/)
 [![eBPF](https://img.shields.io/badge/eBPF-Powered-green.svg)](https://ebpf.io/)
 
-## Find Shadow AI in Your Kubernetes Cluster
+## Find Shadow AI in your cloud
 
 AIOStack automatically discovers AI components you didn't know existed and ties each to an owner. **No code changes required.** Runs in-cluster via eBPF.
 
@@ -25,7 +25,8 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 ## Quick Start
 
 ### 1. Prerequisites
-- Kubernetes 1.29+
+- Kubernetes 1.29+ with eBPF support ( If you're on EKS, GKE or AKS, this is already met )
+- Linux kernel 5.15+ 
 - Helm 3.x
 - kubectl configured
 
@@ -58,6 +59,17 @@ helm show values aiostack/aiostack > values.yaml
 #   value: "aiostack-outpost.<YOUR NAMESPACE>.svc.cluster.local:7471"
 # - name: IS_OUTPOST_URL_SECURE
 #   value: "false"
+```
+
+You may specify `latest` as the version of the components if you want to use the latest version.
+```yaml
+observer:
+  version: latest
+  ...
+  
+outpost:
+  version: latest
+  ...
 ```
 
 ### 4. Deploy to Your Cluster
