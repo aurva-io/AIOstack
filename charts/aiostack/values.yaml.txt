@@ -3,7 +3,7 @@ global:
 
 observer:
   enabled: true
-  version: figv0
+  version: figv1
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -49,7 +49,7 @@ observer:
 
 outpost:
   enabled: true
-  version: figv0
+  version: figv1
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -72,13 +72,13 @@ outpost:
     - name: INSECURE_SKIP_VERIFY
       value: "false"
     - name: COMPANY_ID
-      value: ""
+      value: "878264f3-f235-4478-a7b3-6fc0b05c88e8"
     - name: AIOSTACK_VALIDATION_KEY
       value: ""
 
 commander:
   enabled: true
-  version: figv0
+  version: figv1
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -108,7 +108,7 @@ emissary:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
-    tag: figv0
+    tag: figv1
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -131,11 +131,11 @@ emissary:
     - name: VAULT_PRIVATE_KEY
       value: ""
     - name: SMTP_USERNAME
-      value: ""
+      value: "swapnil.nair@aurva.io"
     - name: SMTP_PASSWORD
       value: ""
     - name: SMTP_FROM_EMAIL
-      value: ""
+      value: "swapnil.nair@aurva.io"
 
   httproute:
     enabled: true
@@ -177,7 +177,7 @@ ui:
   domain: "staging.aurva.ai"
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-ui
-    tag: figv0
+    tag: figv1
     pullPolicy: IfNotPresent
   replicaCount: 1
   dnsPolicy: "ClusterFirst"
@@ -192,7 +192,7 @@ ui:
     - name: NEXT_PUBLIC_API_URL
       value: "https://api.staging.aurva.ai/"
     - name: VERSION
-      value: "figv0"
+      value: "figv1"
   additionalLabels: {}
   annotations: {}
 
