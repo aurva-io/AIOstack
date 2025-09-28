@@ -75,7 +75,7 @@ helm install myaiostack aiostack/aiostack --namespace aiostack --values values.y
 kubectl get pods -n aiostack
 
 # Access dashboard
-# Go to staging.aurva.ai and login with your credentials
+# Go to staging.aurva.ai and login with your credentials ( your username is the email you signed up with )
 ```
 
 ## Supported Platforms
