@@ -60,6 +60,43 @@ helm show values aiostack/aiostack > values.yaml
 # - name: IS_OUTPOST_URL_SECURE
 #   value: "false"
 ```
+#### Defaults that matter
+
+- Runs in-cluster; no sensitive data leaves the environment
+- Metadata-only by default; payload capture off; redaction on
+- No application code changes required
+
+## Key Features
+
+#### 🕵️ **Zero-Touch Discovery**
+- Automatically detects AI/ML applications without code changes
+- Identifies shadow AI tools and unauthorized LLM usage
+- Maps AI data flows across your entire infrastructure
+
+#### 🧠 **AI-Aware Monitoring**
+- **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI, Gemini
+- **ML Libraries**: Scikit-learn, transformers, LangChain, Llamaindex
+- **AI Frameworks**: PyTorch, TensorFlow, Keras
+- **MLOps & Orchestration Tools**: MLflow, Ray, Kubeflow
+- **Runtime Support**: Python, Node.js, Java, Golang
+
+#### 📊 **Rich Observability**
+- Real-time dashboards with all the features you need to monitor your AI infrastructure
+- AI agent workflow visualization and tracing
+- Cost estimation and usage analytics
+- Shadow AI detection
+- Data flow monitoring
+- PII/sensitive data detection
+- Unauthorized model downloads
+- Zero sensitive data storage - metadata only
+
+#### 🔒 **Security & Compliance**
+- Detects AI data exfiltration attempts
+- Monitors for PII/sensitive data in AI calls
+- Tracks unauthorized models running in your cluster
+- Zero sensitive data storage - metadata only
+
+## Quick Start
 
 You may specify `latest` as the version of the components if you want to use the latest version.
 ```yaml
@@ -119,6 +156,43 @@ That's it ! You can now access your dashboard at app.aurva.ai and login with you
 │ • REST APIs     │    │   retention      │
 └─────────────────┘    └──────────────────┘
 ```
+
+## Monitoring & Dashboards
+
+### Built-in Dashboards
+- **AI Application Discovery**: Live inventory of all AI/ML workloads.
+- **LLM API Analytics**: Track services calling LLM APIs, with request metadata and provider visibility (OpenAI, Anthropic, etc.).
+- **Security Overview**: Shadow AI detection, data flow monitoring.
+
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Write** tests for your changes
+4. **Ensure** all tests pass (`make test`)
+5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+6. **Push** to the branch (`git push origin feature/amazing-feature`)
+7. **Open** a Pull Request
+
+## 🔒 Security
+
+### Security Model
+- eBPF programs use only required, minimal capabilities.
+- Aligned with Kubernetes Security Contexts and Pod Security Standards.
+
+**Reporting Vulnerabilities:** business@aurva.io<br>
+**Security Audit:** Results will be published as available.
+
+### Aurva Cloud Data Handling and Privacy
+
+- No TLS key access required. TLS traffic decoded at syscall level.
+- In-cluster operation. Data remains in your environment.
+- Metadata Only:
+  - Request/response bodies are not stored.
+  - Sensitive values are classified in runtime.
 
 ## Documentation
 
