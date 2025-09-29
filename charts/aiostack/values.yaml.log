@@ -1,0 +1,94 @@
+observer:
+  enabled: true
+  version: v1.0.0_alpha
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  serviceAccount:
+    create: true
+    name: aiostack-observer-sa
+    annotations:
+    labels: {}
+  env:
+    - name: TRACE_SSL
+      value: "true"
+    - name: PROCFS_PATH
+      value: "/proc"
+    - name: TRACE_PSQL
+      value: "false"
+    - name: TRACE_SQLSERVER
+      value: "false"
+    - name: TRACE_MYSQL
+      value: "false"
+    - name: TRACE_EGRESS
+      value: "true"
+    - name: TRACE_GO_TLS
+      value: "true"
+    - name: TRACE_INTERNAL_SVC
+      value: "true"
+    - name: INTERNAL_SVC_SAMPLE_INTERVAL
+      value: "0s"
+    - name: LOGS_TTL
+      value: "30s"
+    - name: TRACE_INTERNAL_SVC_HTTP
+      value: "true"
+    - name: INTERNAL_SVC_HTTP_SAMPLE_INTERVAL
+      value: "0s"
+    - name: CONNECTION_CHANNEL_SIZE
+      value: "100"
+    # The following are for you to modify
+    - name: OUTPOST_URL
+      value: ""
+    - name: IS_OUTPOST_URL_SECURE
+      value: "false"
+
+outpost:
+  enabled: true
+  version: v1.0.0_alpha
+  replicaCount: 1
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 7471
+    targetPort: 7471
+  serviceAccount:
+    create: true
+    name: aiostack-outpost-sa
+    annotations:
+    labels: {}
+  env:
+    - name: OUTPOST_PORT
+      value: ":7471"
+    # The following are for you to modify
+    - name: SKIP_NAMESPACES
+      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
+    - name: INSECURE_SKIP_VERIFY
+      value: "false"
+    - name: COMMANDER_URL
+      value: ""
+    - name: COMPANY_ID
+      value: ""
+    - name: AIOSTACK_VALIDATION_KEY
+      value: ""
+
+
+
+
+
+# YOU MAY LEAVE THE FOLLOWING BLOCKS AS IS, ONLY MODIFY THE VALUES IF YOU KNOW WHAT YOU ARE DOING
+commander:
+  enabled: false
+
+emissary:
+  enabled: false
+
+ui:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+clickhouse:
+  enabled: false
