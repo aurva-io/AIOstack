@@ -130,7 +130,7 @@ That's it ! You can now access your dashboard at app.aurva.ai and login with you
 
 - **📖 Documentation**: https://aurva.ai
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
-- **📧 Support**: support@aurva.io
+- **📧 Support**: business@aurva.io
 
 ## License
 
