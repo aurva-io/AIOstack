@@ -24,19 +24,21 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 
 ## Quick Start
 
-### 1. Prerequisites
+### 1. Supported Environments :
 - Kubernetes 1.29+ with eBPF support ( If you're on EKS, GKE or AKS, this is already met )
-- Linux kernel 5.15+ 
+- Linux kernel 5.15+
+
+### 2. Installation requirements :
 - Helm 3.x
 - kubectl configured
 
-### 2. Get Your Free Account
-1. **Sign up** at [staging.aurva.ai](https://staging.aurva.ai) (takes 30 seconds)
+### 3. Get Your Free Account
+1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from the email sent to you:
    - Company ID
    - AIOStack Validation Key
 
-### 3. Configure Your Credentials
+### 4. Configure Your Credentials
 ```bash
 # Add Helm repo
 helm repo add aiostack https://charts.aurva.ai/
@@ -72,7 +74,7 @@ outpost:
   ...
 ```
 
-### 4. Deploy to Your Cluster
+### 5. Deploy to Your Cluster
 ```bash
 # Create namespace
 kubectl create namespace aiostack
@@ -81,13 +83,13 @@ kubectl create namespace aiostack
 helm install myaiostack aiostack/aiostack --namespace aiostack --values values.yaml
 ```
 
-### 5. Verify Installation
+### 6. Verify Installation
 ```bash
 # Check pods are running
 kubectl get pods -n aiostack
 ```
 
-### 6. Access your dashboard !
+### 7. Access your dashboard !
 That's it ! You can now access your dashboard at staging.aurva.ai and login with your credentials ( your username is the email you signed up with )
 
 
