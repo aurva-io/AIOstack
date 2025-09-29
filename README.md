@@ -31,7 +31,7 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 - kubectl configured
 
 ### 2. Get Your Free Account
-1. **Sign up** at [staging.aurva.ai](https://staging.aurva.ai) (takes 30 seconds)
+1. **Sign up** at [aurva.ai](https://aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from the email sent to you:
    - Company ID
    - AIOStack Validation Key
@@ -88,7 +88,7 @@ kubectl get pods -n aiostack
 ```
 
 ### 6. Access your dashboard !
-That's it ! You can now access your dashboard at staging.aurva.ai and login with your credentials ( your username is the email you signed up with )
+That's it ! You can now access your dashboard at app.aurva.ai and login with your credentials ( your username is the email you signed up with )
 
 
 ## Supported Platforms
@@ -122,13 +122,13 @@ That's it ! You can now access your dashboard at staging.aurva.ai and login with
 
 ## Documentation
 
-- **[Installation Guide](https://ai.staging.aurva.io/docs/installation/steps)** - Complete setup walkthrough
+- **[Installation Guide](https://aurva.ai/docs/installation/steps)** - Complete setup walkthrough
 
 
 
 ## Support
 
-- **📖 Documentation**: https://ai.staging.aurva.io
+- **📖 Documentation**: https://aurva.ai
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
 - **📧 Support**: support@aurva.io
 
