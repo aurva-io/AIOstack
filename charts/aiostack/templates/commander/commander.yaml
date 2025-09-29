@@ -29,9 +29,16 @@ spec:
         - name: http
           containerPort: {{ .Values.commander.service.targetPort }}
           protocol: TCP
+        - name: health
+          containerPort: 8099
+          protocol: TCP
         {{- if .Values.commander.env }}
         env:
         {{- toYaml .Values.commander.env | nindent 8 }}
+        {{- end }}
+        {{- if .Values.commander.volumeMounts }}
+        volumeMounts:
+{{ toYaml .Values.commander.volumeMounts | indent 10 }}
         {{- end }}
         resources:
           {{- toYaml .Values.commander.resources | nindent 10 }}
@@ -46,5 +53,9 @@ spec:
       {{- with .Values.commander.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.commander.volumes }}
+      volumes:
+{{ toYaml .Values.commander.volumes | indent 8 }}
       {{- end }}
 {{- end }}

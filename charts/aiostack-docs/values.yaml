@@ -11,7 +11,7 @@ image:
   repository: asia-south1-docker.pkg.dev/aurva-gcp/aiostack-docs/aiostack-docs
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.10"
+  tag: "v0.2.1"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -119,12 +119,12 @@ httproute:
   enabled: true
   name: aiostack-docs
   gateway:
-    name: aurva-public-gateway
+    name: aiostack-public-gateway
     namespace: kube-system
   privateAccess:
     enabled: false
     securityPolicy: aurva-private-vpn-alb-access
-  host: "ai.staging.aurva.io"
+  host: "aurva.ai"
   service:
     name: aiostack-docs
     port: 3000

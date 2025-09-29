@@ -19,10 +19,13 @@ keywords:
 <Step>
 <StepItem title="Get up and running in 5 minutes">
 
+## Supported Platforms
+- Kubernetes 1.29+ with eBPF support ( If you're on EKS, GKE or AKS, this is already met )
+
 ## Prerequisites
-- Kubernetes cluster (1.20+)
-- Helm 3.x installed
-- kubectl configured
+- Linux kernel 5.15+ 
+- Helm 3.0+ (for installation)
+- Cluster admin privileges for eBPF programs
 
 ---
 
@@ -44,7 +47,7 @@ helm repo list
 
 **Create your account and grab your credentials:**
 
-1. **Sign up** at [staging.aurva.ai](https://staging.aurva.ai) (takes 30 seconds)
+1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from an email sent to you:
    - Company ID
    - AIOStack Validation Key
@@ -79,6 +82,7 @@ helm show values testgh/aiostack > values.yaml
 #   value: "false"
 ```
 
+> 💡 **Tip:** Ctrl/Cmd + F the word "MODIFY" to find the values to replace.
 ---
 
 ## Step 4: Deploy to Your Cluster
@@ -106,25 +110,20 @@ kubectl get pods -n aiostack
 **Expected output:**
 ```
 NAME                     READY   STATUS    RESTARTS   AGE
-aiostack-commander-xxx   1/1     Running   0          2m
-aiostack-emissary-xxx    1/1     Running   0          2m
 aiostack-observer-xxx    1/1     Running   0          2m
+aiostack-observer-xxy    1/1     Running   0          2m
+aiostack-observer-xxz    1/1     Running   0          2m
 aiostack-outpost-xxx     1/1     Running   0          2m
-aiostack-ui-xxx          1/1     Running   0          2m
 ```
 
 ---
 
 ## 🎉 You're Done!
 
-**Access your dashboard:**
-- **URL:** `http://staging.aurva.ai` 
-- **Login:** Use the email and password you signed up with.
-
 **Next steps:**
-- [Configure data sources](/docs/configuration)
-- [Set up alerts](/docs/alerts)
-- [View your first metrics](/docs/dashboard)
+Access your dashboard:
+- **URL:** [https://app.aurva.ai](https://app.aurva.ai) 
+- **Login:** Use the email and password you signed up with.
 
 ---
 
@@ -136,7 +135,7 @@ aiostack-ui-xxx          1/1     Running   0          2m
 - **Missing data?** Ensure your applications are instrumented
 
 **Get support:**
-- 📧 Email: support@aurva.ai
+- 📧 Email: business@aurva.io
 - 📖 Docs: [Full documentation](/docs/home)
 
 </StepItem>

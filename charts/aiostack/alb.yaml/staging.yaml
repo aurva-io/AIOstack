@@ -15,7 +15,8 @@ gateways:
           tls:
             mode: Terminate
             options:
-              networking.gke.io/pre-shared-certs: aiostack-public-stage
+              networking.gke.io/pre-shared-certs: aiostack-public-cert-minified
+
   - apiVersion: gateway.networking.k8s.io/v1beta1
     metadata:
       name: aiostack-private-gateway

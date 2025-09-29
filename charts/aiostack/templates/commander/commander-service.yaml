@@ -7,13 +7,19 @@ metadata:
   labels:
     {{- include "aiostack.labels" . | nindent 4 }}
     app.kubernetes.io/name: aiostack-commander
+  {{- if .Values.commander.httproute.enabled }}
+  annotations:
+    cloud.google.com/app-protocols: '{"grpc":"HTTP2"}'
+    cloud.google.com/neg: '{"exposed_ports": {"{{ .Values.commander.service.port }}":{}}}'
+  {{- end }}
 spec:
-  type: {{ .Values.commander.service.type }}
+  type: ClusterIP
   ports:
     - port: {{ .Values.commander.service.port }}
       targetPort: {{ .Values.commander.service.targetPort }}
       protocol: TCP
-      name: http
+      name: grpc
+      appProtocol: HTTP2
   selector:
     {{- include "aiostack.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/name: aiostack-commander

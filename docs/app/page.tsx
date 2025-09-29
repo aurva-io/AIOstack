@@ -44,7 +44,7 @@ export default function Home() {
 
         <div className="flex items-center gap-5">
           <Link
-            href={`/docs${PageRoutes[0].href}`}
+            href={`/docs/installation/steps`}
             className={buttonVariants({ className: "px-4", size: "lg" })}
           >
             Install Now  &rarr;
@@ -513,7 +513,7 @@ export default function Home() {
               Install Now
             </Link>
             <Link
-              href={`/docs${PageRoutes[0].href}`}
+              href="/docs/installation/steps"
               className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               View Documentation

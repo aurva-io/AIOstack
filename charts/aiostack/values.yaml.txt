@@ -3,7 +3,7 @@ global:
 
 observer:
   enabled: true
-  version: figv0
+  version: v1.0.2_alpha
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -49,7 +49,7 @@ observer:
 
 outpost:
   enabled: true
-  version: figv0
+  version: v1.0.2_alpha
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -68,17 +68,17 @@ outpost:
       value: ":7471"
     # The following are for you to modify
     - name: COMMANDER_URL
-      value: "aiostack-commander.alphabet.svc.cluster.local:7470"
+      value: "hq.aurva.ai:443"
     - name: INSECURE_SKIP_VERIFY
-      value: "false"
+      value: "true"
     - name: COMPANY_ID
-      value: ""
+      value: "b83544da-7580-4129-b0ea-5d2635d1928f"
     - name: AIOSTACK_VALIDATION_KEY
       value: ""
 
 commander:
   enabled: true
-  version: figv0
+  version: v1.0.2_alpha
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
@@ -103,12 +103,55 @@ commander:
       value: ":7470"
     - name: "INSECURE_SKIP_VERIFY"
       value: "false"
+    - name: GKE_MODE
+      value: "true"
+    - name: TLS_CERT_PATH
+      value: "/etc/commander/tls/tls.crt"
+    - name: TLS_KEY_PATH
+      value: "/etc/commander/tls/tls.key"
+
+  httproute:
+    enabled: true
+    name: aiostack-commander
+    gateway:
+      name: aiostack-public-gateway
+      namespace: kube-system
+    privateAccess:
+      enabled: false
+      securityPolicy: aurva-private-vpn-alb-access
+    host: "hq.aurva.ai"
+    service:
+      name: aiostack-commander
+      port: 7470
+
+  healthCheckPolicy:
+    enabled: true
+    name: aiostack-commander
+    logConfig:
+      enabled: false
+    config:
+      type: GRPC
+      grpcHealthCheck:
+        grpcServiceName: grpcServer
+        port: 8099
+    serviceName: aiostack-commander
+
+  # -- TLS secrets for gke mode
+  volumes:
+    - name: tls-secrets-commander
+      secret:
+        secretName: grpc-tls-secret-commander
+
+  volumeMounts:
+    - name: tls-secrets-commander
+      mountPath: /etc/commander/tls
+      readOnly: true
 
 emissary:
   enabled: true
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-emissary
-    tag: figv0
+    tag: v1.0.2_alpha
     pullPolicy: IfNotPresent
   replicaCount: 1
   service:
@@ -131,11 +174,11 @@ emissary:
     - name: VAULT_PRIVATE_KEY
       value: ""
     - name: SMTP_USERNAME
-      value: ""
+      value: "swapnil.nair@aurva.io"
     - name: SMTP_PASSWORD
       value: ""
     - name: SMTP_FROM_EMAIL
-      value: ""
+      value: "swapnil.nair@aurva.io"
 
   httproute:
     enabled: true
@@ -146,7 +189,7 @@ emissary:
     privateAccess:
       enabled: false
       securityPolicy: aurva-private-vpn-alb-access
-    host: "api.staging.aurva.ai"
+    host: "api.aurva.ai"
     service:
       name: aiostack-emissary
       port: 8080
@@ -177,7 +220,7 @@ ui:
   domain: "staging.aurva.ai"
   image:
     repository: public.ecr.aws/l5a6x1y4/aiostack-ui
-    tag: figv0
+    tag: v1.0.2_alpha
     pullPolicy: IfNotPresent
   replicaCount: 1
   dnsPolicy: "ClusterFirst"
@@ -190,9 +233,9 @@ ui:
       memory: 256Mi
   env:
     - name: NEXT_PUBLIC_API_URL
-      value: "https://api.staging.aurva.ai/"
+      value: "https://api.aurva.ai/"
     - name: VERSION
-      value: "figv0"
+      value: "v1.0.2_alpha"
   additionalLabels: {}
   annotations: {}
 
@@ -225,7 +268,7 @@ ui:
     privateAccess:
       enabled: false
       securityPolicy: aurva-private-vpn-alb-access
-    host: "staging.aurva.ai"
+    host: "app.aurva.ai"
     service:
       name: aiostack-ui
       port: 3000
