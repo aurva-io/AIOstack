@@ -31,7 +31,7 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 - kubectl configured
 
 ### 2. Get Your Free Account
-1. **Sign up** at [aurva.ai](https://aurva.ai) (takes 30 seconds)
+1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from the email sent to you:
    - Company ID
    - AIOStack Validation Key
