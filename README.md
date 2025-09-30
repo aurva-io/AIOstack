@@ -29,12 +29,12 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 ### Supported Environments
 
 - **Kubernetes** 1.29+ with eBPF support  
-  *(Managed: EKS, GKE, AKS already satisfy this)*
+  *(EKS, GKE, AKS already satisfy this)*
 - **Linux kernel** 5.15+
 
 ### Installation Requirements
 - **Helm** 3.x
-- **kubectl** configured for your cluster
+- **kubectl** configured
 
 
 ## Quick Start
