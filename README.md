@@ -152,7 +152,7 @@ We welcome contributions! Here's how to get started:
 ## Documentation & Support
 
 - **📖 Documentation**: https://aurva.ai/docs/home
-- - **[Installation Guide](https://aurva.ai/docs/installation/steps)** - Complete setup walkthrough
+- **⚙️ Detailed Installation Guide** - https://aurva.ai/docs/installation/steps
 - **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
 - **📧 Support**: support@aurva.io
 
@@ -166,7 +166,7 @@ We welcome contributions! Here's how to get started:
 **Reporting Vulnerabilities:** support@aurva.io<br>
 **Security Audit:** Results will be continously published (as available).
 
-### Aurva Cloud Data Handling and Privacy
+### Data Handling and Privacy
 
 - No TLS key access required; observability happens at syscall level.
 - In-cluster operation. Data remains in your environment.
