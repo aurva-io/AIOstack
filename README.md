@@ -8,108 +8,87 @@
 
 AIOStack automatically discovers AI components you didn't know existed and ties each to an owner. **No code changes required.** Runs in-cluster via eBPF.
 
-## What It Does
+## Features
 
-**Discovers & Monitors:**
-- Shadow AI across namespaces and clusters
-- AI agents, MCP servers, LLM endpoints, vector stores
-- Model downloads and API calls (OpenAI, Anthropic, etc.)
-- Sensitive data exposure and risky egress
+**Discovery**
+- Shadow AI across namespaces/clusters
+- AI agents, MCP servers/clients, LLM endpoints, Vector DBs
+- Orphaned/unused (“zombie”) AI services
 
-**Gives You:**
-- Complete map of AI surfaces in your cluster
-- Accountable ownership (Pods, Deployments, ServiceAccounts)
-- Real-time risk alerts and cost tracking (coming soon)
-- Zero sensitive data storage (metadata only)
+**Monitoring & Analytics**
+- Model/API calls (OpenAI, Anthropic, Gemini, etc.)
+- Model downloads and runtime inventory
+- Cost & usage insights
+
+**Security & Compliance**
+- Sensitive-data exposure cues and risky egress paths
+- Evidence for investigations with owner attribution (Pods/Deployments/ServiceAccounts)
+
+#
+
+### Supported Environments
+
+- **Kubernetes** 1.29+ with eBPF support  
+  *(Managed: EKS, GKE, AKS already satisfy this)*
+- **Linux kernel** 5.15+
+
+### Installation Requirements
+- **Helm** 3.x
+- **kubectl** configured for your cluster
+
 
 ## Quick Start
 
-### 1. Prerequisites
-- Kubernetes 1.29+ with eBPF support ( If you're on EKS, GKE or AKS, this is already met )
-- Linux kernel 5.15+ 
-- Helm 3.x
-- kubectl configured
-
-### 2. Get Your Free Account
+### 1. Create your Free Account
 1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from the email sent to you:
    - Company ID
    - AIOStack Validation Key
 
-### 3. Configure Your Credentials
+### 2) Install via Helm
+
+**Step 1: Configure Your Credentials**
+
 ```bash
-# Add Helm repo
 helm repo add aiostack https://charts.aurva.ai/
 helm repo update
 
 # Extract the default values file
 helm show values aiostack/aiostack > values.yaml
-
-# Edit values.yaml and replace:
-# In Outpost section:
-# - name: COMMANDER_URL
-#   value: "aiostack-commander.<YOUR NAMESPACE>.svc.cluster.local:7470"
-# - name: COMPANY_ID
-#   value: "<YOUR COMPANY ID>"
-# - name: AIOSTACK_VALIDATION_KEY
-#   value: "<YOUR AIOSTACK VALIDATION KEY>"
-#
-# In Observer section:
-# - name: OUTPOST_URL
-#   value: "aiostack-outpost.<YOUR NAMESPACE>.svc.cluster.local:7471"
-# - name: IS_OUTPOST_URL_SECURE
-#   value: "false"
 ```
-#### Defaults that matter
+Edit ```values.yaml``` and set your credentials/placeholders:
 
-- Runs in-cluster; no sensitive data leaves the environment
-- Metadata-only by default; payload capture off; redaction on
-- No application code changes required
+```yaml
+outpost:
+  env:
+    - name: COMMANDER_URL
+      value: "aiostack-commander.<YOUR_NAMESPACE>.svc.cluster.local:7470"
+    - name: COMPANY_ID
+      value: "<YOUR_COMPANY_ID>"
+    - name: AIOSTACK_VALIDATION_KEY
+      value: "<YOUR_VALIDATION_KEY>"
 
-## Key Features
+observer:
+  env:
+    - name: OUTPOST_URL
+      value: "aiostack-outpost.<YOUR_NAMESPACE>.svc.cluster.local:7471"
+    - name: IS_OUTPOST_URL_SECURE
+      value: "false"
+```
 
-#### 🕵️ **Zero-Touch Discovery**
-- Automatically detects AI/ML applications without code changes
-- Identifies shadow AI tools and unauthorized LLM usage
-- Maps AI data flows across your entire infrastructure
+*Optional: pin to the newest components by setting ```version: latest``` :*
 
-#### 🧠 **AI-Aware Monitoring**
-- **LLM Providers**: OpenAI, Anthropic, Cohere, Hugging Face, Ollama, Azure OpenAI, Gemini
-- **ML Libraries**: Scikit-learn, transformers, LangChain, Llamaindex
-- **AI Frameworks**: PyTorch, TensorFlow, Keras
-- **MLOps & Orchestration Tools**: MLflow, Ray, Kubeflow
-- **Runtime Support**: Python, Node.js, Java, Golang
-
-#### 📊 **Rich Observability**
-- Real-time dashboards with all the features you need to monitor your AI infrastructure
-- AI agent workflow visualization and tracing
-- Cost estimation and usage analytics
-- Shadow AI detection
-- Data flow monitoring
-- PII/sensitive data detection
-- Unauthorized model downloads
-- Zero sensitive data storage - metadata only
-
-#### 🔒 **Security & Compliance**
-- Detects AI data exfiltration attempts
-- Monitors for PII/sensitive data in AI calls
-- Tracks unauthorized models running in your cluster
-- Zero sensitive data storage - metadata only
-
-## Quick Start
-
-You may specify `latest` as the version of the components if you want to use the latest version.
 ```yaml
 observer:
   version: latest
   ...
-  
+
 outpost:
   version: latest
   ...
 ```
 
-### 4. Deploy to Your Cluster
+**Step 2: Deploy to Your Cluster**
 ```bash
 # Create namespace
 kubectl create namespace aiostack
@@ -118,14 +97,14 @@ kubectl create namespace aiostack
 helm install myaiostack aiostack/aiostack --namespace aiostack --values values.yaml
 ```
 
-### 5. Verify Installation
+**Step 3: Verify Installation**
 ```bash
-# Check pods are running
+# Check if pods are running
 kubectl get pods -n aiostack
 ```
 
-### 6. Access your dashboard !
-That's it ! You can now access your dashboard at app.aurva.ai and login with your credentials ( your username is the email you signed up with )
+**Step 4: View the Dashboard**
+That's it! You can now access your Shadow AI inventory at [app.aurva.io](https://app.aurva.ai) and login with your credentials (your username is the email you signed up with).
 
 
 ## Supported Platforms
@@ -157,25 +136,25 @@ That's it ! You can now access your dashboard at app.aurva.ai and login with you
 └─────────────────┘    └──────────────────┘
 ```
 
-## Monitoring & Dashboards
-
-### Built-in Dashboards
-- **AI Application Discovery**: Live inventory of all AI/ML workloads.
-- **LLM API Analytics**: Track services calling LLM APIs, with request metadata and provider visibility (OpenAI, Anthropic, etc.).
-- **Security Overview**: Shadow AI detection, data flow monitoring.
-
-
 ## 🤝 Contributing
-
 We welcome contributions! Here's how to get started:
 
 1. **Fork** the repository
 2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Write** tests for your changes
-4. **Ensure** all tests pass (`make test`)
+3. **Add** tests where applicable
+4. **Run** checks locally (make test)
 5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
 6. **Push** to the branch (`git push origin feature/amazing-feature`)
-7. **Open** a Pull Request
+7. **Open** a Pull Request with a clear description
+
+
+## Documentation & Support
+
+- **📖 Documentation**: https://aurva.ai/docs/home
+- - **[Installation Guide](https://aurva.ai/docs/installation/steps)** - Complete setup walkthrough
+- **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- **📧 Support**: support@aurva.io
+
 
 ## 🔒 Security
 
@@ -183,28 +162,16 @@ We welcome contributions! Here's how to get started:
 - eBPF programs use only required, minimal capabilities.
 - Aligned with Kubernetes Security Contexts and Pod Security Standards.
 
-**Reporting Vulnerabilities:** business@aurva.io<br>
-**Security Audit:** Results will be published as available.
+**Reporting Vulnerabilities:** support@aurva.io<br>
+**Security Audit:** Results will be continously published (as available).
 
 ### Aurva Cloud Data Handling and Privacy
 
-- No TLS key access required. TLS traffic decoded at syscall level.
+- No TLS key access required; observability happens at syscall level.
 - In-cluster operation. Data remains in your environment.
 - Metadata Only:
   - Request/response bodies are not stored.
   - Sensitive values are classified in runtime.
-
-## Documentation
-
-- **[Installation Guide](https://aurva.ai/docs/installation/steps)** - Complete setup walkthrough
-
-
-
-## Support
-
-- **📖 Documentation**: https://aurva.ai
-- **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
-- **📧 Support**: business@aurva.io
 
 ## License
 
