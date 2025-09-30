@@ -61,8 +61,6 @@ Edit ```values.yaml``` and set your credentials/placeholders:
 ```yaml
 outpost:
   env:
-    - name: COMMANDER_URL
-      value: "aiostack-commander.<YOUR_NAMESPACE>.svc.cluster.local:7470"
     - name: COMPANY_ID
       value: "<YOUR_COMPANY_ID>"
     - name: AIOSTACK_VALIDATION_KEY
