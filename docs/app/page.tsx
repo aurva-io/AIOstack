@@ -63,7 +63,7 @@ export default function Home() {
       </section>
 
       {/* Problems Section */}
-      <section className="py-20 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
+      <section className="py-20 bg-gradient-to-r from-slate-200 to-slate-200 dark:from-red-950/20 dark:to-orange-950/20">
         <div className="container mx-auto px-2">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-red-600 dark:text-red-400">
@@ -145,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-2">
+      <section className="py-40 px-2">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-xl font-bold mb-4">
@@ -200,7 +200,7 @@ export default function Home() {
       </section>
 
       {/* Problem/Solution Section */}
-      <section className="py-20 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
+      <section className="py-20 bg-gradient-to-br from-slate-200 to-purple-50 dark:from-red-950/20 dark:to-orange-950/20">
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -349,7 +349,7 @@ export default function Home() {
       </section> */}
 
       {/* For the Engineers Section */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative ">
+      <section className="py-20 bg-gradient-to-br from-slate-900  to-slate-800 text-white relative ">
         {/* Background patterns */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 border border-purple-400 rounded-full"></div>
@@ -383,42 +383,26 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
 
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
-              <h3 className="text-2xl font-bold mb-6 text-purple-300">Tech Stack</h3>
+              <h3 className="text-2xl font-bold mb-6 text-purple-300 text-center">Tech Stack</h3>
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-purple-300">eBPF</h4>
+
+                  <h4 className="text-xl font-bold text-purple-300">eBPF</h4>
                   <p className="text-sm text-gray-400">Kernel-level monitoring</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-blue-300">Golang</h4>
+
+                  <h4 className="text-xl font-bold text-blue-300">Golang</h4>
                   <p className="text-sm text-gray-400">High-performance backend</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-green-300">ClickHouse</h4>
+
+                  <h4 className="text-xl font-bold text-green-300">ClickHouse</h4>
                   <p className="text-sm text-gray-400">Log Store</p>
                 </div>
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-semibold text-orange-300">Kubernetes</h4>
+
+                  <h4 className="text-xl font-bold text-orange-300">Kubernetes</h4>
                   <p className="text-sm text-gray-400">Cloud-native deployment</p>
                 </div>
               </div>
@@ -430,7 +414,7 @@ export default function Home() {
 
 
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
-              <h3 className="text-2xl font-bold mb-6 text-pink-300">Features</h3>
+              <h3 className="text-2xl font-bold mb-6 text-pink-300 text-center">Features</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -457,7 +441,7 @@ export default function Home() {
 
 
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
-              <h3 className="text-2xl font-bold mb-6 text-blue-300">Performance</h3>
+              <h3 className="text-2xl font-bold mb-6 text-blue-300 text-center">Performance</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-300">Time To First Byte</span>
@@ -482,12 +466,12 @@ export default function Home() {
 
 
             <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full">
-              <h3 className="text-2xl font-bold mb-6 text-green-300">Quick Deploy</h3>
+              <h3 className="text-2xl font-bold mb-6 text-green-300 text-center">Quick Deploy</h3>
               <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm">
                 <div className="text-gray-400 mb-2"># Deploy in 2 minutes</div>
                 <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
-                <div className="text-gray-400 mt-4 mb-2"># Start monitoring at</div>
-                <div className="text-purple-400">http://staging.aurva.ai</div>
+                <div className="text-gray-400 mt-4 mb-2"># View your dashboard at</div>
+                <div className="text-purple-400">http://app.aurva.ai</div>
               </div>
             </div>
           </div>
@@ -497,7 +481,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-purple-600 to-green-600 text-white">
+      <section className="py-20 bg-gradient-to-r from-slate-600 to-green-600 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
             Ready to Take Control of Your AI?
@@ -507,17 +491,12 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href={`https://staging.aurva.ai`}
+              href="/docs/installation/steps"
               className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               Install Now
             </Link>
-            <Link
-              href="/docs/installation/steps"
-              className="border-2 border-white text-white hover:bg-white hover:text-purple-600 px-8 py-3 rounded-lg font-semibold transition-colors"
-            >
-              View Documentation
-            </Link>
+
           </div>
           <p className="text-sm mt-6 opacity-75">
             No credit card required • Free forever • Setup in under 10 minutes
