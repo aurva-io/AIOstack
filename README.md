@@ -103,7 +103,8 @@ helm install myaiostack aiostack/aiostack --namespace aiostack --values values.y
 kubectl get pods -n aiostack
 ```
 
-**Step 4: View the Dashboard**
+**Step 4: View the Dashboard**<br>
+
 That's it! You can now access your Shadow AI inventory at [app.aurva.io](https://app.aurva.ai) and login with your credentials (your username is the email you signed up with).
 
 
