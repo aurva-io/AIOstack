@@ -175,7 +175,7 @@ We welcome contributions! Here's how to get started:
   - Sensitive values are classified in runtime.
 
 ## License
-
+AIOstack is open source.<br>
 Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ## ⭐ Star History
