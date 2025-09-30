@@ -137,18 +137,6 @@ That's it! You can now access your Shadow AI inventory at [app.aurva.io](https:/
 └─────────────────┘    └──────────────────┘
 ```
 
-## 🤝 Contributing
-We welcome contributions! Here's how to get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Add** tests where applicable
-4. **Run** checks locally (make test)
-5. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-6. **Push** to the branch (`git push origin feature/amazing-feature`)
-7. **Open** a Pull Request with a clear description
-
-
 ## Documentation & Support
 
 - **📖 Documentation**: https://aurva.ai/docs/home
