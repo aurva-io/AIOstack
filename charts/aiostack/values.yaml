@@ -1,6 +1,6 @@
 observer:
   enabled: true
-  version: v1.0.4_alpha
+  version: v1.0.5_alpha
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -37,7 +37,7 @@ observer:
 
 outpost:
   enabled: true
-  version: v1.0.4_alpha
+  version: v1.0.5_alpha
   replicaCount: 1
   nodeSelector: {}
   tolerations: []
