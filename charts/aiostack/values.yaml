@@ -12,14 +12,6 @@ observer:
   env:
     - name: TRACE_SSL
       value: "true"
-    - name: PROCFS_PATH
-      value: "/proc"
-    - name: TRACE_PSQL
-      value: "false"
-    - name: TRACE_SQLSERVER
-      value: "false"
-    - name: TRACE_MYSQL
-      value: "false"
     - name: TRACE_EGRESS
       value: "true"
     - name: TRACE_GO_TLS
@@ -63,7 +55,7 @@ outpost:
     - name: OUTPOST_PORT
       value: ":7471"
     - name: SKIP_NAMESPACES
-      value: "aurva-dataplane-staging,aurva-dataplane-uat,aurva-dataplane-prod,kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
+      value: "kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
     - name: INSECURE_SKIP_VERIFY
       value: "true"
     - name: COMMANDER_URL
@@ -73,23 +65,3 @@ outpost:
       value: "<MODIFY>"
     - name: AIOSTACK_VALIDATION_KEY
       value: "<MODIFY>"
-
-
-
-
-
-# YOU MAY LEAVE THE FOLLOWING BLOCKS AS IS, ONLY MODIFY THE VALUES IF YOU KNOW WHAT YOU ARE DOING
-commander:
-  enabled: false
-
-emissary:
-  enabled: false
-
-ui:
-  enabled: false
-
-postgresql:
-  enabled: false
-
-clickhouse:
-  enabled: false
