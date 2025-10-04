@@ -471,7 +471,7 @@ export default function Home() {
                 <div className="text-gray-400 mb-2"># Deploy in 2 minutes</div>
                 <div className="text-blue-400">helm install aiostack ./charts/aiostack -n aiostack</div>
                 <div className="text-gray-400 mt-4 mb-2"># View your dashboard at</div>
-                <div className="text-purple-400">http://app.aurva.ai</div>
+                <div className="text-purple-400">https://app.aurva.ai</div>
               </div>
             </div>
           </div>
