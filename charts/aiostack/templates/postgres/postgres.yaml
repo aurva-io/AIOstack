@@ -1,4 +1,4 @@
-{{- if .Values.postgresql.enabled }}
+{{- if and .Values.postgresql (.Values.postgresql.enabled | default false) }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

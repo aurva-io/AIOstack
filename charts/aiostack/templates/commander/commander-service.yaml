@@ -1,4 +1,4 @@
-{{- if .Values.commander.enabled }}
+{{- if and .Values.commander (.Values.commander.enabled | default false) }}
 apiVersion: v1
 kind: Service
 metadata:

@@ -1,4 +1,4 @@
-{{- if .Values.commander.enabled }}
+{{- if and .Values.commander (.Values.commander.enabled | default false) }}
 {{- if .Values.commander.httproute.enabled }}
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute

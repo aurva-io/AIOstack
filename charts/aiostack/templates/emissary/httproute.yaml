@@ -1,4 +1,4 @@
-{{- if .Values.emissary.enabled }}
+{{- if and .Values.emissary (.Values.emissary.enabled | default false) }}
 {{- if .Values.emissary.httproute.enabled }}
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute

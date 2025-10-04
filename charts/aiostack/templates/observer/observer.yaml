@@ -26,7 +26,14 @@ spec:
         env:
         - name: LOG_ENV
           value: "production"
-        {{- toYaml .Values.observer.env | nindent 8 }}
+        - name: OUTPOST_URL
+          value: "aiostack-outpost.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.outpost.port }}"
+        {{- range .Values.observer.env }}
+        {{- if ne .name "OUTPOST_URL" }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        {{- end }}
         securityContext:
           privileged: true
           capabilities:

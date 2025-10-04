@@ -68,8 +68,6 @@ outpost:
 
 observer:
   env:
-    - name: OUTPOST_URL
-      value: "aiostack-outpost.<YOUR_NAMESPACE>.svc.cluster.local:7471"
     - name: IS_OUTPOST_URL_SECURE
       value: "false"
 ```

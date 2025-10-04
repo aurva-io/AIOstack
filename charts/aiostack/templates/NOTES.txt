@@ -1,13 +1,13 @@
-1. Get the application URL by running these commands:
-{{- if .Values.commander.enabled }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "aiostack.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=commander" -o jsonpath="{.items[0].metadata.name}")
+1. Get the application URL by running these commands (only for PaaS):
+{{- if and .Values.ui (.Values.ui.enabled | default false) }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "aiostack.name" . }},app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=ui" -o jsonpath="{.items[0].metadata.name}")
   export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:$CONTAINER_PORT
 {{- end }}
 
-{{- if .Values.postgresql.enabled }}
-2. Get the PostgreSQL connection details:
+2. Get the PostgreSQL connection details (only for PaaS):
+{{- if and .Values.postgresql (.Values.postgresql.enabled | default false) }}
   export POSTGRES_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ include "aiostack.fullname" . }}-postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
   echo "PostgreSQL connection: postgresql://{{ .Values.postgresql.auth.username }}:$POSTGRES_PASSWORD@{{ include "aiostack.fullname" . }}-postgresql:5432/{{ .Values.postgresql.auth.database }}"
 {{- end }}
