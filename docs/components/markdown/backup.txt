@@ -315,7 +315,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
-              href={`https://staging.aurva.ai`}
+              href={`https://app.aurva.ai`}
               className="bg-white text-purple-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold transition-colors"
             >
               Install Now
