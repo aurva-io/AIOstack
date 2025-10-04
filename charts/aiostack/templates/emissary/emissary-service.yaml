@@ -1,4 +1,4 @@
-{{- if .Values.emissary.enabled }}
+{{- if and .Values.emissary (.Values.emissary.enabled | default false) }}
 apiVersion: v1
 kind: Service
 metadata:

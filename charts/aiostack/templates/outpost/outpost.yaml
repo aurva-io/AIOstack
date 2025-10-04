@@ -27,13 +27,16 @@ spec:
         imagePullPolicy: "IfNotPresent"
         ports:
         - name: http
-          containerPort: {{ .Values.outpost.service.targetPort }}
+          containerPort: {{ .Values.global.outpost.port }}
           protocol: TCP
-        {{- if .Values.outpost.env }}
         env:
         - name: LOG_ENV
           value: "production"
-        {{- toYaml .Values.outpost.env | nindent 8 }}
+        - name: OUTPOST_PORT
+          value: ":{{ .Values.global.outpost.port }}"
+        {{- range .Values.outpost.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
         {{- end }}
         resources:
           {{- toYaml .Values.outpost.resources | nindent 10 }}

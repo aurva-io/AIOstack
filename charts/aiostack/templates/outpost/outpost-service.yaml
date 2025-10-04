@@ -10,8 +10,8 @@ metadata:
 spec:
   type: {{ .Values.outpost.service.type }}
   ports:
-    - port: {{ .Values.outpost.service.port }}
-      targetPort: {{ .Values.outpost.service.targetPort }}
+    - port: {{ .Values.global.outpost.port }}
+      targetPort: {{ .Values.global.outpost.targetPort }}
       protocol: TCP
       name: http
   selector:

@@ -1,4 +1,4 @@
-{{- if .Values.ui.enabled }}
+{{- if and .Values.ui (.Values.ui.enabled | default false) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
