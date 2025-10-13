@@ -8,7 +8,7 @@ export const Navigations = [
   {
     title: "Home",
     href: "https://aurva.io",
-    external: true,
+    external: false,
   },
 ]
 
