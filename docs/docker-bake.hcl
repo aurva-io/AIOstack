@@ -19,7 +19,7 @@ target "aiostack-docs" {
     ENV_TAG = VERSION
   }
   tags      = get_tags("aiostack-docs")
-  platforms = [ "linux/arm64"]
+  platforms = [ "linux/amd64","linux/arm64"]
 }
 
 function "get_tags" {
