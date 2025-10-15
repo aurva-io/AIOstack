@@ -153,7 +153,7 @@ const inventoryRows = [
     owner: "unknown",
     confidence: 0.88,
     egress: "third-party",
-    vectors: "Oracle(2)",
+    vectors: "Oracle(x2)",
   },
   {
     service: "auth-mgr",
@@ -168,6 +168,48 @@ const inventoryRows = [
     confidence: 0.86,
     egress: "private/VPC",
     vectors: "PSQL (x3)",
+  },
+  {
+    service: "content-moderator",
+    ns: "prod-safety",
+    role: "sa-moderation",
+    exposure: "internal",
+    endpoint: "OpenAI",
+    calls7d: 2156,
+    bytes7d: "520 MB",
+    lastSeen: "18m ago",
+    owner: "trust-safety",
+    confidence: 0.94,
+    egress: "third-party",
+    vectors: "MongoDB",
+  },
+  {
+    service: "recommendation-api",
+    ns: "prod-ml",
+    role: "sa-ml-service",
+    exposure: "external",
+    endpoint: "Bedrock",
+    calls7d: 6240,
+    bytes7d: "2.8 GB",
+    lastSeen: "5m ago",
+    owner: "ml-platform",
+    confidence: 0.91,
+    egress: "third-party",
+    vectors: "Redis,PSQL",
+  },
+  {
+    service: "data-pipeline",
+    ns: "staging-analytics",
+    role: "sa-etl-worker",
+    exposure: "internal",
+    endpoint: "Cohere",
+    calls7d: 892,
+    bytes7d: "180 MB",
+    lastSeen: "31m ago",
+    owner: "unknown",
+    confidence: 0.79,
+    egress: "third-party",
+    vectors: "Snowflake",
   },
 ];
 
@@ -294,32 +336,83 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             </div>
             {/* Preview card */}
             <div className="relative">
-              <div className="rounded-3xl border border-border bg-card p-4 ring-1 ring-border">
-                <div className="flex items-center justify-between p-3">
-                  <div className="text-sm font-medium text-foreground">AI Calls (last 14d)</div>
-                  <div className="text-xs text-muted-foreground">demo data</div>
+              {/* Animated border glow */}
+              <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-emerald-500/20 via-emerald-400/30 to-emerald-500/20 opacity-75 blur-sm animate-border-glow" />
+
+              <div className="relative rounded-3xl border border-border bg-card overflow-hidden ring-1 ring-border">
+                {/* Header */}
+                <div className="relative flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                    </div>
+                    <span className="text-xs font-semibold uppercase tracking-wide text-foreground">Live Detection</span>
+                  </div>
                 </div>
-                <div className="h-48 w-full">
-                  <ResponsiveContainer>
-                    <AreaChart data={callsData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#34d399" stopOpacity={0.7} />
-                          <stop offset="100%" stopColor="#34d399" stopOpacity={0.05} />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-                      <XAxis dataKey="day" stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                      <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={{ background: "#0b1220", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12 }} labelStyle={{ color: "#e2e8f0" }} itemStyle={{ color: "#34d399" }} />
-                      <Area type="monotone" dataKey="calls" stroke="#34d399" fill="url(#g1)" strokeWidth={2} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+
+                {/* Activity Feed */}
+                <div className="space-y-0 divide-y divide-border/50">
+                  {[
+                    { service: "invoice-ai", provider: "OpenAI", ns: "prod-finance", calls: "1.2k", time: "2m ago", shadow: false },
+                    { service: "webapp-next", provider: "Anthropic", ns: "prod-app", calls: "847", time: "4m ago", shadow: true },
+                    { service: "auth-mgr", provider: "Vertex AI", ns: "dev-ai", calls: "340", time: "9m ago", shadow: false },
+                    { service: "chat-svc", provider: "Bedrock", ns: "prod-chat", calls: "2.1k", time: "12m ago", shadow: false },
+                  ].map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="group relative px-4 py-3 transition hover:bg-muted/30 animate-in fade-in slide-in-from-right-4"
+                      style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'backwards' }}
+                    >
+                      {/* Subtle pulse overlay for first item */}
+                      {idx === 0 && (
+                        <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" style={{ animationDuration: '3s' }} />
+                      )}
+
+                      <div className="relative flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="truncate font-mono text-sm font-medium text-foreground">{item.service}</span>
+                            {item.shadow && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-medium text-rose-600 dark:text-rose-300 ring-1 ring-rose-400/20 animate-in fade-in zoom-in-50" style={{ animationDelay: `${idx * 150 + 200}ms`, animationFillMode: 'backwards' }}>
+                                <Shield size={10} className="animate-pulse" />
+                                shadow
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                            <span className="inline-flex items-center gap-1">
+                              <Server size={11} className="animate-pulse" style={{ animationDuration: '4s' }} />
+                              {item.ns}
+                            </span>
+                            <span>•</span>
+                            <span className="font-medium text-emerald-600 dark:text-emerald-300">{item.provider}</span>
+                            <span>•</span>
+                            <span className="tabular-nums">{item.calls} calls</span>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">{item.time}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-1 gap-3 p-3 sm:grid-cols-3">
-                  <Metric icon={Server} label="Agents detected" value="37" />
-                  <Metric icon={Network} label="LLM providers" value="OpenAI, Anthropic, Bedrock" />
-                  <Metric icon={Shield} label="Shadow AI flags" value="6" />
+
+                {/* Summary Footer */}
+                <div className="border-t border-border bg-muted/30 px-4 py-3 animate-in fade-in slide-in-from-bottom-2" style={{ animationDelay: '800ms', animationFillMode: 'backwards' }}>
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-4">
+                      <span className="text-muted-foreground">
+                        <span className="font-semibold text-foreground tabular-nums">37</span> agents
+                      </span>
+                      <span className="text-muted-foreground">
+                        <span className="font-semibold text-foreground tabular-nums">5</span> providers
+                      </span>
+                      <span className="text-muted-foreground">
+                        <span className="font-semibold text-rose-600 dark:text-rose-300 tabular-nums animate-pulse" style={{ animationDuration: '3s' }}>6</span> shadow AI
+                      </span>
+                    </div>
+                    <span className="text-muted-foreground">last 14d</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -336,58 +429,83 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             subtitle="We fingerprint outbound TLS + process hints to attribute LLM usage to real services, namespaces, and IAM roles."
           />
 
-          <div className="overflow-hidden rounded-2xl border border-border ring-1 ring-border">
-            <table className="min-w-full divide-y divide-border">
-              <thead className="bg-muted/50">
-                <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
-                  <th className="px-4 py-3">Service</th>
-                  <th className="px-4 py-3">Namespace</th>
-                  <th className="px-4 py-3">SA / IAM Role</th>
-                  <th className="px-4 py-3">Exposure</th>
-                  <th className="px-4 py-3">Endpoint</th>
-                  <th className="px-4 py-3">Calls (7d)</th>
-                  <th className="px-4 py-3">Bytes (7d)</th>
-                  <th className="px-4 py-3">Last seen</th>
-                  <th className="px-4 py-3">Owner (lite)</th>
-                  {/* <th className="px-4 py-3">Confidence</th> */}
-                  <th className="px-4 py-3">Egress</th>
-                  <th className="px-4 py-3">Databases</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {inventoryRows.map((r) => (
-                  <tr key={r.service} className="text-sm">
-                    <td className="px-4 py-3 font-medium text-foreground">{r.service}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.ns}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.role}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs ring-1 ${r.exposure === "external"
-                        ? "bg-rose-500/10 text-rose-600 dark:text-rose-200 ring-rose-400/20"
-                        : "bg-sky-500/10 text-sky-600 dark:text-sky-200 ring-sky-400/20"
-                        }`}>{r.exposure}</span>
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.endpoint}</td>
-                    <td className="px-4 py-3 text-foreground">{r.calls7d.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-foreground">{r.bytes7d}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.lastSeen}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.owner}</td>
-                    {/* <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-24 rounded bg-white/10">
-                          <div
-                            className="h-1.5 rounded bg-emerald-400"
-                            style={{ width: `${Math.round(r.confidence * 100)}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-white/70">{Math.round(r.confidence * 100)}%</span>
-                      </div>
-                    </td> */}
-                    <td className="px-4 py-3 text-muted-foreground">{r.egress}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{r.vectors}</td>
+          {/* App Mockup */}
+          <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-2xl ring-1 ring-border">
+            {/* App Header with macOS Traffic Lights */}
+            <div className="flex items-center justify-between border-b border-border bg-gradient-to-r from-muted/50 to-muted/30 px-4 py-3">
+              <div className="flex items-center gap-4">
+                {/* macOS Traffic Lights */}
+                <div className="flex gap-1.5">
+                  <div className="h-3 w-3 rounded-full bg-rose-500/80" />
+                  <div className="h-3 w-3 rounded-full bg-amber-500/80" />
+                  <div className="h-3 w-3 rounded-full bg-emerald-500/80" />
+                </div>
+                {/* App Info */}
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 ring-1 ring-emerald-400/20">
+                    <Database size={16} className="text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">AI Runtime Inventory</div>
+                    <div className="text-xs text-muted-foreground">6 services detected</div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button className="hidden sm:inline-flex items-center gap-1.5 rounded-lg bg-background px-3 py-1.5 text-xs font-medium text-foreground ring-1 ring-border transition hover:bg-muted/50">
+                  <Activity size={12} />
+                  <span>Live</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Table Content with Horizontal Scroll on Mobile */}
+            <div className="overflow-x-auto">
+              <table className="w-full divide-y divide-border" style={{ minWidth: '800px' }}>
+                <thead className="bg-muted/50">
+                  <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="px-4 py-3 whitespace-nowrap">Service</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Namespace</th>
+                    <th className="px-4 py-3 whitespace-nowrap">SA / IAM Role</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Exposure</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Endpoint</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Calls (7d)</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Bytes (7d)</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Last seen</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Owner (lite)</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Egress</th>
+                    <th className="px-4 py-3 whitespace-nowrap">Databases</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {inventoryRows.map((r) => (
+                    <tr key={r.service} className="text-sm hover:bg-muted/30 transition">
+                      <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{r.service}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.ns}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.role}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`rounded-full px-2 py-0.5 text-xs ring-1 ${r.exposure === "external"
+                          ? "bg-rose-500/10 text-rose-600 dark:text-rose-200 ring-rose-400/20"
+                          : "bg-sky-500/10 text-sky-600 dark:text-sky-200 ring-sky-400/20"
+                          }`}>{r.exposure}</span>
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.endpoint}</td>
+                      <td className="px-4 py-3 text-foreground whitespace-nowrap tabular-nums">{r.calls7d.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-foreground whitespace-nowrap">{r.bytes7d}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.lastSeen}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.owner}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.egress}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.vectors}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Scroll hint for mobile */}
+          <div className="mt-3 text-center text-xs text-muted-foreground sm:hidden">
+            ← Scroll horizontally to see all columns →
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -397,6 +515,24 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           </div>
         </Container>
       </section>
+
+      {/* Decorative Motif 1 */}
+      <div className="relative py-12 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-full max-w-4xl h-24">
+            {/* Floating particles */}
+            <div className="absolute left-[10%] top-4 h-3 w-3 rounded-full bg-emerald-500/30 animate-[float_6s_ease-in-out_infinite]" />
+            <div className="absolute left-[25%] top-8 h-2 w-2 rounded-full bg-emerald-400/40 animate-[float_8s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+            <div className="absolute left-[45%] top-2 h-4 w-4 rounded-full bg-emerald-500/20 animate-[float_7s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            <div className="absolute right-[35%] top-6 h-2.5 w-2.5 rounded-full bg-emerald-400/35 animate-[float_9s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
+            <div className="absolute right-[15%] top-10 h-3 w-3 rounded-full bg-emerald-500/25 animate-[float_7.5s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
+
+            {/* Glowing orbs */}
+            <div className="absolute left-[15%] top-6 h-16 w-16 rounded-full bg-emerald-500/10 blur-xl animate-[pulse-glow_4s_ease-in-out_infinite]" />
+            <div className="absolute right-[20%] top-4 h-20 w-20 rounded-full bg-emerald-400/15 blur-2xl animate-[pulse-glow_5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+          </div>
+        </div>
+      </div>
 
       {/* Shadow AI */}
       <section id="shadow" className="py-14 sm:py-16">
@@ -463,50 +599,74 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
-      {/* Install */}
-      <section id="install" className="py-14 sm:py-16">
+      {/* Decorative Motif 2 */}
+      <div className="relative py-16 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-full max-w-5xl h-32">
+            {/* Network connection lines */}
+            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.15 }}>
+              <line x1="20%" y1="50%" x2="40%" y2="30%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" />
+              <line x1="40%" y1="30%" x2="60%" y2="50%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+              <line x1="60%" y1="50%" x2="80%" y2="40%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            </svg>
+
+            {/* Animated nodes */}
+            <div className="absolute left-[20%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5s_ease-in-out_infinite]" />
+            <div className="absolute left-[40%] top-[30%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/50 ring-2 ring-emerald-400/30 animate-[float-slow_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+            <div className="absolute left-[60%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5.5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            <div className="absolute left-[80%] top-[40%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/45 ring-2 ring-emerald-400/25 animate-[float-slow_6.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
+
+            {/* Gradient blobs */}
+            <div className="absolute left-1/4 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-500/5 to-emerald-400/10 blur-2xl animate-[pulse-glow_6s_ease-in-out_infinite]" />
+            <div className="absolute right-1/4 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-l from-emerald-500/10 to-emerald-400/5 blur-3xl animate-[pulse-glow_7s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Metrics Overview */}
+      <section className="py-14 sm:py-16">
         <Container>
           <SectionHeader
-            eyebrow="Install"
-            title="Get signal in minutes"
-            subtitle="Use Helm to install in a jiffy. Don't like it ? Uninstall is one command."
+            eyebrow="Metrics"
+            title="Get comprehensive visibility into your AI usage"
+            subtitle="Track AI calls, detect patterns, and monitor your infrastructure in real-time."
             center
           />
 
-          {/* <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
-            {(["helm", "terraform"]).map((t) => (
-              <button
-                key={t}
-                onClick={() => setInstallTab(t)}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize transition ${installTab === t
-                  ? "bg-emerald-500 text-white"
-                  : "text-foreground hover:bg-muted"
-                  }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
+          <div className="rounded-3xl border border-border bg-card p-6 ring-1 ring-border">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-foreground">AI Calls (last 14d)</h3>
+              <div className="text-xs text-muted-foreground">demo data</div>
+            </div>
 
-          <CopyField
-            label={installTab === "helm" ? "Helm" : installTab === "terraform" ? "Terraform" : "Container"}
-            value={installBlock}
-            footnote="Preserves privacy: we send connection metadata only (no prompts, outputs, or secrets)."
-          /> */}
+            <div className="h-64 w-full">
+              <ResponsiveContainer>
+                <AreaChart data={callsData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#34d399" stopOpacity={0.7} />
+                      <stop offset="100%" stopColor="#34d399" stopOpacity={0.05} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
+                  <XAxis dataKey="day" stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: "#0b1220", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12 }} labelStyle={{ color: "#e2e8f0" }} itemStyle={{ color: "#34d399" }} />
+                  <Area type="monotone" dataKey="calls" stroke="#34d399" fill="url(#g1)" strokeWidth={2} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
 
-          <div className="flex justify-center">
-            <PrimaryButton href="/docs/installation/steps">
-              <Book size={16} className="mr-2" /> Go to Docs
-            </PrimaryButton>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
-            <Pill icon={Lock} text="mTLS to control plane" />
-            <Pill icon={Zap} text="One-command uninstall" />
-            <Pill icon={Activity} text="Minimal performance overhead" />
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <Metric icon={Server} label="Agents detected" value="37" helper="Active services" />
+              <Metric icon={Network} label="LLM providers" value="5" helper="OpenAI, Anthropic, Bedrock, Vertex, Custom" />
+              <Metric icon={Shield} label="Shadow AI flags" value="6" helper="Requires attention" />
+            </div>
           </div>
         </Container>
       </section>
+
+
 
       {/* Security & Performance */}
       <section id="security" className="py-14 sm:py-16">
@@ -523,6 +683,31 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           </div>
         </Container>
       </section>
+
+      {/* Decorative Motif 3 */}
+      <div className="relative py-14 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-full max-w-6xl h-28">
+            {/* Scattered sparkles */}
+            <div className="absolute left-[12%] top-4 h-2 w-2 rotate-45 bg-emerald-500/40 animate-[float_5s_ease-in-out_infinite]" />
+            <div className="absolute left-[28%] top-12 h-1.5 w-1.5 rotate-45 bg-emerald-400/50 animate-[float_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+            <div className="absolute left-[42%] top-6 h-2.5 w-2.5 rotate-45 bg-emerald-500/35 animate-[float_7s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            <div className="absolute left-[58%] top-10 h-2 w-2 rotate-45 bg-emerald-400/45 animate-[float_5.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
+            <div className="absolute left-[72%] top-5 h-1.5 w-1.5 rotate-45 bg-emerald-500/40 animate-[float_6.5s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
+            <div className="absolute left-[88%] top-8 h-2 w-2 rotate-45 bg-emerald-400/50 animate-[float_5s_ease-in-out_infinite]" style={{ animationDelay: '2.5s' }} />
+
+            {/* Circular rings */}
+            <div className="absolute left-[30%] top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/10 animate-[pulse-glow_5s_ease-in-out_infinite]" />
+            <div className="absolute left-[30%] top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/15 animate-[pulse-glow_5s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+
+            <div className="absolute right-[30%] top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/10 animate-[pulse-glow_6s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            <div className="absolute right-[30%] top-1/2 h-18 w-18 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/15 animate-[pulse-glow_6s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
+
+            {/* Background gradient orb */}
+            <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/5 blur-3xl animate-[pulse-glow_8s_ease-in-out_infinite]" />
+          </div>
+        </div>
+      </div>
 
       {/* Pricing / Add-on value */}
       <section id="pricing" className="py-14 sm:py-16">
@@ -577,6 +762,51 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 </PrimaryButton>
               </div>
             </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Install */}
+      <section id="install" className="py-14 sm:py-16">
+        <Container>
+          <SectionHeader
+            eyebrow="Install"
+            title="Get signal in minutes"
+            subtitle="Use Helm to install in a jiffy. Don't like it ? Uninstall is one command."
+            center
+          />
+
+          {/* <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
+            {(["helm", "terraform"]).map((t) => (
+              <button
+                key={t}
+                onClick={() => setInstallTab(t)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize transition ${installTab === t
+                  ? "bg-emerald-500 text-white"
+                  : "text-foreground hover:bg-muted"
+                  }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+
+          <CopyField
+            label={installTab === "helm" ? "Helm" : installTab === "terraform" ? "Terraform" : "Container"}
+            value={installBlock}
+            footnote="Preserves privacy: we send connection metadata only (no prompts, outputs, or secrets)."
+          /> */}
+
+          <div className="flex justify-center">
+            <PrimaryButton href="/docs/installation/steps">
+              <Book size={16} className="mr-2" /> Go to Docs
+            </PrimaryButton>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
+            <Pill icon={Lock} text="mTLS to control plane" />
+            <Pill icon={Zap} text="One-command uninstall" />
+            <Pill icon={Activity} text="Minimal performance overhead" />
           </div>
         </Container>
       </section>
