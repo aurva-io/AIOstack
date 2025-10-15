@@ -174,19 +174,19 @@ const inventoryRows = [
 const shadowFlags = [
   {
     id: 1,
-    title: "Prod service 'chatbot-web' calling OpenAI",
+    title: "Prod service 'webapp-nextjs' calling OpenAI",
     why: [
-      "No owner tag found",
-      "First-seen behavior in prod",
-      "External exposure + 3P egress",
+      "No owner tags found",
+      "Interacts with 2 medium sensitivity apps",
+      "Egress volume much higher than your baseline.",
     ],
     severity: "High",
     lastSeen: "6m ago",
   },
   {
     id: 2,
-    title: "'etl-reporter' reading user tables + calling Vertex",
-    why: ["No security_reviewed tag", "Sensitive data adjacency (PII)"],
+    title: "'auth-mgr' reading user tables + calling Vertex",
+    why: ["No security_reviewed tag", "Accesses 4 low risk DBs with PII", "Accesses 1 DB identified to hold user data"],
     severity: "Medium",
     lastSeen: "22m ago",
   },
@@ -252,12 +252,12 @@ export default function Home() {
                 Inventory today; lineage and control when you need it.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <PrimaryButton href="#install" >
+                <PrimaryButton href="/docs/installation/steps" >
                   <Play size={16} className="mr-2" /> Install Free
                 </PrimaryButton>
-                <GhostButton href="#sample">
-                  <Eye size={16} className="mr-2" /> View Sample Report
-                </GhostButton>
+                {/* <GhostButton href="#sample">
+                    <Eye size={16} className="mr-2" /> View Sample Report
+                  </GhostButton> */}
               </div>
               <div className="mt-6 flex flex-wrap gap-2 text-white/70">
                 <Pill icon={Gauge} text="TTFF ≤ 10 min" />
@@ -420,10 +420,10 @@ export default function Home() {
             center
           />
           <div className="grid gap-4 md:grid-cols-4">
-            {[{ icon: Cloud, title: "Deploy", text: "Helm one-liner installs DaemonSet on EKS." },
-            { icon: Network, title: "Observe", text: "Outbound TLS + SNI + process hints." },
-            { icon: Eye, title: "Attribute", text: "Match providers (OpenAI, Anthropic, Bedrock, …)." },
-            { icon: Shield, title: "Flag", text: "Shadow AI: no owner/review, first-seen in prod, 3P egress." }].map((s, idx) => (
+            {[{ icon: Cloud, title: "Deploy", text: "Helm one-liner installs DaemonSet on your cluster." },
+            { icon: Network, title: "Observe", text: "Traffic on your cluster +  process hints." },
+            { icon: Eye, title: "Attribute", text: "To providers like OpenAI, Anthropic, Bedrock and many more." },
+            { icon: Shield, title: "Flag", text: "Shadow AI: no owner/review, newly seen, unusually high volumes" }].map((s, idx) => (
               <div key={idx} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
                 <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
                   <s.icon size={18} />
@@ -442,7 +442,7 @@ export default function Home() {
           <SectionHeader
             eyebrow="Install"
             title="Get signal in minutes"
-            subtitle="Use Helm, Terraform, or a privileged container. Uninstall is one command."
+            subtitle="Use Helm to install in a jiffy. Don't like it ? Uninstall is one command."
           />
 
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
@@ -469,7 +469,7 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/70">
             <Pill icon={Lock} text="mTLS to control plane" />
             <Pill icon={Zap} text="One-command uninstall" />
-            <Pill icon={Activity} text="Back-pressure + sampling" />
+            <Pill icon={Activity} text="Minimal performance overhead" />
           </div>
         </Container>
       </section>
@@ -483,9 +483,9 @@ export default function Home() {
             subtitle="We never collect prompts, responses, or secrets. Sensors are read-only and bounded."
           />
           <div className="grid gap-4 md:grid-cols-3">
-            <Metric icon={Lock} label="Content captured" value="None" helper="Metadata only" />
+            <Metric icon={Lock} label="Sensitive Content captured" value="None" helper="Metadata only" />
             <Metric icon={Activity} label="CPU overhead" value="< 2%" helper="p95 < 5%" />
-            <Metric icon={Gauge} label="Memory overhead" value="< 50 MB/node" helper="bounded event rate" />
+            <Metric icon={Gauge} label="Fast" value="< 10 mins" helper="MTTV" />
           </div>
         </Container>
       </section>
@@ -496,7 +496,7 @@ export default function Home() {
           <SectionHeader
             eyebrow="Add-on value"
             title="Upgrade to AI Data Guard when you need lineage and control"
-            subtitle="Keep the free runtime inventory. Add sensitive→LLM lineage, intent policies, and regulated 3P egress alerts when you're ready."
+            subtitle="Keep the free runtime inventory. Add sensitive→LLM lineage, intent policies, and regulated alerts when you're ready."
           />
           <div className="grid items-start gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
@@ -528,7 +528,7 @@ export default function Home() {
                 {[
                   "Sensitive→LLM lineage (Snowflake, Postgres, Redshift, Athena)",
                   "Intent policies by team/service and provider allowlists",
-                  "Regulated 3P egress alerts with evidence",
+                  "Regulated egress alerts with evidence",
                   "SIEM export • 30-90 day retention",
                   "SSO support",
                   "Deep Data Classification and Sensitive data scans",
@@ -558,16 +558,33 @@ export default function Home() {
             },
             {
               q: "What environments are supported?",
-              a: "EKS is the primary path. EC2 is best-effort. Optional connectors add SaaS copilot visibility.",
+              a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
             },
             {
               q: "Can I uninstall easily?",
-              a: "Yes. One Helm uninstall detaches all kernel hooks. No residual processes remain.",
+              a: "Yes. One Helm uninstall detaches all kernel hooks. No residual processes remain. Although do note that we will be sad to see you go :(",
             },
             {
               q: "How do you infer owner (lite)?",
               a: "We derive owner from Kubernetes labels/namespaces and AWS tags. Verified ownership is part of the paid add-on.",
-            }].map((f, i) => (
+            },
+            {
+              q: "I am a large finacial org and need a PaaS option.",
+              a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
+            },
+            {
+              q: "I read through all this, but didn't understand what AIOStack does.",
+              a: "No problem.  AIOStack is an eBPF based tool that you can deploy to Kubernetes to discover, track and monitor AI services no matter what they are named or claim to be. Additionally we can tell you what databases, applications and external domains they communicate with and if you should be concerned about its behaviour.",
+            },
+            {
+              q: "I really liked the product and want alerts, SSO and integration with Slack and Jira.",
+              a: "We are thrilled that you liked our product ! Reach out to us so that we can upgrade you to the Data Guard plan.",
+            },
+            {
+              q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
+              a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
+            },
+            ].map((f, i) => (
               <div key={i} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
                 <div className="text-sm font-semibold text-foreground">{f.q}</div>
                 <div className="mt-2 text-sm text-muted-foreground">{f.a}</div>

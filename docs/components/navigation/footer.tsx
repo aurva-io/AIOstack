@@ -27,15 +27,16 @@ export function Footer() {
               </Link>
             )}
             <span>
-              &copy; {new Date().getFullYear()}{" "}
-              <Link className="font-semibold hover:text-foreground" href={Company.link}>
+              AIOStack •
+              &copy; {new Date().getFullYear()}{" "}  <Link className="font-semibold hover:text-foreground" href={Company.link}>
                 {Company.name}
               </Link>{" "}
-              • AIOStack
+
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="#license" className="hover:text-foreground">
+            <Link href="https://github.com/aurva-io/AIOstack/blob/main/LICENSE" target="_blank"
+              rel="noopener noreferrer" className="hover:text-foreground">
               Apache-2.0
             </Link>
             <Link href="#security" className="hover:text-foreground">

@@ -69,12 +69,12 @@ export function Navbar() {
             )} */}
             <ModeToggle />
           </div>
-          <div className="flex items-center gap-2 hidden sm:inline" >
+          <div className="hidden sm:flex items-center gap-3">
             <GhostButton href={GitHubLink.href}>
-              <LuGithub size={16} className="sm:mr-2" />
-              <span >Star on GitHub</span>
+              <LuGithub size={16} className="mr-2" />
+              <span>Star on GitHub</span>
             </GhostButton>
-            <PrimaryButton href="#install" >
+            <PrimaryButton href="/docs/installation/steps">
               <Zap size={16} className="mr-2" /> Install Free
             </PrimaryButton>
           </div>
