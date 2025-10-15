@@ -211,8 +211,35 @@ function Metric({ icon: Icon, label, value, helper }: { icon: React.ComponentTyp
 export default function Home() {
   const [installTab, setInstallTab] = useState("helm");
 
-  const helmCmd = `helm repo add aurva https://charts.aurva.io\nhelm install aurva-ai-inventory aurva/ai-inventory \\n  --namespace aurva --create-namespace \\
-  --set clusterName=<your-cluster> --set env=prod`;
+  const helmCmd = `
+helm repo add aiostack https://charts.aurva.ai/
+helm repo update
+
+# Extract the default values file
+helm show values aiostack/aiostack > values.yaml
+
+# Edit the values.yaml file and replace:
+# In Outpost:
+# - name: COMMANDER_URL
+#   value: "aiostack-commander.<YOUR NAMESPACE>.svc.cluster.local:7470"
+# - name: COMPANY_ID
+#   value: "<YOUR COMPANY ID>"
+# - name: AIOSTACK_VALIDATION_KEY
+#   value: "<YOUR AIOSTACK VALIDATION KEY>"
+
+# In Observer:
+# - name: OUTPOST_URL
+#   value: "aiostack-outpost.<YOUR NAMESPACE>.svc.cluster.local:7471"
+# - name: IS_OUTPOST_URL_SECURE
+#   value: "false"
+
+# Create namespace 
+kubectl create namespace aiostack
+
+# Install with your configured values
+helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values.yaml
+
+`;
 
   const tfCmd = ` Coming Soon :) `
 
@@ -235,7 +262,7 @@ export default function Home() {
       <section className="relative overflow-hidden py-16 sm:py-20">
         <Container>
 
-          <div className="mb-6 flex flex-wrap items-center gap-2 hidden sm:inline">
+          <div className="mb-6 hidden sm:flex flex-wrap items-center gap-2">
             <Badge>Open-core • Metadata-only</Badge>
             <Badge>eBPF • Kubernetes Native</Badge>
             <Badge>One line install</Badge>
@@ -443,9 +470,10 @@ export default function Home() {
             eyebrow="Install"
             title="Get signal in minutes"
             subtitle="Use Helm to install in a jiffy. Don't like it ? Uninstall is one command."
+            center
           />
 
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
+          {/* <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
             {(["helm", "terraform"]).map((t) => (
               <button
                 key={t}
@@ -464,9 +492,15 @@ export default function Home() {
             label={installTab === "helm" ? "Helm" : installTab === "terraform" ? "Terraform" : "Container"}
             value={installBlock}
             footnote="Preserves privacy: we send connection metadata only (no prompts, outputs, or secrets)."
-          />
+          /> */}
 
-          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/70">
+          <div className="flex justify-center">
+            <PrimaryButton href="/docs/installation/steps">
+              <Book size={16} className="mr-2" /> Go to Docs
+            </PrimaryButton>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
             <Pill icon={Lock} text="mTLS to control plane" />
             <Pill icon={Zap} text="One-command uninstall" />
             <Pill icon={Activity} text="Minimal performance overhead" />

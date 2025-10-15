@@ -15,6 +15,7 @@ export function Footer() {
               <Link
                 href="https://aurva.io"
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
                 <Image
