@@ -45,7 +45,33 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
    - Company ID
    - AIOStack Validation Key
 
-### 2) Install via Helm
+### 2) Installation Options
+
+#### Option A: Interactive Installer (Recommended)
+
+The easiest way to install AIOStack with guided prompts:
+
+```bash
+# Download and run the interactive installer
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh -o install.sh
+chmod +x install.sh
+./install.sh
+```
+
+Or with a single command:
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+```
+
+The interactive installer will:
+- Check prerequisites (Helm, kubectl, cluster access)
+- Guide you through configuration
+- Collect your credentials securely
+- Install and verify the deployment
+
+**See [INSTALLATION.md](INSTALLATION.md) for detailed installation guide**
+
+#### Option B: Manual Helm Installation
 
 **Step 1: Configure Your Credentials**
 
