@@ -115,7 +115,7 @@ function CopyField({ label, value, footnote }: { label?: string; value: string; 
         </button>
       </div>
       {footnote ? (
-        <div className="mt-2 text-[11px] text-muted-foreground">{footnote}</div>
+        <div className="mt-2 text-[11px] text-center text-muted-foreground">{footnote}</div>
       ) : null}
     </div>
   );
@@ -776,38 +776,45 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             center
           />
 
-          {/* <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 p-1 ring-1 ring-border">
-            {(["helm", "terraform"]).map((t) => (
-              <button
-                key={t}
-                onClick={() => setInstallTab(t)}
-                className={`rounded-full px-3 py-1.5 text-xs font-medium capitalize transition ${installTab === t
-                  ? "bg-emerald-500 text-white"
-                  : "text-foreground hover:bg-muted"
-                  }`}
-              >
-                {t}
-              </button>
-            ))}
+
+          {/* One-Line Installation */}
+          <div className="mx-auto max-w-3xl space-y-6">
+            <div>
+              <div className="mb-3 flex items-center justify-center gap-2">
+                <Zap size={18} className="text-emerald-600 dark:text-emerald-300" />
+                <h3 className="text-lg font-semibold text-foreground">One-Line Installation</h3>
+              </div>
+              <CopyField
+                label="AGENTIC INSTALL WIZARD"
+                value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
+                footnote="✅ Checks prerequisites • ✅ Opens signup in browser • ✅ Guides credential entry • ✅ Installs & verifies • ✅ ~2 minutes total"
+              />
+            </div>
+
+            <div className="text-center">
+              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Don&apos;t like it?</span>
+                <ArrowRight size={14} />
+                <span className="font-medium text-emerald-600 dark:text-emerald-300 ">Uninstall is just as easy</span>
+              </div>
+            </div>
+
+            <div>
+              <CopyField
+                label="UNINSTALLER"
+                value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash"
+              />
+            </div>
           </div>
 
-          <CopyField
-            label={installTab === "helm" ? "Helm" : installTab === "terraform" ? "Terraform" : "Container"}
-            value={installBlock}
-            footnote="Preserves privacy: we send connection metadata only (no prompts, outputs, or secrets)."
-          /> */}
-
-          <div className="flex justify-center">
-            <PrimaryButton href="/docs/installation/steps">
-              <Book size={16} className="mr-2" /> Go to Docs
-            </PrimaryButton>
+          <div className="mt-8 flex justify-center">
+            <GhostButton href="/docs/installation/steps">
+              <FileText size={16} className="mr-2" /> View Detailed Installation Guide
+            </GhostButton>
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
-            <Pill icon={Lock} text="mTLS to control plane" />
-            <Pill icon={Zap} text="One-command uninstall" />
-            <Pill icon={Activity} text="Minimal performance overhead" />
-          </div>
+
+
         </Container>
       </section>
 

@@ -39,6 +39,30 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 
 ## Quick Start
 
+> **Use Helm to install in a jiffy. Don't like it? Uninstall is one command.**
+
+### One-Line Installation ⚡
+
+Get started in seconds with our interactive installer:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+```
+
+**What happens:**
+- ✅ Checks prerequisites (Helm, kubectl, cluster access)
+- ✅ Opens signup page in your browser
+- ✅ Guides you through credential entry
+- ✅ Installs and verifies deployment
+- ✅ Takes ~2 minutes total
+
+**Don't like it? Uninstall is just as easy:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash
+```
+
+---
+
 ### 1. Create your Free Account
 1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
 2. **Copy your credentials** from the email sent to you:

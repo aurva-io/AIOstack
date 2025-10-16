@@ -137,10 +137,10 @@ prompt() {
     local user_input
 
     if [[ -n "$default_value" ]]; then
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [${default_value}]:${NC} ")" user_input
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [${default_value}]:${NC} ")" user_input </dev/tty
         echo "${user_input:-$default_value}"
     else
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input </dev/tty
         echo "$user_input"
     fi
 }
@@ -150,7 +150,7 @@ prompt_secure() {
     local prompt_message=$1
     local user_input
 
-    read -r -s -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input
+    read -r -s -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input </dev/tty
     echo "" # New line after hidden input
     echo "$user_input"
 }
@@ -162,10 +162,10 @@ ask_yes_no() {
     local response
 
     if [[ "$default_value" == "y" ]]; then
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [Y/n]:${NC} ")" response
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [Y/n]:${NC} ")" response </dev/tty
         response=${response:-y}
     else
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [y/N]:${NC} ")" response
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [y/N]:${NC} ")" response </dev/tty
         response=${response:-n}
     fi
 
@@ -442,7 +442,7 @@ collect_credentials() {
 
     echo ""
     print_info "Press Enter to continue to namespace configuration..."
-    read -r -p ""
+    read -r -p "" </dev/tty
 }
 
 # Configure namespace
