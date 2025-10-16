@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #############################################################################
-# AIOStack Interactive Installer
+# AIOStack Interactive Installer By Aurva Inc
 #
 # A production-ready interactive installation script for AIOStack Kubernetes
 # application that guides users through the complete installation process.
@@ -170,6 +170,32 @@ ask_yes_no() {
     fi
 
     [[ "$response" =~ ^[Yy]$ ]]
+}
+
+# Open URL in default browser (cross-platform)
+open_browser() {
+    local url=$1
+
+    print_verbose "Attempting to open URL: ${url}"
+
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        open "$url" &>/dev/null || print_warning "Could not open browser automatically"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        # Linux
+        if command -v xdg-open &> /dev/null; then
+            xdg-open "$url" &>/dev/null || print_warning "Could not open browser automatically"
+        elif command -v gnome-open &> /dev/null; then
+            gnome-open "$url" &>/dev/null || print_warning "Could not open browser automatically"
+        else
+            print_warning "Could not detect browser opener"
+        fi
+    elif [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]]; then
+        # Windows
+        start "$url" &>/dev/null || print_warning "Could not open browser automatically"
+    else
+        print_verbose "Unknown OS type: ${OSTYPE}"
+    fi
 }
 
 # Print banner
@@ -352,17 +378,28 @@ collect_credentials() {
     echo ""
     print_color "$BOLD$BRIGHT_GREEN" "Before proceeding, you need credentials from Aurva:"
     echo ""
-    print_info "1. Visit: https://app.aurva.ai"
-    print_info "2. Sign up for a free account (takes 30 seconds)"
-    print_info "3. Check your email for your credentials:"
+    print_info "1. Sign up for a free account (takes 30 seconds)"
+    print_info "2. Check your registered email for your credentials:"
     print_info "   - Company ID"
     print_info "   - AIOStack Validation Key"
     echo ""
 
-    if ! ask_yes_no "Have you received your credentials?"; then
+    # Ask if they want to open the signup page
+    if ask_yes_no "Open signup page in your browser?" "y"; then
+        print_info "Opening https://app.aurva.ai/signup in your browser..."
+        open_browser "https://app.aurva.ai/signup"
+        sleep 2  # Give the browser time to open
         echo ""
-        print_warning "Please sign up at https://app.aurva.ai and come back when you have your credentials."
-        print_info "Once you have them, run this script again."
+    else
+        print_info "Please visit: https://app.aurva.ai/signup"
+        echo ""
+    fi
+
+    if ! ask_yes_no "Have you received your credentials via email?"; then
+        echo ""
+        print_warning "Please complete signup at https://app.aurva.ai/signup"
+        print_info "Your credentials will be sent to your registered email address"
+        print_info "Once you receive them, run this script again"
         exit 0
     fi
 
