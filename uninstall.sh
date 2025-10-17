@@ -81,6 +81,11 @@ print_verbose() {
 
 # Prompt user with default value
 prompt() {
+    # Redirect stdin to terminal for interactive input when piped from curl
+    if [ ! -t 0 ]; then
+        exec < /dev/tty
+    fi
+
     local prompt_message=$1
     local default_value=$2
     local user_input
@@ -96,6 +101,11 @@ prompt() {
 
 # Ask yes/no question
 ask_yes_no() {
+    # Redirect stdin to terminal for interactive input when piped from curl
+    if [ ! -t 0 ]; then
+        exec < /dev/tty
+    fi
+
     local prompt_message=$1
     local default_value=${2:-"n"}
     local response
@@ -118,6 +128,11 @@ ask_yes_no() {
 
 # Print banner
 print_banner() {
+    # Redirect stdin to terminal for interactive input when piped from curl
+    if [ ! -t 0 ]; then
+        exec < /dev/tty
+    fi
+
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
     ╔═══════════════════════════════════════════════════════════════╗
