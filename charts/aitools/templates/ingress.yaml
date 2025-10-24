@@ -1,0 +1,44 @@
+{{- if .Values.mindsdb.enabled }}
+{{- if .Values.mindsdb.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "aitools.fullname" . }}-mindsdb
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+  {{- with .Values.mindsdb.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.mindsdb.ingress.className }}
+  ingressClassName: {{ .Values.mindsdb.ingress.className }}
+  {{- end }}
+  {{- if .Values.mindsdb.ingress.tls }}
+  tls:
+    {{- range .Values.mindsdb.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.mindsdb.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "aitools.fullname" $ }}-mindsdb
+                port:
+                  number: {{ $.Values.mindsdb.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,180 @@
+mindsdb:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: mindsdb/mindsdb
+    pullPolicy: IfNotPresent
+    tag: "v25.9.1.0"
+
+  service:
+    type: ClusterIP
+    port: 47334
+    targetPort: 47334
+    annotations: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: mindsdb.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 500m
+      memory: 2Gi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  env:
+    - name: MINDSDB_STORAGE_DIR
+      value: "/root/mdb_storage"
+    - name: MINDSDB_DB_CON
+      value: "sqlite:////root/mdb_storage/mindsdb.db"
+
+  # Additional environment variables
+  extraEnv: []
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "mindsdb-sa"
+
+  # Security context
+  securityContext: {}
+
+  podSecurityContext: {}
+
+  # Probes
+  livenessProbe:
+    httpGet:
+      path: /api/status
+      port: 47334
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /api/status
+      port: 47334
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+n8n:
+  enabled: true
+  replicaCount: 1
+
+  image:
+    repository: n8nio/n8n
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 5678
+    targetPort: 5678
+    annotations: {}
+
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: n8n.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  env:
+    - name: N8N_HOST
+      value: "0.0.0.0"
+    - name: N8N_PORT
+      value: "5678"
+    - name: N8N_PROTOCOL
+      value: "http"
+    - name: NODE_ENV
+      value: "production"
+    - name: EXECUTIONS_DATA_SAVE_ON_SUCCESS
+      value: "all"
+    - name: EXECUTIONS_DATA_SAVE_ON_ERROR
+      value: "all"
+    - name: EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS
+      value: "true"
+
+  # Additional environment variables
+  extraEnv: []
+
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: "n8n-sa"
+
+  # Security context
+  securityContext: {}
+
+  podSecurityContext:
+    fsGroup: 1000
+
+  # Probes
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 5678
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: 5678
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3

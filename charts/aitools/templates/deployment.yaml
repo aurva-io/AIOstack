@@ -1,0 +1,80 @@
+{{- if .Values.mindsdb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aitools.fullname" . }}-mindsdb
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+spec:
+  replicas: {{ .Values.mindsdb.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aitools.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: mindsdb
+  template:
+    metadata:
+      labels:
+        {{- include "aitools.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: mindsdb
+    spec:
+      {{- with .Values.mindsdb.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "aitools.serviceAccountName" . }}
+      containers:
+      - name: mindsdb
+        {{- with .Values.mindsdb.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        image: "{{ .Values.mindsdb.image.repository }}:{{ .Values.mindsdb.image.tag }}"
+        imagePullPolicy: {{ .Values.mindsdb.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.mindsdb.service.targetPort }}
+          protocol: TCP
+        {{- if .Values.mindsdb.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.mindsdb.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.mindsdb.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.mindsdb.readinessProbe | nindent 10 }}
+        {{- end }}
+        env:
+        {{- range .Values.mindsdb.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        {{- range .Values.mindsdb.extraEnv }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.mindsdb.resources | nindent 10 }}
+        volumeMounts:
+        {{- if .Values.mindsdb.persistence.enabled }}
+        - name: data
+          mountPath: /root/mdb_storage
+        {{- end }}
+      volumes:
+      {{- if .Values.mindsdb.persistence.enabled }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "aitools.fullname" . }}-mindsdb-data
+      {{- end }}
+      {{- with .Values.mindsdb.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mindsdb.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.mindsdb.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

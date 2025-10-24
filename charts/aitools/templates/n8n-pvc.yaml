@@ -1,0 +1,24 @@
+{{- if .Values.n8n.enabled }}
+{{- if .Values.n8n.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "aitools.fullname" . }}-n8n-data
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: n8n
+  {{- with .Values.n8n.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.n8n.persistence.accessMode }}
+  {{- if .Values.n8n.persistence.storageClass }}
+  storageClassName: {{ .Values.n8n.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.n8n.persistence.size }}
+{{- end }}
+{{- end }}

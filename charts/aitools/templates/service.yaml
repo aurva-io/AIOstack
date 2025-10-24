@@ -1,0 +1,23 @@
+{{- if .Values.mindsdb.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aitools.fullname" . }}-mindsdb
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+  {{- with .Values.mindsdb.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.mindsdb.service.type }}
+  ports:
+  - port: {{ .Values.mindsdb.service.port }}
+    targetPort: {{ .Values.mindsdb.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "aitools.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+{{- end }}

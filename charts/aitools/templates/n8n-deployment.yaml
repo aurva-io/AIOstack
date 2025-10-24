@@ -1,0 +1,80 @@
+{{- if .Values.n8n.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aitools.fullname" . }}-n8n
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: n8n
+spec:
+  replicas: {{ .Values.n8n.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aitools.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: n8n
+  template:
+    metadata:
+      labels:
+        {{- include "aitools.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: n8n
+    spec:
+      {{- with .Values.n8n.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.n8n.serviceAccount.name }}
+      containers:
+      - name: n8n
+        {{- with .Values.n8n.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        image: "{{ .Values.n8n.image.repository }}:{{ .Values.n8n.image.tag }}"
+        imagePullPolicy: {{ .Values.n8n.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.n8n.service.targetPort }}
+          protocol: TCP
+        {{- if .Values.n8n.livenessProbe }}
+        livenessProbe:
+          {{- toYaml .Values.n8n.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.n8n.readinessProbe }}
+        readinessProbe:
+          {{- toYaml .Values.n8n.readinessProbe | nindent 10 }}
+        {{- end }}
+        env:
+        {{- range .Values.n8n.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        {{- range .Values.n8n.extraEnv }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.n8n.resources | nindent 10 }}
+        volumeMounts:
+        {{- if .Values.n8n.persistence.enabled }}
+        - name: data
+          mountPath: /home/node/.n8n
+        {{- end }}
+      volumes:
+      {{- if .Values.n8n.persistence.enabled }}
+      - name: data
+        persistentVolumeClaim:
+          claimName: {{ include "aitools.fullname" . }}-n8n-data
+      {{- end }}
+      {{- with .Values.n8n.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.n8n.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.n8n.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

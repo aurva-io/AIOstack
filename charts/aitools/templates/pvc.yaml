@@ -1,0 +1,24 @@
+{{- if .Values.mindsdb.enabled }}
+{{- if .Values.mindsdb.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "aitools.fullname" . }}-mindsdb-data
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mindsdb
+  {{- with .Values.mindsdb.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.mindsdb.persistence.accessMode }}
+  {{- if .Values.mindsdb.persistence.storageClass }}
+  storageClassName: {{ .Values.mindsdb.persistence.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mindsdb.persistence.size }}
+{{- end }}
+{{- end }}

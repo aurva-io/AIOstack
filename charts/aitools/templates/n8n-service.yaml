@@ -1,0 +1,23 @@
+{{- if .Values.n8n.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aitools.fullname" . }}-n8n
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: n8n
+  {{- with .Values.n8n.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.n8n.service.type }}
+  ports:
+  - port: {{ .Values.n8n.service.port }}
+    targetPort: {{ .Values.n8n.service.targetPort }}
+    protocol: TCP
+    name: http
+  selector:
+    {{- include "aitools.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: n8n
+{{- end }}

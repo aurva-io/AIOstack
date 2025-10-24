@@ -1,0 +1,44 @@
+{{- if .Values.n8n.enabled }}
+{{- if .Values.n8n.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "aitools.fullname" . }}-n8n
+  labels:
+    {{- include "aitools.labels" . | nindent 4 }}
+    app.kubernetes.io/component: n8n
+  {{- with .Values.n8n.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.n8n.ingress.className }}
+  ingressClassName: {{ .Values.n8n.ingress.className }}
+  {{- end }}
+  {{- if .Values.n8n.ingress.tls }}
+  tls:
+    {{- range .Values.n8n.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.n8n.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
+            backend:
+              service:
+                name: {{ include "aitools.fullname" $ }}-n8n
+                port:
+                  number: {{ $.Values.n8n.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
