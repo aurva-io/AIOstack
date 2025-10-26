@@ -249,6 +249,371 @@ function Metric({ icon: Icon, label, value, helper }: { icon: React.ComponentTyp
   );
 }
 
+interface GroundObject {
+  id: number;
+  x: number;
+  y: number;
+  text: string;
+  opacity: number;
+  isBeingZapped: boolean;
+}
+
+interface Beam {
+  id: number;
+  targetX: number;
+  targetY: number;
+  opacity: number;
+  color: string;
+}
+
+function UFOAnimation() {
+  const canvasRef = React.useRef<HTMLDivElement>(null);
+  const [objects, setObjects] = React.useState<GroundObject[]>([]);
+  const [beams, setBeams] = React.useState<Beam[]>([]);
+  const [ufoX, setUfoX] = React.useState(0);
+  const [landscapeOffset, setLandscapeOffset] = React.useState(0);
+  const animationFrameRef = React.useRef<number>();
+  const lastZapTimeRef = React.useRef(0);
+
+  React.useEffect(() => {
+    // Customer problems that get zapped away
+    const customerProblems = [
+      "Shadow AI",
+      "Unknown LLM Usage",
+      "Untracked AI Agents",
+      "No Ownership Tags",
+      "Unauthorized API Calls",
+      "Hidden AI Services",
+      "Compliance Gaps",
+      "Unmonitored Egress",
+      "Mystery AI Costs",
+      "Rogue AI Features",
+      "PII Leaks to LLMs",
+      "Zero Visibility",
+    ];
+
+    const getRandomProblem = () => customerProblems[Math.floor(Math.random() * customerProblems.length)];
+
+    // Initialize ground objects with problem text
+    const initialObjects: GroundObject[] = [];
+    for (let i = 0; i < 8; i++) {
+      initialObjects.push({
+        id: i,
+        x: Math.random() * 100,
+        y: 75 + Math.random() * 10,
+        text: getRandomProblem(),
+        opacity: 1,
+        isBeingZapped: false,
+      });
+    }
+    setObjects(initialObjects);
+
+    let time = 0;
+    let lastBeamId = 0;
+
+    const animate = () => {
+      time += 0.016; // ~60fps
+
+      // UFO horizontal movement (hovering left and right)
+      const newUfoX = Math.sin(time * 0.5) * 15;
+      setUfoX(newUfoX);
+
+      // Landscape scrolling (reset at 50% since SVG is 200% wide)
+      setLandscapeOffset((prev) => (prev + 0.2) % 50);
+
+      // Move objects with landscape
+      setObjects((prevObjects) => {
+        return prevObjects.map((obj) => {
+          let newX = obj.x - 0.15;
+
+          // Wrap around when object goes off screen
+          if (newX < -10) {
+            return {
+              ...obj,
+              x: 110,
+              y: 75 + Math.random() * 10,
+              text: getRandomProblem(),
+              opacity: 1,
+              isBeingZapped: false,
+            };
+          }
+
+          // Fade out if being zapped
+          if (obj.isBeingZapped) {
+            const newOpacity = obj.opacity - 0.05;
+            if (newOpacity <= 0) {
+              return {
+                ...obj,
+                x: 110,
+                y: 75 + Math.random() * 10,
+                text: getRandomProblem(),
+                opacity: 1,
+                isBeingZapped: false,
+              };
+            }
+            return { ...obj, x: newX, opacity: newOpacity };
+          }
+
+          return { ...obj, x: newX };
+        });
+      });
+
+      // Random zapping (every 2-4 seconds)
+      const currentTime = Date.now();
+      if (currentTime - lastZapTimeRef.current > 2000 + Math.random() * 2000) {
+        lastZapTimeRef.current = currentTime;
+
+        // Pick a random visible object to zap
+        setObjects((prevObjects) => {
+          const visibleObjects = prevObjects.filter(
+            (obj) => obj.x > 20 && obj.x < 80 && !obj.isBeingZapped && obj.opacity > 0.5
+          );
+
+          if (visibleObjects.length > 0) {
+            const target = visibleObjects[Math.floor(Math.random() * visibleObjects.length)];
+
+            // Create beam
+            const beamColor = Math.random() > 0.5 ? '#10b981' : '#a855f7'; // green or purple
+            setBeams((prev) => [
+              ...prev,
+              {
+                id: ++lastBeamId,
+                targetX: target.x,
+                targetY: target.y,
+                opacity: 1,
+                color: beamColor,
+              },
+            ]);
+
+            // Mark object as being zapped
+            return prevObjects.map((obj) =>
+              obj.id === target.id ? { ...obj, isBeingZapped: true } : obj
+            );
+          }
+          return prevObjects;
+        });
+      }
+
+      // Fade out beams
+      setBeams((prevBeams) =>
+        prevBeams
+          .map((beam) => ({ ...beam, opacity: beam.opacity - 0.05 }))
+          .filter((beam) => beam.opacity > 0)
+      );
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="relative mx-auto w-full max-w-7xl">
+      <div
+        ref={canvasRef}
+        className="relative h-[400px] w-full overflow-hidden rounded-2xl to-slate-900 ring-1 ring-border"
+        style={{}}
+      >
+        {/* Stars background */}
+        <div className="absolute inset-0">
+          {Array.from({ length: 50 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: `${1 + Math.random() * 2}px`,
+                height: `${1 + Math.random() * 2}px`,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 60}%`,
+                opacity: 0.3 + Math.random() * 0.7,
+                animation: `twinkle ${4 + Math.random() * 6}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 3}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* UFO (Logo) */}
+        <div
+          className="absolute transition-transform duration-100"
+          style={{
+            left: `calc(50% + ${ufoX}%)`,
+            top: '30%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          {/* UFO glow */}
+          <div
+            className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/30 blur-2xl"
+            style={{ animation: 'pulse 2s ease-in-out infinite' }}
+          />
+
+          {/* UFO body (Logo) */}
+          <div
+            className="relative"
+            style={{
+              animation: 'float 3s ease-in-out infinite',
+            }}
+          >
+            <img
+              src="/logo2.svg"
+              alt="UFO"
+              className="h-16 w-16 drop-shadow-2xl"
+              style={{
+                filter: 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 40px rgba(16, 185, 129, 0.4))',
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Beams */}
+        {beams.map((beam) => (
+          <div
+            key={beam.id}
+            className="absolute"
+            style={{
+              left: `calc(50% + ${ufoX}%)`,
+              top: '30%',
+              width: '4px',
+              height: `${(beam.targetY - 30)}%`,
+              background: `linear-gradient(to bottom, ${beam.color}, transparent)`,
+              opacity: beam.opacity,
+              transform: `translateX(${beam.targetX - 50}%)`,
+              boxShadow: `0 0 20px ${beam.color}`,
+              filter: 'blur(2px)',
+              transition: 'transform 0.3s ease-out',
+            }}
+          />
+        ))}
+
+        {/* Scrolling landscape */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 overflow-hidden">
+          {/* Hills layer 1 (back) - Repeating pattern */}
+          <div className="absolute bottom-0 left-0 right-0 h-full flex">
+            <svg
+              className="absolute bottom-0 h-full flex-shrink-0"
+              style={{
+                width: '200%',
+                transform: `translateX(-${landscapeOffset}%)`,
+              }}
+              viewBox="0 0 2400 200"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="hillGradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#1e3a2f" />
+                  <stop offset="100%" stopColor="#0f1f1a" />
+                </linearGradient>
+              </defs>
+              {/* Repeating pattern for seamless loop */}
+              <path
+                d="M0,100 Q150,50 300,100 T600,100 T900,100 T1200,100 L1200,200 L0,200 Z"
+                fill="url(#hillGradient1)"
+                opacity="0.7"
+              />
+              <path
+                d="M1200,100 Q1350,50 1500,100 T1800,100 T2100,100 T2400,100 L2400,200 L1200,200 Z"
+                fill="url(#hillGradient1)"
+                opacity="0.7"
+              />
+            </svg>
+          </div>
+
+          {/* Hills layer 2 (front, darker) - Repeating pattern */}
+          <div className="absolute bottom-0 left-0 right-0 h-full flex">
+            <svg
+              className="absolute bottom-0 h-full flex-shrink-0"
+              style={{
+                width: '200%',
+                transform: `translateX(-${(landscapeOffset * 1.5) % 50}%)`,
+              }}
+              viewBox="0 0 2400 200"
+              preserveAspectRatio="none"
+            >
+              <defs>
+                <linearGradient id="hillGradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#0f2419" />
+                  <stop offset="100%" stopColor="#0a1510" />
+                </linearGradient>
+              </defs>
+              {/* Repeating pattern for seamless loop */}
+              <path
+                d="M0,130 Q100,90 200,130 T400,130 T600,130 T800,130 T1000,130 T1200,130 L1200,200 L0,200 Z"
+                fill="url(#hillGradient2)"
+              />
+              <path
+                d="M1200,130 Q1300,90 1400,130 T1600,130 T1800,130 T2000,130 T2200,130 T2400,130 L2400,200 L1200,200 Z"
+                fill="url(#hillGradient2)"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* Ground objects - Customer Problems */}
+        {objects.map((obj) => (
+          <div
+            key={obj.id}
+            className="absolute transition-opacity duration-300"
+            style={{
+              left: `${obj.x}%`,
+              top: `${obj.y}%`,
+              opacity: obj.opacity,
+              transform: 'translateX(-50%)',
+            }}
+          >
+            <div
+              className="whitespace-nowrap rounded-lg bg-rose-600/80 px-3 py-1.5 text-xs font-semibold text-white ring-2 ring-rose-400/60 backdrop-blur-sm"
+              style={{
+                boxShadow: obj.isBeingZapped
+                  ? '0 0 30px rgba(244, 63, 94, 0.9), 0 0 60px rgba(16, 185, 129, 0.6)'
+                  : '0 4px 6px rgba(0, 0, 0, 0.3)',
+                transform: obj.isBeingZapped ? 'scale(1.1)' : 'scale(1)',
+                transition: 'transform 0.2s ease-out',
+              }}
+            >
+              {obj.text}
+            </div>
+          </div>
+        ))}
+
+        {/* Info overlay */}
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-emerald-300/80">
+          <div className="flex items-center gap-2">
+            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span>eBPF Sensor Active</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span>{objects.filter(o => o.opacity > 0.5).length} Problems Detected</span>
+            <span>{beams.length} Eliminating</span>
+          </div>
+        </div>
+      </div>
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 
 export default function Home() {
   const [installTab, setInstallTab] = useState("helm");
@@ -318,7 +683,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 Auto-discover AI agents, LLM egress, and ownership gaps across your cloud — with read-only eBPF sensors.
               </p>
               <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Inventory today; lineage and control when you need it.
+                Inventory today, lineage and control when you need it.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <PrimaryButton href="/docs/installation/steps" >
@@ -417,6 +782,20 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+      {/* UFO Animation Section */}
+      <section id="animation" className="relative py-20 sm:py-24 overflow-hidden">
+        <Container>
+          <SectionHeader
+            eyebrow="Interactive Demo"
+            title="Watch AI Observability in Action"
+            subtitle="Our eBPF sensors detect AI services in real-time — just like this UFO scanning the landscape"
+            center
+          />
+
+          <UFOAnimation />
         </Container>
       </section>
 
@@ -539,8 +918,8 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         <Container>
           <SectionHeader
             eyebrow="Shadow AI detection"
-            title="Behavioral risk signals when no review exists"
-            subtitle="Flag services making LLM calls without owner or review tags, first-seen behavior in prod, or 3P egress with external exposure."
+            title="Your engineers are shipping AI features faster than you can track them."
+            subtitle="Flag services making LLM calls without owner or review tags, first-seen behavior in prod, or wasting your resources"
           />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -570,6 +949,8 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               </div>
             ))}
           </div>
+          You can't secure what you can't see.
+
         </Container>
       </section>
 
