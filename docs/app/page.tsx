@@ -1,7 +1,8 @@
 "use client"
 
 import React, { useMemo, useState } from "react";
-import { Check, Clipboard, ClipboardCheck, ExternalLink, Github, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, LineChart, Book, Info } from "lucide-react";
+import Image from "next/image";
+import { Check, Clipboard, ClipboardCheck, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Book, Info } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -310,11 +311,10 @@ function UFOAnimation() {
     }
     setObjects(initialObjects);
 
-    let time = 0;
     let lastBeamId = 0;
 
     const animate = () => {
-      time += 0.016; // ~60fps
+
 
       // UFO stays stationary in center
       setUfoX(0);
@@ -327,7 +327,7 @@ function UFOAnimation() {
         const yPosition = 78; // Fixed Y position for single file
 
         return prevObjects.map((obj) => {
-          let newX = obj.x - 0.375; // Match foreground landscape speed (0.25 * 1.5)
+          const newX = obj.x - 0.375; // Match foreground landscape speed (0.25 * 1.5)
 
           // Wrap around when object goes off screen - respawn at constant distance
           if (newX < -10) {
@@ -495,9 +495,11 @@ function UFOAnimation() {
               animation: 'float 3s ease-in-out infinite',
             }}
           >
-            <img
+            <Image
               src="/logo2.svg"
               alt="UFO"
+              width={64}
+              height={64}
               className="h-16 w-16 drop-shadow-2xl"
               style={{
                 filter: 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 40px rgba(16, 185, 129, 0.4))',
@@ -681,10 +683,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
   -e AURVA_ENV=\"prod\" \\
   ghcr.io/aurva/ai-inventory:latest`;
 
-  const installBlock = useMemo(() => {
-    if (installTab === "helm") return helmCmd;
-    return tfCmd;
-  }, [installTab]);
+
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 text-foreground">
