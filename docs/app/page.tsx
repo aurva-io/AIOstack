@@ -260,8 +260,7 @@ interface GroundObject {
 
 interface Beam {
   id: number;
-  targetX: number;
-  targetY: number;
+  targetObjectId: number;
   opacity: number;
   color: string;
 }
@@ -272,7 +271,7 @@ function UFOAnimation() {
   const [beams, setBeams] = React.useState<Beam[]>([]);
   const [ufoX, setUfoX] = React.useState(0);
   const [landscapeOffset, setLandscapeOffset] = React.useState(0);
-  const animationFrameRef = React.useRef<number>();
+  const animationFrameRef = React.useRef<number>(0);
   const lastZapTimeRef = React.useRef(0);
 
   React.useEffect(() => {
@@ -294,13 +293,16 @@ function UFOAnimation() {
 
     const getRandomProblem = () => customerProblems[Math.floor(Math.random() * customerProblems.length)];
 
-    // Initialize ground objects with problem text
+    // Initialize ground objects with problem text in a single line
     const initialObjects: GroundObject[] = [];
+    const yPosition = 78; // Fixed Y position for single file
+    const spacing = 35; // Space between objects (increased for mobile)
+
     for (let i = 0; i < 8; i++) {
       initialObjects.push({
         id: i,
-        x: Math.random() * 100,
-        y: 75 + Math.random() * 10,
+        x: 110 + (i * spacing), // Start off-screen right, evenly spaced
+        y: yPosition,
         text: getRandomProblem(),
         opacity: 1,
         isBeingZapped: false,
@@ -314,24 +316,27 @@ function UFOAnimation() {
     const animate = () => {
       time += 0.016; // ~60fps
 
-      // UFO horizontal movement (hovering left and right)
-      const newUfoX = Math.sin(time * 0.5) * 15;
-      setUfoX(newUfoX);
+      // UFO stays stationary in center
+      setUfoX(0);
 
       // Landscape scrolling (reset at 50% since SVG is 200% wide)
-      setLandscapeOffset((prev) => (prev + 0.2) % 50);
+      setLandscapeOffset((prev) => (prev + 0.25) % 50);
 
-      // Move objects with landscape
+      // Move objects with landscape - single file at constant spacing
       setObjects((prevObjects) => {
-        return prevObjects.map((obj) => {
-          let newX = obj.x - 0.15;
+        const yPosition = 78; // Fixed Y position for single file
 
-          // Wrap around when object goes off screen
+        return prevObjects.map((obj) => {
+          let newX = obj.x - 0.375; // Match foreground landscape speed (0.25 * 1.5)
+
+          // Wrap around when object goes off screen - respawn at constant distance
           if (newX < -10) {
+            // Find the rightmost object's X position
+            const maxX = Math.max(...prevObjects.map(o => o.x));
             return {
               ...obj,
-              x: 110,
-              y: 75 + Math.random() * 10,
+              x: Math.max(110, maxX + 35), // Spawn 35% after the rightmost object
+              y: yPosition,
               text: getRandomProblem(),
               opacity: 1,
               isBeingZapped: false,
@@ -340,59 +345,61 @@ function UFOAnimation() {
 
           // Fade out if being zapped
           if (obj.isBeingZapped) {
-            const newOpacity = obj.opacity - 0.05;
+            const newOpacity = obj.opacity - 0.08;
             if (newOpacity <= 0) {
+              // Respawn at the end of the line
+              const maxX = Math.max(...prevObjects.map(o => o.x));
               return {
                 ...obj,
-                x: 110,
-                y: 75 + Math.random() * 10,
+                x: Math.max(110, maxX + 35),
+                y: yPosition,
                 text: getRandomProblem(),
                 opacity: 1,
                 isBeingZapped: false,
               };
             }
-            return { ...obj, x: newX, opacity: newOpacity };
+            // Stop moving when being zapped
+            return { ...obj, x: obj.x, opacity: newOpacity };
           }
 
           return { ...obj, x: newX };
         });
       });
 
-      // Random zapping (every 2-4 seconds)
-      const currentTime = Date.now();
-      if (currentTime - lastZapTimeRef.current > 2000 + Math.random() * 2000) {
-        lastZapTimeRef.current = currentTime;
+      // Zap objects when they cross the center (where UFO is positioned)
+      setObjects((prevObjects) => {
+        const ufoXPosition = 50; // UFO is at center
+        const zapRange = 5; // Range for center detection
 
-        // Pick a random visible object to zap
-        setObjects((prevObjects) => {
-          const visibleObjects = prevObjects.filter(
-            (obj) => obj.x > 20 && obj.x < 80 && !obj.isBeingZapped && obj.opacity > 0.5
+        // Find object that is crossing through the center
+        const targetAtCenter = prevObjects.find(
+          (obj) =>
+            Math.abs(obj.x - ufoXPosition) < zapRange &&
+            !obj.isBeingZapped &&
+            obj.opacity > 0.5
+        );
+
+        if (targetAtCenter) {
+          // Create beam that tracks the target object
+          const beamColor = Math.random() > 0.5 ? '#10b981' : '#a855f7'; // green or purple
+          setBeams((prev) => [
+            ...prev,
+            {
+              id: ++lastBeamId,
+              targetObjectId: targetAtCenter.id,
+              opacity: 1,
+              color: beamColor,
+            },
+          ]);
+
+          // Mark object as being zapped
+          return prevObjects.map((obj) =>
+            obj.id === targetAtCenter.id ? { ...obj, isBeingZapped: true } : obj
           );
+        }
 
-          if (visibleObjects.length > 0) {
-            const target = visibleObjects[Math.floor(Math.random() * visibleObjects.length)];
-
-            // Create beam
-            const beamColor = Math.random() > 0.5 ? '#10b981' : '#a855f7'; // green or purple
-            setBeams((prev) => [
-              ...prev,
-              {
-                id: ++lastBeamId,
-                targetX: target.x,
-                targetY: target.y,
-                opacity: 1,
-                color: beamColor,
-              },
-            ]);
-
-            // Mark object as being zapped
-            return prevObjects.map((obj) =>
-              obj.id === target.id ? { ...obj, isBeingZapped: true } : obj
-            );
-          }
-          return prevObjects;
-        });
-      }
+        return prevObjects;
+      });
 
       // Fade out beams
       setBeams((prevBeams) =>
@@ -414,11 +421,10 @@ function UFOAnimation() {
   }, []);
 
   return (
-    <div className="relative mx-auto w-full max-w-7xl">
+    <div className="relative w-full border-none">
       <div
         ref={canvasRef}
-        className="relative h-[400px] w-full overflow-hidden rounded-2xl to-slate-900 ring-1 ring-border"
-        style={{}}
+        className="relative h-[500px] w-full overflow-hidden bg-black"
       >
         {/* Stars background */}
         <div className="absolute inset-0">
@@ -431,13 +437,40 @@ function UFOAnimation() {
                 height: `${1 + Math.random() * 2}px`,
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 60}%`,
-                opacity: 0.3 + Math.random() * 0.7,
-                animation: `twinkle ${4 + Math.random() * 6}s ease-in-out infinite`,
-                animationDelay: `${Math.random() * 3}s`,
+                opacity: 0.2 + Math.random() * 0.3,
+                animation: `twinkle ${20 + Math.random() * 30}s ease-in-out infinite`,
+                animationDelay: `${Math.random() * 10}s`,
               }}
             />
           ))}
         </div>
+
+        {/* Beams - Triangular/Cone shaped (behind UFO) */}
+        {beams.map((beam) => {
+          // Find the target object to get its current position
+          const targetObject = objects.find(obj => obj.id === beam.targetObjectId);
+          if (!targetObject) return null;
+
+          return (
+            <div
+              key={beam.id}
+              className="absolute"
+              style={{
+                left: '50%',
+                top: '30%',
+                width: '100px',
+                height: `${(targetObject.y - 30)}%`,
+                background: `linear-gradient(to bottom, ${beam.color}dd, ${beam.color}88, ${beam.color}44, transparent)`,
+                opacity: beam.opacity,
+                transform: 'translate(-50%, 0)',
+                clipPath: 'polygon(45% 0%, 55% 0%, 100% 100%, 0% 100%)',
+                boxShadow: `0 0 40px ${beam.color}, 0 0 80px ${beam.color}`,
+                filter: 'blur(4px)',
+                zIndex: 0,
+              }}
+            />
+          );
+        })}
 
         {/* UFO (Logo) */}
         <div
@@ -446,6 +479,7 @@ function UFOAnimation() {
             left: `calc(50% + ${ufoX}%)`,
             top: '30%',
             transform: 'translate(-50%, -50%)',
+            zIndex: 10,
           }}
         >
           {/* UFO glow */}
@@ -471,26 +505,6 @@ function UFOAnimation() {
             />
           </div>
         </div>
-
-        {/* Beams */}
-        {beams.map((beam) => (
-          <div
-            key={beam.id}
-            className="absolute"
-            style={{
-              left: `calc(50% + ${ufoX}%)`,
-              top: '30%',
-              width: '4px',
-              height: `${(beam.targetY - 30)}%`,
-              background: `linear-gradient(to bottom, ${beam.color}, transparent)`,
-              opacity: beam.opacity,
-              transform: `translateX(${beam.targetX - 50}%)`,
-              boxShadow: `0 0 20px ${beam.color}`,
-              filter: 'blur(2px)',
-              transition: 'transform 0.3s ease-out',
-            }}
-          />
-        ))}
 
         {/* Scrolling landscape */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 overflow-hidden">
@@ -559,37 +573,47 @@ function UFOAnimation() {
         {objects.map((obj) => (
           <div
             key={obj.id}
-            className="absolute transition-opacity duration-300"
+            className="absolute"
             style={{
               left: `${obj.x}%`,
               top: `${obj.y}%`,
               opacity: obj.opacity,
               transform: 'translateX(-50%)',
+              zIndex: obj.isBeingZapped ? 100 : Math.floor(100 - obj.x),
             }}
           >
             <div
-              className="whitespace-nowrap rounded-lg bg-rose-600/80 px-3 py-1.5 text-xs font-semibold text-white ring-2 ring-rose-400/60 backdrop-blur-sm"
+              className="relative whitespace-nowrap rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-semibold text-white ring-1 ring-slate-700"
               style={{
+                background: obj.isBeingZapped
+                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(6, 78, 59, 0.5))'
+                  : 'rgba(15, 23, 42, 0.98)',
                 boxShadow: obj.isBeingZapped
-                  ? '0 0 30px rgba(244, 63, 94, 0.9), 0 0 60px rgba(16, 185, 129, 0.6)'
+                  ? '0 0 30px rgba(16, 185, 129, 0.8), 0 0 60px rgba(16, 185, 129, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3)'
                   : '0 4px 6px rgba(0, 0, 0, 0.3)',
-                transform: obj.isBeingZapped ? 'scale(1.1)' : 'scale(1)',
-                transition: 'transform 0.2s ease-out',
+                transform: obj.isBeingZapped ? 'scale(1.15)' : 'scale(1)',
+                transition: 'all 0.2s ease-out',
+                borderColor: obj.isBeingZapped ? 'rgba(16, 185, 129, 0.6)' : 'rgba(71, 85, 105, 0.7)',
               }}
             >
-              {obj.text}
+              {obj.isBeingZapped && (
+                <div
+                  className="absolute inset-0 rounded-xl bg-emerald-500/20 animate-pulse"
+                  style={{ animation: 'pulse 0.5s ease-in-out infinite' }}
+                />
+              )}
+              <span className="relative z-10">{obj.text}</span>
             </div>
           </div>
         ))}
 
         {/* Info overlay */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-emerald-300/80">
+        <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-emerald-300/90">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             <span>eBPF Sensor Active</span>
           </div>
           <div className="flex items-center gap-4">
-            <span>{objects.filter(o => o.opacity > 0.5).length} Problems Detected</span>
             <span>{beams.length} Eliminating</span>
           </div>
         </div>
@@ -785,19 +809,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
-      {/* UFO Animation Section */}
-      <section id="animation" className="relative py-20 sm:py-24 overflow-hidden">
-        <Container>
-          <SectionHeader
-            eyebrow="Interactive Demo"
-            title="Watch AI Observability in Action"
-            subtitle="Our eBPF sensors detect AI services in real-time — just like this UFO scanning the landscape"
-            center
-          />
 
-          <UFOAnimation />
-        </Container>
-      </section>
 
       {/* Inventory */}
       <section id="inventory" className="py-10 sm:py-16">
@@ -913,6 +925,21 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </div>
       </div>
 
+      {/* UFO Animation Section */}
+      <section id="animation" className="relative py-20 sm:py-24 overflow-hidden">
+        <Container>
+          <SectionHeader
+            eyebrow=""
+            title="Watch AI Observability in Action"
+            subtitle="Our eBPF sensors detect AI services in real-time - at lightning speed"
+            center
+          />
+
+        </Container>
+
+        <UFOAnimation />
+      </section>
+
       {/* Shadow AI */}
       <section id="shadow" className="py-14 sm:py-16">
         <Container>
@@ -949,7 +976,8 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               </div>
             ))}
           </div>
-          You can't secure what you can't see.
+
+
 
         </Container>
       </section>
@@ -1198,6 +1226,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
         </Container>
       </section>
+
+
+
 
       {/* FAQ */}
       <section id="faq" className="py-14 sm:py-20">
