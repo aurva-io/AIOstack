@@ -28,7 +28,7 @@ export function Logo() {
           />
         </div>
       </div>
-      <span className="text-md font-semibold">{Settings.title}</span>
+      <span className="text-md font-semibold">AIOStack</span>
     </Link>
   )
 }

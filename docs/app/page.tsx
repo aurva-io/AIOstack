@@ -1195,14 +1195,12 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               <CopyField
                 label="AGENTIC INSTALL WIZARD"
                 value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
-                footnote="✅ Checks prerequisites • ✅ Opens signup in browser • ✅ Guides credential entry • ✅ Installs & verifies • ✅ ~2 minutes total"
+                footnote="✅ Checks prerequisites • ✅ Guides credential entry • ✅ Installs & verifies • ✅ ~2 minutes total"
               />
             </div>
 
             <div className="text-center">
               <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <span>Don&apos;t like it?</span>
-                <ArrowRight size={14} />
                 <span className="font-medium text-emerald-600 dark:text-emerald-300 ">Uninstall is just as easy</span>
               </div>
             </div>
@@ -1220,9 +1218,6 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               <FileText size={16} className="mr-2" /> View Detailed Installation Guide
             </GhostButton>
           </div>
-
-
-
         </Container>
       </section>
 
@@ -1236,7 +1231,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           <div className="grid gap-4 md:grid-cols-2">
             {[{
               q: "Do you collect prompts, responses, or secrets?",
-              a: "No. We collect connection metadata only (dest domain/SNI, ports, process hints, and service identity).",
+              a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
             },
             {
               q: "What environments are supported?",
@@ -1247,8 +1242,8 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               a: "Yes. One Helm uninstall detaches all kernel hooks. No residual processes remain. Although do note that we will be sad to see you go :(",
             },
             {
-              q: "How do you infer owner (lite)?",
-              a: "We derive owner from Kubernetes labels/namespaces and AWS tags. Verified ownership is part of the paid add-on.",
+              q: "How is this different from Wiz or Datadog?",
+              a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.They",
             },
             {
               q: "I am a large finacial org and need a PaaS option.",

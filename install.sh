@@ -390,7 +390,7 @@ collect_credentials() {
     echo ""
 
     # Ask if they want to open the signup page
-    if ask_yes_no "Open signup page in your browser?" "y"; then
+    if ask_yes_no "Open signup page in your browser? (return to the terminal once you get your signup code)" "y"; then
         print_info "Opening https://app.aurva.ai/signup in your browser..."
         open_browser "https://app.aurva.ai/signup"
         sleep 2  # Give the browser time to open
@@ -507,15 +507,6 @@ collect_env_config() {
         print_info "Will use latest versions for all components"
     else
         print_info "Using stable versions: ${OBSERVER_VERSION}"
-    fi
-
-    # Outpost URL security
-    echo ""
-    print_info "Outpost URL Security Configuration:"
-    print_info "  - Set to 'false' if Outpost is accessed via HTTP (default)"
-    print_info "  - Set to 'true' if Outpost is accessed via HTTPS"
-    if ask_yes_no "Is Outpost URL secure (HTTPS)?" "n"; then
-        IS_OUTPOST_URL_SECURE="true"
     fi
 
     # Skip namespaces
@@ -923,3 +914,5 @@ main() {
 
 # Run main function
 main "$@"
+
+exit 0

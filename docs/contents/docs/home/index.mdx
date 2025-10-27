@@ -4,13 +4,14 @@ description: This section provides an overview of how to get started with AIOSta
 keywords: ["introduction", "guide", "nextjs", "documents"]
 ---
 
-<Note title="TLDR">
+## TL;DR
 Your developers are secretly turning your Kubernetes cluster into an AI playground, and you have no idea. AIOStack automatically discovers every hidden AI/ML workload, unauthorized LLM integration, and stealth machine learning library running in your cluster - 
 revealing the shadow AI ecosystem you didn't know existed. Deploy this free tool and watch in horror (or fascination) as it exposes all those "simple web apps" that are quietly calling OpenAI, training models, and running AI agents behind your back. Because you can't secure what you can't see, and you definitely can't see what your developers aren't telling you about.
-</Note>
+
+---
 
 
-**AIOStack** or AIOStack is an open-source observability tool that automatically discovers, 
+**AIOStack** or AIOStack is an open-source observability tool for AI that automatically discovers, 
 traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF technology, it provides deep visibility into LLM API calls, ML library usage, and AI agent behavior without requiring code changes or application restarts.
 
 ## Features
@@ -24,12 +25,6 @@ traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF 
 - **Agent workflow visualization**: Trace multi-step AI agent executions
 
 
-## Prerequisites
-
-- Kubernetes 1.29+ with eBPF support ( EKS, GKE, AKS, etc. )
-- Linux kernel 5.15+ 
-- Helm 3.0+ (for installation)
-- Cluster admin privileges for eBPF programs
 
 <CardGrid>
   <Card
@@ -38,13 +33,7 @@ traces, and monitors AI/ML workloads running in Kubernetes clusters. Using eBPF 
     description="Follow the quick start guide to install AIOStack and get up and running."
     href="/docs/installation"
   />
-  <Card
-    subtitle="Setup"
-    title="Configuration"
-    description="Configure your AIOStack and discover what you can do with it."
-    href="/docs/installation/steps"
-    external={false}
-  />
+
 </CardGrid>
 
 ---
@@ -56,7 +45,7 @@ If you encounter issues:
 
 ---
 
-**Note:** The AIOStack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
+**Note:** AIOStack requires privileged access to load eBPF programs. Ensure your security policies allow for this requirement.
 
 [![Deploy to Kubernetes](https://img.shields.io/badge/Deploy%20to-Kubernetes-326CE5?style=for-the-badge&logo=kubernetes)](https://github.com/aurva-io/ai-observability-stack)
 

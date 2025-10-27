@@ -551,3 +551,5 @@ main() {
 
 # Run main function
 main "$@"
+
+exit 0

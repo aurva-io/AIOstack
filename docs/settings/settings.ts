@@ -5,7 +5,7 @@ export const siteicon2 = "/logo2.svg"
 export const gtm = "GTM-XXXXXXX"
 export const gtmconnected = true
 
-export const sitename = "AIOStack"
+export const sitename = "AIOStack | The AI Security Platform"
 export const description = ""
 export const keywords = [
   "Next.js",
