@@ -709,7 +709,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 Inventory today, lineage and control when you need it.
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <PrimaryButton href="/docs/installation/steps" >
+                <PrimaryButton href="#install" >
                   <Play size={16} className="mr-2" /> Install Free
                 </PrimaryButton>
                 {/* <GhostButton href="#sample">

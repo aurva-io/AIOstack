@@ -74,7 +74,7 @@ export function Navbar() {
               <LuGithub size={16} className="mr-2" />
               <span>Star on GitHub</span>
             </GhostButton>
-            <PrimaryButton href="/docs/installation/steps">
+            <PrimaryButton href="#install">
               <Zap size={16} className="mr-2" /> Install Free
             </PrimaryButton>
           </div>
