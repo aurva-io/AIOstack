@@ -915,4 +915,8 @@ main() {
 # Run main function
 main "$@"
 
+# Close stdin redirection to /dev/tty to ensure clean exit when piped from curl
+exec 0<&-
+exec < /dev/null
+
 exit 0
