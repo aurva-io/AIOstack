@@ -23,7 +23,7 @@
 set -euo pipefail
 
 # Script version
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 # Configuration
 VERBOSE="${VERBOSE:-false}"
@@ -81,31 +81,21 @@ print_verbose() {
 
 # Prompt user with default value
 prompt() {
-    # Redirect stdin to terminal for interactive input when piped from curl
-    if [ ! -t 0 ]; then
-        exec < /dev/tty
-    fi
-
     local prompt_message=$1
     local default_value=$2
     local user_input
 
     if [[ -n "$default_value" ]]; then
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [${default_value}]:${NC} ")" user_input
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [${default_value}]:${NC} ")" user_input < /dev/tty
         echo "${user_input:-$default_value}"
     else
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message}:${NC} ")" user_input < /dev/tty
         echo "$user_input"
     fi
 }
 
 # Ask yes/no question
 ask_yes_no() {
-    # Redirect stdin to terminal for interactive input when piped from curl
-    if [ ! -t 0 ]; then
-        exec < /dev/tty
-    fi
-
     local prompt_message=$1
     local default_value=${2:-"n"}
     local response
@@ -116,10 +106,10 @@ ask_yes_no() {
     fi
 
     if [[ "$default_value" == "y" ]]; then
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [Y/n]:${NC} ")" response
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [Y/n]:${NC} ")" response < /dev/tty
         response=${response:-y}
     else
-        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [y/N]:${NC} ")" response
+        read -r -p "$(echo -e "${BRIGHT_GREEN}${prompt_message} [y/N]:${NC} ")" response < /dev/tty
         response=${response:-n}
     fi
 
@@ -128,11 +118,6 @@ ask_yes_no() {
 
 # Print banner
 print_banner() {
-    # Redirect stdin to terminal for interactive input when piped from curl
-    if [ ! -t 0 ]; then
-        exec < /dev/tty
-    fi
-
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
     ╔═══════════════════════════════════════════════════════════════╗
@@ -493,6 +478,15 @@ show_completion() {
     echo "  • Documentation: https://aurva.ai/docs/home"
     echo "  • Support: support@aurva.io"
     echo ""
+
+    # Farewell poem
+    print_color "$BRIGHT_GREEN" "    Though you leave, we understand,"
+    print_color "$BRIGHT_GREEN" "    Every journey has its end."
+    print_color "$BRIGHT_GREEN" "    We're sad to see you go today,"
+    print_color "$BRIGHT_GREEN" "    But hope you'll come back our way!"
+    echo ""
+    print_color "$WHITE" "    — The Aurva AIOStack Team"
+    echo ""
 }
 
 #############################################################################
@@ -551,9 +545,3 @@ main() {
 
 # Run main function
 main "$@"
-
-# Close stdin redirection to /dev/tty to ensure clean exit when piped from curl
-exec 0<&-
-exec < /dev/null
-
-exit 0

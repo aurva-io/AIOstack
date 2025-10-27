@@ -29,7 +29,7 @@
 set -euo pipefail
 
 # Script version
-VERSION="1.0.0"
+VERSION="1.0.1"
 
 # Configuration file path
 CONFIG_FILE="${CONFIG_FILE:-}"
