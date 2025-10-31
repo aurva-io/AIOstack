@@ -3,7 +3,18 @@ entries:
   aiostack:
   - apiVersion: v2
     appVersion: 1.0.5_alpha
-    created: "2025-10-04T21:18:48.38852+05:30"
+    created: "2025-10-31T17:09:52.156028+05:30"
+    description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
+      PostgreSQL and ClickHouse
+    digest: 0df67809539a2ee77ddfdbb310a388987682d077f498f5076cc1dad60a83f6e7
+    name: aiostack
+    type: application
+    urls:
+    - https://charts.aurva.ai/aiostack-1.0.6.tgz
+    version: 1.0.6
+  - apiVersion: v2
+    appVersion: 1.0.5_alpha
+    created: "2025-10-31T17:09:52.155699+05:30"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
     digest: 54311378a6ade1fe13a1a398a8b9fcd092fb4e1b3982358701ab1a49219b5f27
@@ -14,7 +25,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: 1.0.4_alpha
-    created: "2025-10-04T21:18:48.387303+05:30"
+    created: "2025-10-31T17:09:52.155348+05:30"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
     digest: fa96b47429cdedd328a659bcb7d6b38aef3df32bfa270a08511d1b7eca50c691
@@ -25,7 +36,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-10-04T21:18:48.386393+05:30"
+    created: "2025-10-31T17:09:52.154799+05:30"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
     digest: 58877bc8e0dc96dfb10711967c69b7efcab6dcf000162aebc558b913863f8af3
@@ -34,4 +45,4 @@ entries:
     urls:
     - https://charts.aurva.ai/aiostack-0.2.0.tgz
     version: 0.2.0
-generated: "2025-10-04T21:18:48.385112+05:30"
+generated: "2025-10-31T17:09:52.154061+05:30"

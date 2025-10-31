@@ -38,6 +38,20 @@ spec:
         - name: {{ .name }}
           value: {{ .value | quote }}
         {{- end }}
+        livenessProbe:
+          grpc:
+            port: {{ .Values.global.outpost.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          grpc:
+            port: {{ .Values.global.outpost.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
         resources:
           {{- toYaml .Values.outpost.resources | nindent 10 }}
       {{- with .Values.outpost.nodeSelector }}
