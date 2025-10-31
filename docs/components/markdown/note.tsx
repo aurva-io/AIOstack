@@ -14,24 +14,33 @@ export default function Note({
   type = "note",
 }: NoteProps) {
   const noteClassNames = clsx({
-    "dark:bg-neutral-900 bg-neutral-50": type == "note",
-    "dark:bg-green-950 bg-green-100 border-green-300 dark:border-green-900":
+    "bg-muted/50 border-border ring-border": type == "note",
+    "bg-emerald-500/10 border-emerald-400/30 ring-emerald-400/20":
       type === "success",
-    "dark:bg-orange-950 bg-orange-100 border-orange-300 dark:border-orange-900":
+    "bg-amber-500/10 border-amber-400/30 ring-amber-400/20":
       type === "warning",
-    "dark:bg-red-950 bg-red-100 border-red-300 dark:border-red-900":
+    "bg-rose-500/10 border-rose-400/30 ring-rose-400/20":
       type === "danger",
+  })
+
+  const titleClassNames = clsx({
+    "text-foreground": type == "note",
+    "text-emerald-700 dark:text-emerald-200": type === "success",
+    "text-amber-700 dark:text-amber-200": type === "warning",
+    "text-rose-700 dark:text-rose-200": type === "danger",
   })
 
   return (
     <div
       className={cn(
-        "rounded-md border px-3.5 py-0.5 text-sm tracking-wide",
+        "rounded-2xl border-none px-10 py-4 text-sm ",
         noteClassNames
       )}
     >
-      <p className="-mb-3 text-sm font-semibold">{title}:</p>
-      {children}
+      <h2 className={cn("mb-3 text-base font-semibold", titleClassNames)}>{title}</h2>
+      <div className="space-y-3 text-foreground [&>p]:text-muted-foreground [&>ul]:text-muted-foreground [&>ul]:space-y-1.5 [&>blockquote]:text-muted-foreground [&>blockquote]:border-l-2 [&>blockquote]:pl-4 [&>blockquote]:italic">
+        {children}
+      </div>
     </div>
   )
 }
