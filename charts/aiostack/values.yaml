@@ -4,7 +4,7 @@ global:
 
 observer:
   enabled: true
-  version: v1.0.5_alpha
+  version: v2.1.1
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -32,14 +32,15 @@ observer:
       value: "0s"
     - name: CONNECTION_CHANNEL_SIZE
       value: "100"
-
+    - name: OUTPOST_URL
+      value: ""
     # THE FOLLOWING ARE FOR YOU TO MODIFY
     - name: IS_OUTPOST_URL_SECURE
       value: "false" # If you aren't sure , leave as false
 
 outpost:
   enabled: true
-  version: v1.0.5_alpha
+  version: v2.1.1
   replicaCount: 1
   nodeSelector: {}
   tolerations: []

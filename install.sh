@@ -29,7 +29,7 @@
 set -euo pipefail
 
 # Script version
-VERSION="1.0.1"
+VERSION="1.0.2"
 
 # Configuration file path
 CONFIG_FILE="${CONFIG_FILE:-}"
@@ -52,8 +52,8 @@ IS_OUTPOST_URL_SECURE="false"
 SKIP_NAMESPACES="kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
 COMMANDER_URL="hq.aurva.ai:443"
 INSECURE_SKIP_VERIFY="true"
-OBSERVER_VERSION="v1.0.5_alpha"
-OUTPOST_VERSION="v1.0.5_alpha"
+OBSERVER_VERSION="v2.1.1"
+OUTPOST_VERSION="v2.1.1"
 USE_LATEST_VERSION="false"
 CREATE_NAMESPACE="true"
 HELM_REPO_NAME="aiostack"
@@ -495,7 +495,7 @@ collect_env_config() {
     RELEASE_NAME=$(prompt "Helm release name" "$RELEASE_NAME")
 
     # Version selection
-    if ask_yes_no "Use latest component versions? (default: v1.0.5_alpha)" "n"; then
+    if ask_yes_no "Use latest component versions? (default: v2.1.1)" "y"; then
         USE_LATEST_VERSION="true"
         OBSERVER_VERSION="latest"
         OUTPOST_VERSION="latest"
