@@ -1,8 +1,260 @@
 ---
-title: AIOStack and Wiz
-description: Learn how AIOStack and Wiz can work together to solve your AI Security needs.
+title: What is Shadow AI ?
+description: Learn what ShadowAI is and how unseen AI can cause havoc in your cloud.
 date: 2025-11-1
 author: AIOStack Team
 readTime: 5 min read
-keywords: ["ai security", "wiz", "cloud security", "observability"]
+keywords: ["ai security", "shadow ai", "cloud security", "ai safety","ai monitoring"]
 ---
+Your engineering team ships faster than ever. Developers solve problems independently. Innovation flows freely across your organization.
+
+But for your security team, that same velocity creates something much harder to manage: **Shadow AI**.
+
+While you are busy approving a handful of official AI providers and monitoring a few well known integrations, dozens of untracked AI calls may already be happening in production. Every one of them is a potential data leak, compliance violation, or future incident you will only hear about when it is too late.
+
+---
+
+## What Is Shadow AI, Really?
+
+**Shadow AI** is the unauthorized or unsanctioned use of AI services, LLM APIs, and agent frameworks inside your environment without proper review, documentation, or controls.
+
+It is the AI era version of shadow IT, but with a more dangerous payload. The difference is simple:
+
+- Shadow IT: random SaaS tools with limited access to core systems
+- Shadow AI: deeply embedded into services, independent actions, often touching raw customer data, source code, and production secrets
+
+Modern AI is not just "another API". Prompts often contain exactly the information you care about most: PII, transaction records, legal documents, product roadmaps, or code.
+
+---
+
+## A Concrete Example
+
+Imagine this is your environment.
+
+Your customer support team wants faster ticket summaries. A staff engineer adds a quick integration:
+
+- Pull full conversation transcripts from your database
+- Send them to an external LLM for summarization
+- Store the short summary back in your system
+
+The feature works. Customers are happy. No one opens a security review ticket. No one updates data flow diagrams. The LLM provider never goes through your vendor risk process.
+
+Three months later:
+
+- Your finance team notices an unfamiliar AI line item creeping up to tens of thousands per month
+- Your DPO realizes chat transcripts with full names, emails, and phone numbers have been leaving the region
+- Your security team has no idea which service started it, which team owns it, or what else that service sends out
+
+That is Shadow AI. It did not break in. You invited it in by accident.
+
+---
+
+## How Shadow AI Creeps Into Your Cloud
+
+Shadow AI rarely appears as "mystery-llm-service". It sneaks in through patterns that look harmless at first.
+
+### 1. Developer Convenience
+
+A developer needs a capability: summarization, code review, translation, natural language search.
+
+They grab an API key, install an SDK, add a few lines of code, and ship. The integration lives inside a backend service that already handles sensitive data.
+
+- No central inventory entry
+- No DPA or vendor onboarding
+- No data classification check on what is being sent out
+
+The code review might focus on logic. The AI call is just "one more HTTP request" in the diff.
+
+### 2. Third Party Dependencies
+
+Your team integrates a vendor SDK or open source library to solve a different problem: analytics, search, documentation, monitoring.
+
+Buried inside that dependency tree, a component quietly calls an AI service:
+
+- Auto generating summaries
+- Generating documentation
+- Enriching logs with LLM output
+
+From your point of view, you never imported an "AI client". But the dependency did.
+
+### 3. Experimental Workloads That Never Die
+
+Data scientists and ML engineers spin up notebooks and jobs in production clusters. They:
+
+- Call external LLM APIs for feature engineering
+- Experiment with different providers
+- Run weekend experiments on real data
+
+Some experiments get wired into production workflows. The cluster keeps calling the same LLM endpoints long after the original notebook owner has moved on.
+
+Nobody updates the architecture diagram. Those AI calls just become "how the system works now".
+
+---
+
+## Why Shadow AI Is More Dangerous Than It Looks
+
+Shadow AI is not just a governance annoyance. It creates real, compounding risk.
+
+### Data Exposure
+
+Sensitive payloads leave your environment without proper guardrails:
+
+- Customer PII, financial transactions, or health records
+- Source code, internal designs, and trade secrets
+- Credentials or secrets accidentally embedded in prompts
+
+If you are not tracking which providers receive this data, you cannot answer very basic questions from regulators or customers.
+
+### Compliance Violations
+
+Frameworks like GDPR, HIPAA, SOC 2, PCI DSS, ISO 27001, and upcoming AI specific standards all assume one simple capability:
+
+> You know where your data goes and who processes it.
+> 
+
+Shadow AI breaks that assumption instantly. If a regulator or customer asks, "Which AI providers process our data and under what terms" you cannot answer if you do not even know the providers involved.
+
+### Cost Hemorrhage
+
+LLM tokens are not cheap, and unmanaged AI usage has a habit of growing quietly.
+
+- Multiple teams might call the same provider from different services
+- Experiments turn into permanent workloads
+- There is no single owner accountable for the bill
+
+You cannot enforce budgets, rate limits, or guardrails on calls you cannot see.
+
+### Security Vulnerabilities
+
+Shadow AI surfaces new attack paths:
+
+- Prompt injection and data exfiltration through AI integrated endpoints
+- Insecure handling of API keys and secrets for AI providers
+- Unpatched components or agents that your security team did not even know existed
+
+When an incident happens, you will need a trace of "which service sent what to which model, at what time, with which identity". With Shadow AI, that trace simply does not exist.
+
+### Intellectual Property Leakage
+
+Prompts and context often include:
+
+- Proprietary algorithms
+- Pricing models and negotiations
+- Internal strategy documents
+
+If this goes to an AI provider without a locked down data processing agreement and clear retention terms, you might be leaking your moat one prompt at a time.
+
+---
+
+## The Visibility Gap: Why Existing Tools Struggle
+
+Most of your current tools were built for a different world.
+
+They are excellent at securing infrastructure. Shadow AI is about **what your applications send over the wire at runtime**.
+
+Here is the gap in plain terms:
+
+- **CSPM and IAM tools**
+    
+    Great at checking policies and misconfigurations. They can tell you an EC2 instance has an over permissive role. They cannot tell you that the service on that instance is sending customer PII to an LLM endpoint in another region.
+    
+- **CNAPP and vulnerability scanners**
+    
+    Great at CVEs, container images, and host posture. They scan images and OS packages. They do not decode or classify payloads inside HTTPS calls to AI APIs.
+    
+- **Traditional observability and APM**
+    
+    Great if you manually instrument every AI call. They can show latency and error rates for "callOpenAI()" if someone added spans and logs. But Shadow AI is, by definition, the stuff no one instrumented and no one declared.
+    
+- **Basic network monitoring**
+    
+    Can show that traffic left your cluster to some external domain over TLS. It cannot answer:
+    
+    - Was that call a model invocation or a health check
+    - Did the payload contain PII or source code
+    - Which logical service and team owns that traffic
+
+The core issue: **Shadow AI lives at the application and protocol layer, not the infrastructure layer.** You need something that can see and understand AI specific traffic patterns without asking every developer to retrofit their code.
+
+---
+
+## How To Actually Detect Shadow AI In Your Environment
+
+The first step is simple to say and hard to do:
+
+> You need a continuous, automatic inventory of every AI provider, model, and protocol your services talk to.
+> 
+
+You should not need to:
+
+- Interrupt teams
+- Instrument every code path manually
+- Ask developers to remember what they integrated six months ago
+
+That is exactly why we built **AIOStack**.
+
+---
+
+## AIOStack: Zero Code Shadow AI Discovery For Kubernetes
+
+**AIOStack** is a free platform built specifically to uncover Shadow AI and map AI usage in modern cloud native environments.
+
+Instead of asking developers to change their code, AIOStack uses **eBPF** to observe AI traffic directly inside your Kubernetes clusters.
+
+### How It Works At A High Level
+
+- **Deploy once, see everything**
+    
+    You deploy AIOStack as an agent in your cluster. It uses eBPF at the kernel level to watch network activity, then decodes AI specific protocols at the application layer.
+    
+- **Understands modern AI protocols**
+    
+    AIOStack is not a generic packet sniffer. It speaks your AI language. It can decode:
+    
+    - Model Context Protocol (MCP)
+    - Agent Communication Protocol (ACP)
+    - Agent to Agent (A2A) traffic
+    - Standard LLM REST APIs like OpenAI, Anthropic, Cohere and others
+- **No code changes**
+    
+    Developers do not have to add libraries, SDKs, or instrumentation. You do not need to touch application code or changing deployment pipelines.
+    
+- **Kubernetes native**
+    
+    Designed for modern stacks, AIOStack runs inside your existing clusters and integrates with the rest of your observability and security tooling.
+    
+
+### What You See Within Minutes
+
+Once AIOStack is running, you can start answering questions that were previously impossible:
+
+- Which services in my cluster are making AI API calls
+- Which AI providers and models they are talking to
+- What kinds of data are being sent in those requests
+- Whether any of those calls include PII, credentials, or other sensitive categories
+- How frequently each service calls each provider and how that changes over time
+- Which teams are likely responsible for which Shadow AI patterns
+
+In practice, this gives you a **runtime map of AI usage** across your environment, without asking anyone for manual spreadsheets or "survey the teams" projects.
+
+---
+
+## Turning Shadow AI From Threat To Governed Capability
+
+Shadow AI thrives in places where no one is looking. The moment you can see it clearly, you can start to:
+
+- Bring Shadow AI workloads under proper review and guardrails
+- Enforce data boundaries for different AI providers and models
+- Set cost controls and budgets per team or use case
+- Answer regulators and customers with real evidence instead of guesses
+
+The goal is not to slow down your developers. It is to let them continue moving fast while you keep a real time, ground truth view of how AI is being used.
+
+Because in the AI era, the old rule still holds:
+
+> You cannot protect what you cannot see.
+> 
+
+---
+
+Learn more about AIOStack and start discovering Shadow AI in your own clusters at https://github.com/aurva-io/AIOstack
