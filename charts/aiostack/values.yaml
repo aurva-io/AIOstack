@@ -4,7 +4,7 @@ global:
 
 observer:
   enabled: true
-  version: v2.1.1
+  version: latest
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -40,7 +40,7 @@ observer:
 
 outpost:
   enabled: true
-  version: v2.1.1
+  version: latest
   replicaCount: 1
   nodeSelector: {}
   tolerations: []

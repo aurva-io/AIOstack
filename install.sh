@@ -52,9 +52,8 @@ IS_OUTPOST_URL_SECURE="false"
 SKIP_NAMESPACES="kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
 COMMANDER_URL="hq.aurva.ai:443"
 INSECURE_SKIP_VERIFY="true"
-OBSERVER_VERSION="v2.1.1"
-OUTPOST_VERSION="v2.1.1"
-USE_LATEST_VERSION="false"
+OBSERVER_VERSION="latest"
+OUTPOST_VERSION="latest"
 CREATE_NAMESPACE="true"
 HELM_REPO_NAME="aiostack"
 HELM_REPO_URL="https://charts.aurva.ai/"
@@ -494,16 +493,6 @@ collect_env_config() {
     # Release name
     RELEASE_NAME=$(prompt "Helm release name" "$RELEASE_NAME")
 
-    # Version selection
-    if ask_yes_no "Use latest component versions? (default: v2.1.1)" "y"; then
-        USE_LATEST_VERSION="true"
-        OBSERVER_VERSION="latest"
-        OUTPOST_VERSION="latest"
-        print_info "Will use latest versions for all components"
-    else
-        print_info "Using stable versions: ${OBSERVER_VERSION}"
-    fi
-
     # Skip namespaces
     echo ""
     print_info "Configure which namespaces to skip during monitoring:"
@@ -590,8 +579,6 @@ namespace: ${NAMESPACE}
 releaseName: ${RELEASE_NAME}
 companyId: ${COMPANY_ID}
 validationKey: ${VALIDATION_KEY}
-observerVersion: ${OBSERVER_VERSION}
-outpostVersion: ${OUTPOST_VERSION}
 isOutpostUrlSecure: ${IS_OUTPOST_URL_SECURE}
 skipNamespaces: ${SKIP_NAMESPACES}
 commanderUrl: ${COMMANDER_URL}
@@ -626,8 +613,6 @@ load_config() {
             releaseName) RELEASE_NAME="$value" ;;
             companyId) COMPANY_ID="$value" ;;
             validationKey) VALIDATION_KEY="$value" ;;
-            observerVersion) OBSERVER_VERSION="$value" ;;
-            outpostVersion) OUTPOST_VERSION="$value" ;;
             isOutpostUrlSecure) IS_OUTPOST_URL_SECURE="$value" ;;
             skipNamespaces) SKIP_NAMESPACES="$value" ;;
             commanderUrl) COMMANDER_URL="$value" ;;
