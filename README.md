@@ -39,7 +39,7 @@ AIOStack automatically discovers AI components you didn't know existed and ties 
 
 ## Quick Start
 
-> **Use Helm to install in a jiffy. Don't like it? Uninstall is one command.**
+> **Install in a jiffy. Don't like it? Uninstall is one command.**
 
 ### One-Line Installation ⚡
 
@@ -73,8 +73,13 @@ curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh
 
 #### Option A: Interactive Installer (Recommended)
 
-The easiest way to install AIOStack with guided prompts:
+The easiest way to install AIOStack is with a single command:
 
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+```
+
+You can download the script too if you want to see what it does
 ```bash
 # Download and run the interactive installer
 curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh -o install.sh
@@ -82,10 +87,6 @@ chmod +x install.sh
 ./install.sh
 ```
 
-Or with a single command:
-```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
-```
 
 The interactive installer will:
 - Check prerequisites (Helm, kubectl, cluster access)
