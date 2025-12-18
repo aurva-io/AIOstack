@@ -1,0 +1,81 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: mlflow
+        image: ghcr.io/mlflow/mlflow:latest
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - |
+          pip install --quiet psycopg2-binary boto3
+          mlflow server \
+            --host 0.0.0.0 \
+            --port 5000 \
+            --backend-store-uri postgresql://mluser:mlpassword123@postgresql:5432/mlflow \
+            --default-artifact-root s3://mlflow/artifacts
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: "http://minio:9000"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 45
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow
+  labels:
+    app: mlflow
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    targetPort: 5000
+    name: http
+  selector:
+    app: mlflow

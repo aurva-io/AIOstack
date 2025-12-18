@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lakefs
+  labels:
+    app: lakefs
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lakefs
+  template:
+    metadata:
+      labels:
+        app: lakefs
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: lakefs
+        image: treeverse/lakefs:latest
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: LAKEFS_DATABASE_TYPE
+          value: "postgres"
+        - name: LAKEFS_DATABASE_POSTGRES_CONNECTION_STRING
+          value: "postgres://mluser:mlpassword123@postgresql:5432/lakefs?sslmode=disable"
+        - name: LAKEFS_BLOCKSTORE_TYPE
+          value: "s3"
+        - name: LAKEFS_BLOCKSTORE_S3_ENDPOINT
+          value: "http://minio:9000"
+        - name: LAKEFS_BLOCKSTORE_S3_FORCE_PATH_STYLE
+          value: "true"
+        - name: LAKEFS_BLOCKSTORE_S3_CREDENTIALS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: LAKEFS_BLOCKSTORE_S3_CREDENTIALS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        - name: LAKEFS_AUTH_ENCRYPT_SECRET_KEY
+          value: "this-is-a-random-secret-key-change-in-production-32chars"
+        - name: LAKEFS_LOGGING_LEVEL
+          value: "INFO"
+        livenessProbe:
+          httpGet:
+            path: /_health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lakefs
+  labels:
+    app: lakefs
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8000
+    targetPort: 8000
+    name: http
+  selector:
+    app: lakefs

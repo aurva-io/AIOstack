@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jupyter-work
+  labels:
+    app: jupyter
+    project: aibender
+    layer: ml-services
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter
+  template:
+    metadata:
+      labels:
+        app: jupyter
+        project: aibender
+        layer: ml-services
+    spec:
+      enableServiceLinks: false
+      initContainers:
+      - name: install-packages
+        image: jupyter/scipy-notebook:latest
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          pip install --user mlflow feast apache-airflow qdrant-client pymilvus lakefs-client boto3 psycopg2-binary redis
+        volumeMounts:
+        - name: jupyter-work
+          mountPath: /home/jovyan/work
+      containers:
+      - name: jupyter
+        image: jupyter/scipy-notebook:latest
+        ports:
+        - containerPort: 8888
+          name: http
+        command:
+        - jupyter
+        - lab
+        - --ip=0.0.0.0
+        - --port=8888
+        - --no-browser
+        - --ServerApp.token=aibender123
+        - --ServerApp.password=
+        env:
+        - name: JUPYTER_ENABLE_LAB
+          value: "yes"
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow:5000"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: "http://minio:9000"
+        volumeMounts:
+        - name: jupyter-work
+          mountPath: /home/jovyan/work
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+      volumes:
+      - name: jupyter-work
+        persistentVolumeClaim:
+          claimName: jupyter-work
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter
+  labels:
+    app: jupyter
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8888
+    targetPort: 8888
+    name: http
+  selector:
+    app: jupyter

@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: qdrant
+  labels:
+    app: qdrant
+    project: aibender
+    layer: ml-services
+spec:
+  serviceName: qdrant
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qdrant
+  template:
+    metadata:
+      labels:
+        app: qdrant
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: qdrant
+        image: qdrant/qdrant:latest
+        ports:
+        - containerPort: 6333
+          name: http
+        - containerPort: 6334
+          name: grpc
+        volumeMounts:
+        - name: qdrant-storage
+          mountPath: /qdrant/storage
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 6333
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 6333
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 2Gi
+            cpu: 1000m
+  volumeClaimTemplates:
+  - metadata:
+      name: qdrant-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant
+  labels:
+    app: qdrant
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6333
+    targetPort: 6333
+    name: http
+  - port: 6334
+    targetPort: 6334
+    name: grpc
+  selector:
+    app: qdrant

@@ -1,0 +1,70 @@
+# PostgreSQL Helm Chart Values
+# Shared database for multiple ML services
+
+auth:
+  postgresPassword: postgres123
+  username: mluser
+  password: mlpassword123
+  database: postgres
+
+primary:
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 250m
+    limits:
+      memory: 512Mi
+      cpu: 350m
+
+  initdb:
+    scripts:
+      init-databases.sql: |
+        -- Create databases for ML services
+        CREATE DATABASE lakefs;
+        CREATE DATABASE mlflow;
+        CREATE DATABASE feast;
+        CREATE DATABASE airflow;
+
+        -- Grant database privileges to mluser
+        GRANT ALL PRIVILEGES ON DATABASE lakefs TO mluser;
+        GRANT ALL PRIVILEGES ON DATABASE mlflow TO mluser;
+        GRANT ALL PRIVILEGES ON DATABASE feast TO mluser;
+        GRANT ALL PRIVILEGES ON DATABASE airflow TO mluser;
+
+        -- Connect to each database and grant schema privileges
+        \c lakefs
+        GRANT ALL ON SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO mluser;
+
+        \c mlflow
+        GRANT ALL ON SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO mluser;
+
+        \c feast
+        GRANT ALL ON SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO mluser;
+
+        \c airflow
+        GRANT ALL ON SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mluser;
+        GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mluser;
+        ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO mluser;
+
+commonLabels:
+  app: postgresql
+  project: aibender
+  layer: infrastructure

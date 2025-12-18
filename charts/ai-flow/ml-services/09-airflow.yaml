@@ -1,0 +1,282 @@
+---
+# Airflow DAGs PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-dags
+  labels:
+    app: airflow
+    project: aibender
+    layer: ml-services
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Airflow Logs PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-logs
+  labels:
+    app: airflow
+    project: aibender
+    layer: ml-services
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# Airflow Init Job - Initialize Database
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: airflow-init-db
+  labels:
+    app: airflow-init
+    project: aibender
+    layer: ml-services
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app: airflow-init
+        project: aibender
+        layer: ml-services
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: airflow-init
+        image: apache/airflow:2.8.1-python3.11
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - |
+          # Wait for PostgreSQL to be ready
+          echo "Waiting for PostgreSQL..."
+          until pg_isready -h postgresql -U mluser -d postgres; do
+            echo "PostgreSQL not ready, retrying in 5 seconds..."
+            sleep 5
+          done
+
+          echo "PostgreSQL is ready!"
+
+          # Initialize Airflow database
+          airflow db init
+
+          # Create admin user
+          airflow users create \
+            --username admin \
+            --firstname Admin \
+            --lastname User \
+            --role Admin \
+            --email admin@aibender.local \
+            --password admin123 || echo "User already exists"
+
+          echo "Airflow initialization complete!"
+        env:
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "False"
+        - name: AIRFLOW__CORE__DAGS_FOLDER
+          value: "/opt/airflow/dags"
+        - name: AIRFLOW__WEBSERVER__SECRET_KEY
+          value: "aibender-secret-key-change-in-production"
+---
+# Airflow Webserver Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver
+  labels:
+    app: airflow-webserver
+    component: webserver
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-webserver
+  template:
+    metadata:
+      labels:
+        app: airflow-webserver
+        component: webserver
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: webserver
+        image: apache/airflow:2.8.1-python3.11
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - |
+          # Install additional packages
+          pip install --quiet boto3 psycopg2-binary mlflow
+
+          # Start webserver
+          airflow webserver
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "False"
+        - name: AIRFLOW__CORE__DAGS_FOLDER
+          value: "/opt/airflow/dags"
+        - name: AIRFLOW__WEBSERVER__SECRET_KEY
+          value: "aibender-secret-key-change-in-production"
+        - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+          value: "True"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow:5000"
+        volumeMounts:
+        - name: dags
+          mountPath: /opt/airflow/dags
+        - name: logs
+          mountPath: /opt/airflow/logs
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 45
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+      volumes:
+      - name: dags
+        persistentVolumeClaim:
+          claimName: airflow-dags
+      - name: logs
+        persistentVolumeClaim:
+          claimName: airflow-logs
+---
+# Airflow Scheduler Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler
+  labels:
+    app: airflow-scheduler
+    component: scheduler
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler
+        component: scheduler
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: scheduler
+        image: apache/airflow:2.8.1-python3.11
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - |
+          # Install additional packages
+          pip install --quiet boto3 psycopg2-binary mlflow
+
+          # Start scheduler
+          airflow scheduler
+        env:
+        - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+        - name: AIRFLOW__CORE__EXECUTOR
+          value: "LocalExecutor"
+        - name: AIRFLOW__CORE__LOAD_EXAMPLES
+          value: "False"
+        - name: AIRFLOW__CORE__DAGS_FOLDER
+          value: "/opt/airflow/dags"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow:5000"
+        volumeMounts:
+        - name: dags
+          mountPath: /opt/airflow/dags
+        - name: logs
+          mountPath: /opt/airflow/logs
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - |
+              airflow jobs check --job-type SchedulerJob --hostname $(hostname)
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m
+      volumes:
+      - name: dags
+        persistentVolumeClaim:
+          claimName: airflow-dags
+      - name: logs
+        persistentVolumeClaim:
+          claimName: airflow-logs
+---
+# Airflow Webserver Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow
+  labels:
+    app: airflow-webserver
+    component: webserver
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: airflow-webserver

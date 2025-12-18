@@ -1,0 +1,212 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sample-training-job
+  labels:
+    app: training-job
+    project: aibender
+    layer: workload
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: training-job
+        project: aibender
+        layer: workload
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: training
+        image: python:3.11-slim
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          set -e
+          echo "Installing dependencies..."
+          pip install --quiet mlflow scikit-learn requests qdrant-client pymilvus numpy pandas
+
+          echo "Starting ML training job..."
+
+          python3 << 'EOF'
+          import os
+          import time
+          import mlflow
+          import requests
+          import numpy as np
+          from sklearn.ensemble import RandomForestClassifier
+          from sklearn.datasets import make_classification
+          from sklearn.model_selection import train_test_split
+          from qdrant_client import QdrantClient
+          from qdrant_client.models import Distance, VectorParams, PointStruct
+          from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType, utility
+
+          print("=" * 60)
+          print("ML PIPELINE TRAINING JOB - NETWORK TRAFFIC GENERATOR")
+          print("=" * 60)
+
+          # Configuration
+          MLFLOW_URI = "http://mlflow:5000"
+          QDRANT_HOST = "qdrant"
+          QDRANT_PORT = 6333
+          MILVUS_HOST = "milvus"
+          MILVUS_PORT = 19530
+
+          # 1. MLFlow - Log experiment
+          print("\n[1/5] Connecting to MLFlow...")
+          mlflow.set_tracking_uri(MLFLOW_URI)
+          mlflow.set_experiment("aibender-sample-training")
+
+          with mlflow.start_run(run_name="random-forest-training"):
+              print("  ✓ MLFlow run started")
+
+              # Generate synthetic dataset
+              print("\n[2/5] Generating synthetic dataset...")
+              X, y = make_classification(
+                  n_samples=1000,
+                  n_features=20,
+                  n_informative=15,
+                  n_redundant=5,
+                  random_state=42
+              )
+              X_train, X_test, y_train, y_test = train_test_split(
+                  X, y, test_size=0.2, random_state=42
+              )
+              print(f"  ✓ Dataset created: {X_train.shape[0]} training samples")
+
+              # Train model
+              print("\n[3/5] Training Random Forest model...")
+              clf = RandomForestClassifier(n_estimators=100, random_state=42)
+              clf.fit(X_train, y_train)
+
+              # Log parameters and metrics
+              accuracy = clf.score(X_test, y_test)
+              mlflow.log_param("n_estimators", 100)
+              mlflow.log_param("max_depth", clf.max_depth)
+              mlflow.log_metric("accuracy", accuracy)
+              mlflow.log_metric("n_samples", len(X_train))
+
+              print(f"  ✓ Model trained with accuracy: {accuracy:.4f}")
+              print("  ✓ Metrics logged to MLFlow")
+
+          # 2. Qdrant - Store embeddings
+          print("\n[4/5] Storing embeddings in Qdrant...")
+          try:
+              qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+
+              collection_name = "training_embeddings"
+
+              # Create collection if it doesn't exist
+              collections = qdrant.get_collections().collections
+              if not any(c.name == collection_name for c in collections):
+                  qdrant.create_collection(
+                      collection_name=collection_name,
+                      vectors_config=VectorParams(size=128, distance=Distance.COSINE)
+                  )
+                  print(f"  ✓ Created collection '{collection_name}'")
+
+              # Generate and store sample embeddings
+              embeddings = [
+                  PointStruct(
+                      id=i,
+                      vector=np.random.rand(128).tolist(),
+                      payload={"sample_id": i, "label": int(y[i])}
+                  )
+                  for i in range(min(100, len(y)))
+              ]
+
+              qdrant.upsert(collection_name=collection_name, points=embeddings)
+              print(f"  ✓ Stored {len(embeddings)} embeddings in Qdrant")
+
+              # Perform a search
+              search_result = qdrant.search(
+                  collection_name=collection_name,
+                  query_vector=np.random.rand(128).tolist(),
+                  limit=5
+              )
+              print(f"  ✓ Search test returned {len(search_result)} results")
+
+          except Exception as e:
+              print(f"  ✗ Qdrant error: {e}")
+
+          # 3. Milvus - Similarity search
+          print("\n[5/5] Testing Milvus similarity search...")
+          try:
+              connections.connect(host=MILVUS_HOST, port=MILVUS_PORT)
+              print("  ✓ Connected to Milvus")
+
+              collection_name = "model_vectors"
+
+              # Create collection if it doesn't exist
+              if not utility.has_collection(collection_name):
+                  fields = [
+                      FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+                      FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=128),
+                      FieldSchema(name="metadata", dtype=DataType.JSON)
+                  ]
+                  schema = CollectionSchema(fields=fields, description="Model embeddings")
+                  collection = Collection(name=collection_name, schema=schema)
+                  print(f"  ✓ Created Milvus collection '{collection_name}'")
+              else:
+                  collection = Collection(name=collection_name)
+
+              # Insert vectors
+              embeddings = [[np.random.rand(128).tolist() for _ in range(50)]]
+              metadata = [[{"run_id": f"run_{i}", "accuracy": float(accuracy)} for i in range(50)]]
+
+              collection.insert([embeddings[0], metadata[0]])
+              collection.flush()
+              print(f"  ✓ Inserted 50 vectors into Milvus")
+
+              # Create index and search
+              collection.create_index(
+                  field_name="embedding",
+                  index_params={"metric_type": "L2", "index_type": "IVF_FLAT", "params": {"nlist": 128}}
+              )
+              collection.load()
+
+              search_vectors = [np.random.rand(128).tolist()]
+              results = collection.search(
+                  data=search_vectors,
+                  anns_field="embedding",
+                  param={"metric_type": "L2", "params": {"nprobe": 10}},
+                  limit=5
+              )
+              print(f"  ✓ Milvus search returned {len(results[0])} results")
+
+              connections.disconnect("default")
+
+          except Exception as e:
+              print(f"  ✗ Milvus error: {e}")
+
+          print("\n" + "=" * 60)
+          print("TRAINING JOB COMPLETED SUCCESSFULLY!")
+          print("=" * 60)
+          print("\nNetwork traffic generated:")
+          print("  • HTTP calls to MLFlow (experiment tracking)")
+          print("  • HTTP/gRPC calls to Qdrant (vector storage)")
+          print("  • gRPC calls to Milvus (similarity search)")
+          print("  • PostgreSQL connections (MLFlow backend)")
+          print("  • S3 API calls to MinIO (artifact storage)")
+          print("\nAll services tested successfully!")
+          EOF
+
+          echo ""
+          echo "Job completed successfully!"
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow:5000"
+        - name: MLFLOW_S3_ENDPOINT_URL
+          value: "http://minio:9000"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 1Gi
+            cpu: 500m

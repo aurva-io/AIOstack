@@ -1,0 +1,47 @@
+---
+# MinIO Bucket Initialization Job
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init-buckets
+  labels:
+    app: minio-init
+    project: aibender
+    layer: infrastructure
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app: minio-init
+        project: aibender
+        layer: infrastructure
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: mc
+        image: minio/mc:latest
+        command:
+        - /bin/sh
+        - -c
+        args:
+        - |
+          # Wait for MinIO to be ready
+          echo "Waiting for MinIO to be available..."
+          until mc alias set myminio http://minio:9000 minioadmin minioadmin123; do
+            echo "MinIO not ready yet, retrying in 5 seconds..."
+            sleep 5
+          done
+
+          echo "MinIO is ready! Creating buckets..."
+
+          # Create buckets
+          mc mb myminio/lakefs --ignore-existing
+          mc mb myminio/mlflow --ignore-existing
+          mc mb myminio/airflow --ignore-existing
+          mc mb myminio/feast --ignore-existing
+
+          echo "Buckets created successfully:"
+          mc ls myminio
+
+          echo "MinIO initialization complete!"

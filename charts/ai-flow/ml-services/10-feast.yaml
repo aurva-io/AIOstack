@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: feast-config
+  labels:
+    app: feast
+    project: aibender
+    layer: ml-services
+data:
+  feature_store.yaml: |
+    project: aibender
+    provider: local
+    online_store:
+      type: redis
+      connection_string: "redis://:redis123@redis-master:6379"
+    offline_store:
+      type: file
+    registry:
+      path: s3://feast/registry.db
+      s3_endpoint_override: "http://minio:9000"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feast
+  labels:
+    app: feast
+    project: aibender
+    layer: ml-services
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feast
+  template:
+    metadata:
+      labels:
+        app: feast
+        project: aibender
+        layer: ml-services
+    spec:
+      containers:
+      - name: feast
+        image: feastdev/feature-server:latest
+        ports:
+        - containerPort: 6566
+          name: http
+        env:
+        - name: FEAST_FEATURE_STORE_PATH
+          value: "/feature_store"
+        - name: AWS_ACCESS_KEY_ID
+          value: "minioadmin"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "minioadmin123"
+        - name: AWS_ENDPOINT_URL
+          value: "http://minio:9000"
+        volumeMounts:
+        - name: feast-config
+          mountPath: /feature_store
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 250m
+      volumes:
+      - name: feast-config
+        configMap:
+          name: feast-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feast
+  labels:
+    app: feast
+    project: aibender
+    layer: ml-services
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6566
+    targetPort: 6566
+    name: http
+  selector:
+    app: feast

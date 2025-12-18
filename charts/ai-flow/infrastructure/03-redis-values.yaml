@@ -1,0 +1,26 @@
+# Redis Helm Chart Values
+# Feature store cache and session storage
+
+architecture: standalone
+
+auth:
+  enabled: true
+  password: redis123
+
+master:
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 250m
+
+commonLabels:
+  app: redis
+  project: aibender
+  layer: infrastructure
