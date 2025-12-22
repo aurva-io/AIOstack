@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { GitHubLink, Navigations } from "@/settings/navigation"
 import { LuArrowUpRight, LuGithub } from "react-icons/lu"
 
@@ -37,6 +40,9 @@ function GhostButton({ children, href = "#", onClick, className = "" }: { childr
 }
 
 export function Navbar() {
+  const pathname = usePathname();
+  const isHomePage = pathname === '/';
+
   return (
     <nav className="bg-opacity-5 sticky top-0 z-50 h-16 w-full border-b px-2 backdrop-blur-xl backdrop-filter md:px-4">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 p-1 sm:gap-8 sm:p-3 md:gap-12">
@@ -53,7 +59,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex">
-            <Search />
+            {!isHomePage && <Search />}
           </div>
           <div className="flex gap-2 sm:ml-0">
             {/* {GitHubLink.href && (
@@ -67,7 +73,7 @@ export function Navbar() {
                 <LuGithub className="h-[1.1rem] w-[1.1rem]" />
               </Link>
             )} */}
-            <ModeToggle />
+            {!isHomePage && <ModeToggle />}
           </div>
           <div className="hidden sm:flex items-center gap-3">
             <GhostButton href={GitHubLink.href}>

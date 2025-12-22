@@ -2,7 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
-import { Check, Clipboard, ClipboardCheck, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Book, Info } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -266,6 +267,360 @@ interface Beam {
   color: string;
 }
 
+function ProblemQuestions() {
+  const questions = [
+    { text: "Which services in your infrastructure are calling LLMs?", from: "Security Team", icon: Shield },
+    { text: "Which ones are accessing databases with PII before making those calls?", from: "Compliance Officer", icon: Lock },
+    { text: "Are any of them self-hosted models your security team doesn't know about?", from: "CISO", icon: Eye },
+    { text: "When we ask for 'AI bill of materials', how long will it take you to produce it?", from: "Audit Team", icon: FileText },
+  ];
+
+  const [visibleQuestions, setVisibleQuestions] = React.useState([0, 1, 2]);
+  const [fadingOut, setFadingOut] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setFadingOut(visibleQuestions[0]);
+
+      setTimeout(() => {
+        setVisibleQuestions(prev => {
+          const newQuestions = [...prev];
+          newQuestions.shift();
+          const nextIndex = (prev[prev.length - 1] + 1) % questions.length;
+          newQuestions.push(nextIndex);
+          return newQuestions;
+        });
+        setFadingOut(null);
+      }, 500);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [visibleQuestions, questions.length]);
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-4">
+      {visibleQuestions.map((qIndex, idx) => {
+        const question = questions[qIndex];
+        const Icon = question.icon;
+        const isFadingOut = fadingOut === qIndex;
+        const isNew = idx === visibleQuestions.length - 1 && fadingOut !== null;
+
+        return (
+          <div
+            key={`${qIndex}-${idx}`}
+            className={`group relative rounded-2xl border border-border bg-card ring-1 ring-border ${idx === 0 ? 'border-emerald-400/40 ring-emerald-400/20' : ''}`}
+            style={{
+              transition: 'all 0.7s cubic-bezier(0.4, 0, 0.2, 1)',
+              opacity: isFadingOut ? 0 : 1,
+              transform: isFadingOut
+                ? 'translateY(-20px) scale(0.95)'
+                : isNew
+                  ? 'translateY(0) scale(1)'
+                  : 'translateY(0) scale(1)',
+              filter: isFadingOut ? 'blur(4px)' : 'blur(0px)',
+            }}
+          >
+            <div className="flex items-start gap-4 p-4">
+              {/* Icon */}
+              <div
+                className={`mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${idx === 0
+                  ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 ring-2 ring-emerald-400/30'
+                  : 'bg-muted text-muted-foreground'
+                  }`}
+                style={{
+                  transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
+                <Icon size={18} />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-1">
+                  <span
+                    className={`text-xs font-semibold uppercase tracking-wide ${idx === 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'
+                      }`}
+                    style={{
+                      transition: 'color 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                    }}
+                  >
+                    {question.from}
+                  </span>
+                  {idx === 0 && (
+                    <span
+                      className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-200 ring-1 ring-emerald-400/30 animate-pulse"
+                      style={{
+                        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                      }}
+                    >
+                      <Activity size={10} />
+                      SENT NOW
+                    </span>
+                  )}
+                </div>
+                <p
+                  className={`text-sm font-medium leading-relaxed sm:text-base ${idx === 0 ? 'text-foreground' : 'text-muted-foreground'
+                    }`}
+                  style={{
+                    transition: 'color 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
+                  {question.text}
+                </p>
+              </div>
+            </div>
+            {/* {idx === 0 && (
+              <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl bg-gradient-to-b from-emerald-500 to-emerald-600 animate-pulse" />
+            )} */}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FeatureGridSection() {
+  const [isVisible, setIsVisible] = React.useState(false);
+  const sectionRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  const features = [
+    {
+      icon: Eye,
+      title: "Automatic AI Agent Discovery",
+      description: "Automatically discover every AI service in your infrastructure - OpenAI, Anthropic, Bedrock, self-hosted models, and custom endpoints your security team doesn't know about.",
+      comingSoon: false
+    },
+    {
+      icon: Database,
+      title: "Automatic Database Dicovery",
+      description: "Automatically discover every database in your infrastructureand their accessors. Find PSQL, MySQL, Redis, Milvus, Weaviate or any other databases your applications connect to.",
+      comingSoon: false
+    },
+    {
+      icon: Network,
+      title: "Intelligent Data Lineage",
+      description: "Connect each service to the databases it accesses. See which ones are touching PII, customer data, or regulated information before making LLM calls.",
+      comingSoon: false
+    },
+    {
+      icon: FileText,
+      title: "AI Bill of Materials (AIBOM)",
+      description: "Every discovery becomes part of your AI BOM - a complete inventory of AI services, providers, dependencies, and data flows. Answer compliance instantly.",
+      comingSoon: false
+    },
+
+    {
+      icon: Shield,
+      title: "Shadow AI Detection",
+      description: "Flag services with no owner tags, first-seen behavior in prod, or unusual volumes. Stop Shadow AI before it becomes a compliance nightmare.",
+      comingSoon: false
+    },
+    {
+      icon: Bot,
+      title: "Machine Identity",
+      description: "Map and secure IAM identities, roles, and service accounts. Discover hidden database access and prune unwanted permissions to reduce your attack surface.",
+      comingSoon: true
+    },
+    {
+      icon: Globe,
+      title: "Browser DLP",
+      description: "Prevent employees from pasting sensitive data into ChatGPT, Claude, or public AI tools. Real-time detection of PII, credentials, and regulated information.",
+      comingSoon: true
+    },
+    {
+      icon: Shield,
+      title: "Defender",
+      description: "Real-time policy enforcement and alerting. Block risky AI calls, enforce data handling rules, and get notified of anomalies before they become incidents.",
+      comingSoon: true
+    },
+    {
+      icon: Rocket,
+      title: "Security SDK",
+      description: "Drop-in SDK for securing AI code at runtime. Add guardrails, input validation, and output filtering directly in your application with a few lines of code.",
+      comingSoon: true
+    }
+  ];
+
+  return (
+    <section ref={sectionRef} className="py-14 sm:py-20">
+      <Container>
+        <div className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="text-center mb-12">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground mb-4">
+              AI visibility in <span className="text-emerald-600 dark:text-emerald-300 font-bold">10 minutes</span>
+            </h2>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
+              One command. Full inventory. Zero blind spots.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {features.map((feature, index) => (
+              <div
+                key={feature.title}
+                className="group relative p-6 rounded-xl border border-border/200 bg-card/50 backdrop-blur-sm shadow-sm hover:shadow-xl hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1"
+                style={{
+                  opacity: isVisible ? 1 : 0,
+                  transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+                  transitionDelay: `${index * 50}ms`
+                }}
+              >
+                {/* Gradient Border Effect on Hover */}
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-500/0 via-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:via-transparent group-hover:to-transparent transition-all duration-500 pointer-events-none"></div>
+
+                <div className="relative">
+                  <div className="mb-4 inline-flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
+                    <feature.icon size={24} />
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <h3 className="text-lg font-semibold text-foreground">
+                      {feature.title}
+                    </h3>
+                    {feature.comingSoon && (
+                      <span className="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-500/20">
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function AnimatedTextSection() {
+  const [scrollProgress, setScrollProgress] = React.useState(0);
+  const [showAIOStack, setShowAIOStack] = React.useState(false);
+  const [showImage, setShowImage] = React.useState(false);
+  const sectionRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const section = sectionRef.current;
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate scroll progress (0 to 1) based on section visibility
+      // Start animation when section enters viewport
+      const startPoint = windowHeight * 0.8;
+      const endPoint = windowHeight * 0.2;
+
+      if (rect.top <= startPoint && rect.top >= endPoint) {
+        const progress = (startPoint - rect.top) / (startPoint - endPoint);
+        setScrollProgress(Math.min(Math.max(progress, 0), 1));
+
+        // Trigger AIOStack morph at 70% scroll progress
+        if (progress >= 0.7 && !showAIOStack) {
+          setShowAIOStack(true);
+          // Show image after morph completes (1 second delay)
+          setTimeout(() => setShowImage(true), 500);
+        }
+      } else if (rect.top > startPoint) {
+        setScrollProgress(0);
+        setShowAIOStack(false);
+        setShowImage(false);
+      } else if (rect.top < endPoint) {
+        setScrollProgress(1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showAIOStack]);
+
+  // Calculate font size based on scroll progress (grows from base to 4x)
+  const fontSize = 1 + (scrollProgress * 2);
+
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative mt-10 sm:mt-30 overflow-hidden flex flex-col items-center justify-start"
+    >
+      <Container>
+        {/* Animated Text */}
+        <div className="flex items-center justify-center mb-4 sm:mb-8 mt-2 sm:mt-4">
+          <div
+            className="text-center transition-all duration-500 ease-out"
+            style={{
+              transform: `scale(${fontSize})`,
+              opacity: showAIOStack ? 0 : 1,
+            }}
+          >
+            <h2 className="text-2xl sm:text-2xl font-bold ">
+              A new frontier solution
+            </h2>
+          </div>
+
+          <div
+            className="absolute text-center transition-all duration-800 ease-out"
+            style={{
+              opacity: showAIOStack ? 1 : 0,
+              transform: showAIOStack ? 'scale(1)' : 'scale(0.8)',
+              transitionDelay: showAIOStack ? '300ms' : '0ms',
+            }}
+          >
+            <h2 className="text-3xl sm:text-6xl font-bold">
+              AIOStack
+            </h2>
+          </div>
+        </div>
+
+        {/* Image that fades in */}
+        <div
+          className="flex items-center justify-center transition-all duration-1000 ease-out"
+          style={{
+            opacity: showImage ? 1 : 0,
+            transform: showImage ? 'translateY(0)' : 'translateY(20px)',
+          }}
+        >
+
+          <Image
+            src="/aiostack-graph.svg"
+            alt="AIOStack heartbeat"
+            width={1000}
+            height={1000}
+            className="w-full max-w-5xl h-auto drop-shadow-xl"
+          />
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+
 function UFOAnimation() {
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const [objects, setObjects] = React.useState<GroundObject[]>([]);
@@ -424,7 +779,7 @@ function UFOAnimation() {
     <div className="relative w-full border-none">
       <div
         ref={canvasRef}
-        className="relative h-[500px] w-full overflow-hidden bg-black"
+        className="relative h-[500px] w-full overflow-hidden"
       >
         {/* Stars background */}
         <div className="absolute inset-0">
@@ -496,11 +851,11 @@ function UFOAnimation() {
             }}
           >
             <Image
-              src="/logo2.svg"
+              src="/ufo.svg"
               alt="UFO"
               width={64}
               height={64}
-              className="h-16 w-16 drop-shadow-2xl"
+              className="h-40 w-40 drop-shadow-2xl"
               style={{
                 filter: 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 40px rgba(16, 185, 129, 0.4))',
               }}
@@ -615,9 +970,7 @@ function UFOAnimation() {
             <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             <span>eBPF Sensor Active</span>
           </div>
-          <div className="flex items-center gap-4">
-            <span>{beams.length} Eliminating</span>
-          </div>
+
         </div>
       </div>
 
@@ -643,6 +996,117 @@ function UFOAnimation() {
 
 export default function Home() {
   const [installTab, setInstallTab] = useState("helm");
+  const { setTheme, theme: currentTheme } = useTheme();
+
+  // Force dark mode on home page only
+  React.useEffect(() => {
+    const previousTheme = currentTheme;
+    setTheme('dark');
+
+    return () => {
+      if (previousTheme) {
+        setTheme(previousTheme);
+      }
+    };
+  }, [setTheme]);
+
+  // Generate static stars once
+  const staticStars = React.useMemo(() =>
+    Array.from({ length: 80 }).map(() => ({
+      width: 1 + Math.random() * 2,
+      height: 1 + Math.random() * 2,
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      opacity: 0.2 + Math.random() * 0.3,
+    }))
+    , []);
+
+  // Pool of possible services for rotation
+  const servicePool = React.useMemo(() => [
+    { service: "invoice-ai", provider: "OpenAI", ns: "billing", calls: 1200, time: 2, shadow: false, type: "AI App" },
+    { service: "new_frontend", provider: "Anthropic", ns: "pre-prod", calls: 847, time: 4, shadow: true, type: "MCP Client" },
+    { service: "sherlock-svc", provider: "Gemini 3 Flash", ns: "prod-core", calls: 340, time: 9, shadow: false, type: "AI Agent" },
+    { service: "customerbot", provider: "Bedrock", ns: "dev-test", calls: 2100, time: 12, shadow: true, type: "MCP Server" },
+    { service: "analytics", provider: "OpenAI", ns: "prod-data", calls: 980, time: 3, shadow: false, type: "AI App" },
+    { service: "coderabbit", provider: "Claude", ns: "dev-tools", calls: 520, time: 5, shadow: true, type: "AI Agent" },
+    { service: "content-gen", provider: "Gemini", ns: "marketing", calls: 1450, time: 7, shadow: false, type: "AI App" },
+    { service: "support-chat", provider: "Cohere", ns: "support", calls: 2800, time: 1, shadow: false, type: "MCP Client" },
+    { service: "doc-parser", provider: "OpenAI", ns: "stage-docs", calls: 670, time: 6, shadow: true, type: "AI Agent" },
+    { service: "sentimentapi", provider: "HuggingFace", ns: "prod-ml", calls: 1100, time: 8, shadow: false, type: "AI App" },
+    { service: "query-asst", provider: "Anthropic", ns: "prod-db", calls: 890, time: 4, shadow: false, type: "AI Agent" },
+    { service: "ocr-model", provider: "Vertex AI", ns: "prod-vision", calls: 1650, time: 11, shadow: true, type: "MCP Server" },
+  ], []);
+
+  // Dynamic activity feed state
+  const [activityItems, setActivityItems] = useState([
+    servicePool[0],
+    servicePool[1],
+    servicePool[2],
+    servicePool[3],
+  ]);
+
+  const [totalAgents, setTotalAgents] = React.useState(14);
+  const [newlyDetected, setNewlyDetected] = React.useState<Set<string>>(new Set());
+
+
+
+  // Update activity feed periodically
+  React.useEffect(() => {
+    let updateCount = 0;
+
+    const interval = setInterval(() => {
+      updateCount++;
+
+      setActivityItems(prev => {
+        if (updateCount % 1 === 0) {
+          const randomIndex = Math.floor(Math.random() * prev.length);
+          const availableServices = servicePool.filter(
+            poolItem => !prev.some(item => item.service === poolItem.service)
+          );
+
+          if (availableServices.length > 0) {
+            const newService = availableServices[Math.floor(Math.random() * availableServices.length)];
+            const updated = [...prev];
+            updated[randomIndex] = {
+              ...newService,
+              calls: Math.floor(Math.random() * 1000) + 500,
+              time: Math.floor(Math.random() * 5) + 1,
+            };
+
+            // Mark the new item as newly detected
+            setNewlyDetected(prev => new Set([...prev, newService.service]));
+
+            // Remove "newly detected" badge after 6 seconds
+            setTimeout(() => {
+              setNewlyDetected(prev => {
+                const updated = new Set(prev);
+                updated.delete(newService.service);
+                return updated;
+              });
+            }, 6000);
+
+            return updated;
+          }
+        }
+
+        // Otherwise just update the call counts and times
+        const updated = prev.map(item => ({
+          ...item,
+          calls: item.calls + Math.floor(Math.random() * 10) + 1,
+          time: Math.max(1, item.time + (Math.random() > 0.7 ? 1 : 0)),
+        }));
+
+        return updated;
+      });
+
+      // Occasionally update total agents count
+      if (Math.random() > 0.5) {
+        setTotalAgents(prev => prev + (Math.random() > 0.5 ? 1 : 0));
+      }
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [servicePool]);
 
   const helmCmd = `
 helm repo add aiostack https://charts.aurva.ai/
@@ -689,45 +1153,48 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 text-foreground">
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-16 sm:py-20">
+      <section className="relative overflow-hidden py-10 sm:py-32">
         <Container>
 
-          <div className="mb-6 hidden sm:flex flex-wrap items-center gap-2">
-            <Badge>Open-core • Metadata-only</Badge>
-            <Badge>eBPF • Kubernetes Native</Badge>
-            <Badge>One line install</Badge>
-          </div>
-          <div className="grid items-center gap-10 md:grid-cols-2">
+
+          <div className="grid items-start gap-10 md:grid-cols-2">
             <div>
-              <h1 className="text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
-                See every AI call in your cloud <span className="text-emerald-600 dark:text-emerald-300">in 10 minutes</span>
+              <h1 className="text-center md:text-left text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+                Secure every AI service in your cloud <span className="text-emerald-600 dark:text-emerald-300">in 10 minutes</span>
               </h1>
-              <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Auto-discover AI agents, LLM egress, and ownership gaps across your cloud — with read-only eBPF sensors.
+              <p className="text-center md:text-left mt-4 max-w-xl text-base leading-7 text-muted-foreground">
+                Automatically discover AI apps, AI Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We'll make sure nothing escapes you.
               </p>
-              <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Inventory today, lineage and control when you need it.
-              </p>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
+
+              <div className="mt-6 flex flex-wrap items-center gap-3 justify-center md:justify-start">
                 <PrimaryButton href="#install" >
-                  <Play size={16} className="mr-2" /> Install Free
+                  <Play size={16} className="mr-2" /> Try AIOStack Now
                 </PrimaryButton>
                 {/* <GhostButton href="#sample">
-                    <Eye size={16} className="mr-2" /> View Sample Report
-                  </GhostButton> */}
+                  <Eye size={16} className="mr-2" /> View Sample Report
+                </GhostButton> */}
               </div>
-              <div className="mt-6 flex flex-wrap gap-2 text-white/70">
-                <Pill icon={Gauge} text="TTFF ≤ 10 min" />
-                <Pill icon={Lock} text="No content capture" />
-                <Pill icon={Activity} text="<2% CPU • <50 MB" />
+              <div className="mt-14 hidden sm:flex flex-wrap items-center gap-2">
+                <Pill icon={Gauge} text="Extremely Fast" />
+                <Pill icon={Lock} text="No sensitive data stored" />
+                <Pill icon={Activity} text="<2% CPU used" />
+                <Pill icon={CircleDollarSign} text="Free" />
+
               </div>
+              {/* 
+              <div className="mt-6 hidden flex flex-wrap gap-2 text-white/70">
+                <Badge>Open-core • Metadata-only</Badge>
+                <Badge>eBPF • Kubernetes Native</Badge>
+                <Badge>One line install</Badge>
+              </div> */}
             </div>
+
             {/* Preview card */}
-            <div className="relative">
+            <div className="relative w-full">
               {/* Animated border glow */}
               <div className="absolute -inset-[1px] rounded-3xl bg-gradient-to-r from-emerald-500/20 via-emerald-400/30 to-emerald-500/20 opacity-75 blur-sm animate-border-glow" />
 
-              <div className="relative rounded-3xl border border-border bg-card overflow-hidden ring-1 ring-border">
+              <div className="relative rounded-3xl border border-border bg-card ring-1 ring-border w-full overflow-hidden">
                 {/* Header */}
                 <div className="relative flex items-center justify-between border-b border-border bg-muted/30 px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -741,45 +1208,50 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
                 {/* Activity Feed */}
                 <div className="space-y-0 divide-y divide-border/50">
-                  {[
-                    { service: "invoice-ai", provider: "OpenAI", ns: "prod-finance", calls: "1.2k", time: "2m ago", shadow: false },
-                    { service: "webapp-next", provider: "Anthropic", ns: "prod-app", calls: "847", time: "4m ago", shadow: true },
-                    { service: "auth-mgr", provider: "Vertex AI", ns: "dev-ai", calls: "340", time: "9m ago", shadow: false },
-                    { service: "chat-svc", provider: "Bedrock", ns: "prod-chat", calls: "2.1k", time: "12m ago", shadow: false },
-                  ].map((item, idx) => (
+                  {activityItems.map((item, idx) => (
                     <div
-                      key={idx}
-                      className="group relative px-4 py-3 transition hover:bg-muted/30 animate-in fade-in slide-in-from-right-4"
-                      style={{ animationDelay: `${idx * 150}ms`, animationFillMode: 'backwards' }}
+                      key={item.service}
+                      className="group relative px-4 py-3 transition-all duration-500 hover:bg-muted/30 animate-in fade-in slide-in-from-right-4 h-[72px]"
+                      style={{
+                        animationDuration: '500ms',
+                        animationFillMode: 'both'
+                      }}
                     >
                       {/* Subtle pulse overlay for first item */}
                       {idx === 0 && (
-                        <div className="absolute inset-0 bg-emerald-500/5 animate-pulse" style={{ animationDuration: '3s' }} />
+                        <div className="absolute inset-0 bg-emerald-600/5 animate-pulse" style={{ animationDuration: '3s' }} />
                       )}
 
                       <div className="relative flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <span className="truncate font-mono text-sm font-medium text-foreground">{item.service}</span>
+                          <div className="flex items-center gap-1.5 min-w-0 overflow-hidden">
+                            <span className="font-mono text-sm font-medium text-foreground truncate max-w-[60px] sm:max-w-[150px]">{item.service}</span>
+                            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
+                              <Server size={11} className="animate-pulse" style={{ animationDuration: '4s' }} />
+                              {item.ns}
+                            </span>
+                            {newlyDetected.has(item.service) && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-200 ring-1 ring-emerald-400/30 animate-in fade-in zoom-in-50 flex-shrink-0">
+                                <Zap size={10} className="animate-pulse" />
+                                NEW
+                              </span>
+                            )}
                             {item.shadow && (
-                              <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-medium text-rose-600 dark:text-rose-300 ring-1 ring-rose-400/20 animate-in fade-in zoom-in-50" style={{ animationDelay: `${idx * 150 + 200}ms`, animationFillMode: 'backwards' }}>
+                              <span className="inline-flex items-center gap-1 rounded-full bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-medium text-rose-600 dark:text-rose-300 ring-1 ring-rose-400/20 animate-in fade-in zoom-in-50 flex-shrink-0" style={{ animationDelay: `${idx * 150 + 200}ms`, animationFillMode: 'backwards' }}>
                                 <Shield size={10} className="animate-pulse" />
                                 shadow
                               </span>
                             )}
                           </div>
-                          <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                            <span className="inline-flex items-center gap-1">
-                              <Server size={11} className="animate-pulse" style={{ animationDuration: '4s' }} />
-                              {item.ns}
-                            </span>
-                            <span>•</span>
-                            <span className="font-medium text-emerald-600 dark:text-emerald-300">{item.provider}</span>
-                            <span>•</span>
-                            <span className="tabular-nums">{item.calls} calls</span>
+                          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground min-w-0 overflow-hidden">
+                            <span className="whitespace-nowrap truncate max-w-[60px] sm:max-w-[120px]">{item.type}</span>
+                            <span className="flex-shrink-0">•</span>
+                            <span className="font-medium text-emerald-600 dark:text-emerald-300 whitespace-nowrap truncate max-w-[60px] sm:max-w-[120px]">{item.provider}</span>
+                            <span className="flex-shrink-0">•</span>
+                            <span className="tabular-nums transition-all duration-500 whitespace-nowrap flex-shrink-0">{item.calls >= 1000 ? `${(item.calls / 1000).toFixed(1)}k` : item.calls} calls</span>
                           </div>
                         </div>
-                        <div className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">{item.time}</div>
+                        <div className="text-xs text-muted-foreground whitespace-nowrap tabular-nums transition-all duration-500 flex-shrink-0">{item.time}m ago</div>
                       </div>
                     </div>
                   ))}
@@ -790,16 +1262,16 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                   <div className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-4">
                       <span className="text-muted-foreground">
-                        <span className="font-semibold text-foreground tabular-nums">37</span> agents
+                        <span className="font-semibold text-foreground tabular-nums transition-all duration-500">{totalAgents}</span> agents
                       </span>
                       <span className="text-muted-foreground">
                         <span className="font-semibold text-foreground tabular-nums">5</span> providers
                       </span>
                       <span className="text-muted-foreground">
-                        <span className="font-semibold text-rose-600 dark:text-rose-300 tabular-nums animate-pulse" style={{ animationDuration: '3s' }}>6</span> shadow AI
+                        <span className="font-semibold text-rose-600 dark:text-rose-300 tabular-nums animate-pulse transition-all duration-500" style={{ animationDuration: '3s' }}>{activityItems.filter(item => item.shadow).length}</span> shadow AI
                       </span>
                     </div>
-                    <span className="text-muted-foreground">last 14d</span>
+                    <span className="text-muted-foreground">last 30d</span>
                   </div>
                 </div>
               </div>
@@ -808,15 +1280,97 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
+      {/* Decorative Motif 2 */}
+      <div className="relative py-10 overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative w-full max-w-5xl h-32">
+            {/* Network connection lines */}
+            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.15 }}>
+              <line x1="20%" y1="50%" x2="40%" y2="30%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" />
+              <line x1="40%" y1="30%" x2="60%" y2="50%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+              <line x1="60%" y1="50%" x2="80%" y2="40%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            </svg>
 
+            {/* Animated nodes */}
+            <div className="absolute left-[20%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5s_ease-in-out_infinite]" />
+            <div className="absolute left-[40%] top-[30%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/50 ring-2 ring-emerald-400/30 animate-[float-slow_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
+            <div className="absolute left-[60%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5.5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
+            <div className="absolute left-[80%] top-[40%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/45 ring-2 ring-emerald-400/25 animate-[float-slow_6.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
+
+            {/* Gradient blobs */}
+            <div className="absolute left-1/4 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-500/5 to-emerald-400/10 blur-2xl animate-[pulse-glow_6s_ease-in-out_infinite]" />
+            <div className="absolute right-1/4 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-l from-emerald-500/10 to-emerald-400/5 blur-3xl animate-[pulse-glow_7s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
+          </div>
+        </div>
+      </div>
+
+      <section id="problems" className="pt-14 sm:pt-16 ">
+        <Container>
+          <SectionHeader
+            title="AI forward companies get a lot of questions"
+            center
+          />
+
+          <ProblemQuestions />
+
+          <div className="mt-12 text-center max-w-4xl mx-auto space-y-4">
+            <p className="text-muted-foreground sm:text-lg">
+              Most teams need <span className="font-semibold text-rose-600 dark:text-rose-400">2-4 weeks</span> to manually audit and secure their AI usage.
+            </p>
+            <p className="sm:text-xl text-muted-foreground">
+              In this age of AI, that's <span className="text-rose-600 dark:text-rose-400">dangerously slow</span>.
+            </p>
+            <p className="text-muted-foreground leading-relaxed sm:text-lg">
+              A new frontier of problems demands
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      <section id="solutiongraph" className="pt-0 sm:pt-0 pb-6 sm:pb-8">
+        <Container>
+          <div className="text-center">
+            <AnimatedTextSection />
+          </div>
+        </Container>
+      </section>
+
+      <FeatureGridSection />
+
+      {/* How it works */}
+      {/* <section className="py-14 sm:py-16">
+        <Container>
+          <SectionHeader
+            eyebrow=""
+            title="Read-only sensors. Real-time results."
+            subtitle="Node eBPF collectors observe outbound connects and process hints. A curated endpoint catalog attributes LLM usage with confidence scoring."
+            center
+          />
+          <div className="grid gap-4 md:grid-cols-4">
+            {[{ icon: Cloud, title: "Deploy", text: "Helm one-liner installs DaemonSet on your cluster." },
+            { icon: Network, title: "Observe", text: "Traffic on your cluster +  process hints." },
+            { icon: Eye, title: "Attribute", text: "To providers like OpenAI, Anthropic, Bedrock and many more." },
+            { icon: Shield, title: "Flag", text: "Shadow AI: no owner/review, newly seen, unusually high volumes" }].map((s, idx) => (
+              <div key={idx} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
+                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
+                  <s.icon size={18} />
+                </div>
+                <div className="text-sm font-semibold text-foreground">{s.title}</div>
+                <div className="mt-2 text-sm text-muted-foreground">{s.text}</div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section> */}
 
       {/* Inventory */}
       <section id="inventory" className="py-10 sm:py-16">
         <Container>
           <SectionHeader
-            eyebrow="Runtime inventory"
-            title="Find every service calling an LLM"
+            eyebrow="Runtime security for AI"
+            title="AI Agents, MCP Servers, Databases - We catch them all"
             subtitle="We fingerprint outbound TLS + process hints to attribute LLM usage to real services, namespaces, and IAM roles."
+            center
           />
 
           {/* App Mockup */}
@@ -863,7 +1417,6 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                     <th className="px-4 py-3 whitespace-nowrap">Bytes (7d)</th>
                     <th className="px-4 py-3 whitespace-nowrap">Last seen</th>
                     <th className="px-4 py-3 whitespace-nowrap">Owner (lite)</th>
-                    <th className="px-4 py-3 whitespace-nowrap">Egress</th>
                     <th className="px-4 py-3 whitespace-nowrap">Databases</th>
                   </tr>
                 </thead>
@@ -884,7 +1437,6 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                       <td className="px-4 py-3 text-foreground whitespace-nowrap">{r.bytes7d}</td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.lastSeen}</td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.owner}</td>
-                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.egress}</td>
                       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{r.vectors}</td>
                     </tr>
                   ))}
@@ -893,146 +1445,27 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             </div>
           </div>
 
+
           {/* Scroll hint for mobile */}
           <div className="mt-3 text-center text-xs text-muted-foreground sm:hidden">
             ← Scroll horizontally to see all columns →
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className="mt-6 flex flex-wrap text-center items-center gap-3 text-sm text-muted-foreground">
             <Pill icon={Info} text="Owner (lite) is inferred from labels/tags" />
             <Pill icon={Info} text="Confidence blends endpoint + SNI + process hints" />
-            <Pill icon={Info} text="Privacy: metadata only — no prompts or outputs" />
+            <Pill icon={Info} text="Privacy: metadata only - no prompts or outputs" />
           </div>
         </Container>
       </section>
 
-      {/* Decorative Motif 1 */}
-      <div className="relative py-12 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-full max-w-4xl h-24">
-            {/* Floating particles */}
-            <div className="absolute left-[10%] top-4 h-3 w-3 rounded-full bg-emerald-500/30 animate-[float_6s_ease-in-out_infinite]" />
-            <div className="absolute left-[25%] top-8 h-2 w-2 rounded-full bg-emerald-400/40 animate-[float_8s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-            <div className="absolute left-[45%] top-2 h-4 w-4 rounded-full bg-emerald-500/20 animate-[float_7s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            <div className="absolute right-[35%] top-6 h-2.5 w-2.5 rounded-full bg-emerald-400/35 animate-[float_9s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
-            <div className="absolute right-[15%] top-10 h-3 w-3 rounded-full bg-emerald-500/25 animate-[float_7.5s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
-
-            {/* Glowing orbs */}
-            <div className="absolute left-[15%] top-6 h-16 w-16 rounded-full bg-emerald-500/10 blur-xl animate-[pulse-glow_4s_ease-in-out_infinite]" />
-            <div className="absolute right-[20%] top-4 h-20 w-20 rounded-full bg-emerald-400/15 blur-2xl animate-[pulse-glow_5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-          </div>
-        </div>
-      </div>
-
-      {/* UFO Animation Section */}
-      <section id="animation" className="relative py-20 sm:py-24 overflow-hidden">
-        <Container>
-          <SectionHeader
-            eyebrow=""
-            title="Watch AI Observability in Action"
-            subtitle="Our eBPF sensors detect AI services in real-time - at lightning speed"
-            center
-          />
-
-        </Container>
-
-        <UFOAnimation />
-      </section>
-
-      {/* Shadow AI */}
-      <section id="shadow" className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow="Shadow AI detection"
-            title="Your engineers are shipping AI features faster than you can track them."
-            subtitle="Flag services making LLM calls without owner or review tags, first-seen behavior in prod, or wasting your resources"
-          />
-
-          <div className="grid gap-4 md:grid-cols-2">
-            {shadowFlags.map((f) => (
-              <div key={f.id} className="rounded-2xl border border-border bg-card p-4 ring-1 ring-border">
-                <div className="flex items-center justify-between">
-                  <div className="text-sm font-semibold text-foreground">{f.title}</div>
-                  <span className={`rounded-full px-2 py-0.5 text-xs ring-1 ${f.severity === "High"
-                    ? "bg-rose-500/10 text-rose-600 dark:text-rose-200 ring-rose-400/20"
-                    : "bg-amber-500/10 text-amber-600 dark:text-amber-200 ring-amber-400/20"
-                    }`}>{f.severity}</span>
-                </div>
-                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-                  {f.why.map((w, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <Check size={16} className="mt-0.5 text-emerald-600 dark:text-emerald-300" />
-                      <span>{w}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-3 text-xs text-muted-foreground">Last seen {f.lastSeen}</div>
-                <div className="mt-4 flex items-center gap-2">
-                  <GhostButton href="#install" className="!px-3 !py-1.5">
-                    See details <ArrowRight size={14} className="ml-1" />
-                  </GhostButton>
-                </div>
-              </div>
-            ))}
-          </div>
 
 
 
-        </Container>
-      </section>
 
-      {/* How it works */}
-      <section className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow="How it works"
-            title="Read-only sensors. Real-time results."
-            subtitle="Node eBPF collectors observe outbound connects and process hints. A curated endpoint catalog attributes LLM usage with confidence scoring."
-            center
-          />
-          <div className="grid gap-4 md:grid-cols-4">
-            {[{ icon: Cloud, title: "Deploy", text: "Helm one-liner installs DaemonSet on your cluster." },
-            { icon: Network, title: "Observe", text: "Traffic on your cluster +  process hints." },
-            { icon: Eye, title: "Attribute", text: "To providers like OpenAI, Anthropic, Bedrock and many more." },
-            { icon: Shield, title: "Flag", text: "Shadow AI: no owner/review, newly seen, unusually high volumes" }].map((s, idx) => (
-              <div key={idx} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
-                  <s.icon size={18} />
-                </div>
-                <div className="text-sm font-semibold text-foreground">{s.title}</div>
-                <div className="mt-2 text-sm text-muted-foreground">{s.text}</div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Decorative Motif 2 */}
-      <div className="relative py-16 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-full max-w-5xl h-32">
-            {/* Network connection lines */}
-            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.15 }}>
-              <line x1="20%" y1="50%" x2="40%" y2="30%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" />
-              <line x1="40%" y1="30%" x2="60%" y2="50%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-              <line x1="60%" y1="50%" x2="80%" y2="40%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            </svg>
-
-            {/* Animated nodes */}
-            <div className="absolute left-[20%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5s_ease-in-out_infinite]" />
-            <div className="absolute left-[40%] top-[30%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/50 ring-2 ring-emerald-400/30 animate-[float-slow_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-            <div className="absolute left-[60%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5.5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            <div className="absolute left-[80%] top-[40%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/45 ring-2 ring-emerald-400/25 animate-[float-slow_6.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
-
-            {/* Gradient blobs */}
-            <div className="absolute left-1/4 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-500/5 to-emerald-400/10 blur-2xl animate-[pulse-glow_6s_ease-in-out_infinite]" />
-            <div className="absolute right-1/4 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-l from-emerald-500/10 to-emerald-400/5 blur-3xl animate-[pulse-glow_7s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
-          </div>
-        </div>
-      </div>
 
       {/* Metrics Overview */}
-      <section className="py-14 sm:py-16">
+      {/* <section className="py-14 sm:py-16">
         <Container>
           <SectionHeader
             eyebrow="Metrics"
@@ -1072,62 +1505,25 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             </div>
           </div>
         </Container>
-      </section>
+      </section> */}
 
 
 
-      {/* Security & Performance */}
-      <section id="security" className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow="Privacy & performance"
-            title="Metadata-only by design"
-            subtitle="We never collect prompts, responses, or secrets. Sensors are read-only and bounded."
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            <Metric icon={Lock} label="Sensitive Content captured" value="None" helper="Metadata only" />
-            <Metric icon={Activity} label="CPU overhead" value="< 2%" helper="p95 < 5%" />
-            <Metric icon={Gauge} label="Fast" value="< 10 mins" helper="MTTV" />
-          </div>
-        </Container>
-      </section>
 
-      {/* Decorative Motif 3 */}
-      <div className="relative py-14 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-full max-w-6xl h-28">
-            {/* Scattered sparkles */}
-            <div className="absolute left-[12%] top-4 h-2 w-2 rotate-45 bg-emerald-500/40 animate-[float_5s_ease-in-out_infinite]" />
-            <div className="absolute left-[28%] top-12 h-1.5 w-1.5 rotate-45 bg-emerald-400/50 animate-[float_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-            <div className="absolute left-[42%] top-6 h-2.5 w-2.5 rotate-45 bg-emerald-500/35 animate-[float_7s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            <div className="absolute left-[58%] top-10 h-2 w-2 rotate-45 bg-emerald-400/45 animate-[float_5.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
-            <div className="absolute left-[72%] top-5 h-1.5 w-1.5 rotate-45 bg-emerald-500/40 animate-[float_6.5s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
-            <div className="absolute left-[88%] top-8 h-2 w-2 rotate-45 bg-emerald-400/50 animate-[float_5s_ease-in-out_infinite]" style={{ animationDelay: '2.5s' }} />
 
-            {/* Circular rings */}
-            <div className="absolute left-[30%] top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/10 animate-[pulse-glow_5s_ease-in-out_infinite]" />
-            <div className="absolute left-[30%] top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/15 animate-[pulse-glow_5s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-
-            <div className="absolute right-[30%] top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-500/10 animate-[pulse-glow_6s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            <div className="absolute right-[30%] top-1/2 h-18 w-18 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-400/15 animate-[pulse-glow_6s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
-
-            {/* Background gradient orb */}
-            <div className="absolute left-1/2 top-1/2 h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/5 blur-3xl animate-[pulse-glow_8s_ease-in-out_infinite]" />
-          </div>
-        </div>
-      </div>
 
       {/* Pricing / Add-on value */}
       <section id="pricing" className="py-14 sm:py-16">
         <Container>
           <SectionHeader
             eyebrow="Add-on value"
-            title="Upgrade to AI Data Guard when you need lineage and control"
-            subtitle="Keep the free runtime inventory. Add sensitive→LLM lineage, intent policies, and regulated alerts when you're ready."
+            title="Enterprise features"
+            subtitle="Keep the free runtime inventory. Add lineage, intent policies, and regulated alerts when you're ready."
+            center
           />
           <div className="grid items-start gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-              <div className="mb-2 text-sm font-semibold text-foreground">Free — AI Runtime Inventory</div>
+              <div className="mb-2 text-sm font-semibold text-foreground">Free - AI Runtime Inventory</div>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {[
                   "Auto-discover AI agents and LLM endpoints",
@@ -1149,14 +1545,13 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             </div>
             <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-5 ring-1 ring-emerald-400/30">
               <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">
-                <Rocket size={16} /> Paid v1 — AI Data Guard
+                <Rocket size={16} /> Paid v1 - AI Data Guard
               </div>
               <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {[
-                  "Sensitive→LLM lineage (Snowflake, Postgres, Redshift, Athena)",
+                {["Long term data retention",
                   "Intent policies by team/service and provider allowlists",
                   "Regulated egress alerts with evidence",
-                  "SIEM export • 30-90 day retention",
+                  "SIEM export",
                   "SSO support",
                   "Deep Data Classification and Sensitive data scans",
                   "24/7 Support"
@@ -1166,7 +1561,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               </ul>
               <div className="mt-4 flex flex-wrap gap-2">
                 <PrimaryButton href="#contact">
-                  Talk to Sales <ArrowRight size={14} className="ml-2" />
+                  Get in touch <ArrowRight size={14} className="ml-2" />
                 </PrimaryButton>
               </div>
             </div>
@@ -1175,35 +1570,45 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
       </section>
 
       {/* Install */}
-      <section id="install" className="py-14 sm:py-16">
-        <Container>
+      <section id="install" className="relative py-14 sm:py-16 overflow-hidden">
+
+        <div className="absolute inset-0 pointer-events-none">
+          {staticStars.map((star, i) => (
+            <div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: `${star.width}px`,
+                height: `${star.height}px`,
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                opacity: star.opacity,
+              }}
+            />
+          ))}
+        </div>
+
+        <Container className="relative z-10">
           <SectionHeader
-            eyebrow="Install"
-            title="Get signal in minutes"
-            subtitle="Use Helm to install in a jiffy. Don't like it ? Uninstall is one command."
+            eyebrow="Agentic installer"
+            title="Install now"
+            subtitle="Don't like it ? Uninstall is one command"
             center
           />
 
 
           {/* One-Line Installation */}
-          <div className="mx-auto max-w-3xl space-y-6">
+          <div className="mx-auto max-w-4xl space-y-6">
             <div>
-              <div className="mb-3 flex items-center justify-center gap-2">
-                <Zap size={18} className="text-emerald-600 dark:text-emerald-300" />
-                <h3 className="text-lg font-semibold text-foreground">One-Line Installation</h3>
-              </div>
+
               <CopyField
-                label="AGENTIC INSTALL WIZARD"
+                label="INSTALLLER"
                 value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
-                footnote="✅ Checks prerequisites • ✅ Guides credential entry • ✅ Installs & verifies • ✅ ~2 minutes total"
+                footnote=""
               />
             </div>
 
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="font-medium text-emerald-600 dark:text-emerald-300 ">Uninstall is just as easy</span>
-              </div>
-            </div>
+
 
             <div>
               <CopyField
@@ -1222,45 +1627,52 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
       </section>
 
 
+      <section id="animation" className="relative  overflow-hidden">
+        <Container>
+          <SectionHeader
+            eyebrow=""
+            title="Watch AIOStack in Action"
+            subtitle="Our eBPF sensors detect AI services in real-time - at lightning speed"
+            center
+          />
+
+        </Container>
+
+        <UFOAnimation />
+      </section>
 
 
       {/* FAQ */}
       <section id="faq" className="py-14 sm:py-20">
         <Container>
-          <SectionHeader eyebrow="FAQ" title="Common questions" />
-          <div className="grid gap-4 md:grid-cols-2">
-            {[{
-              q: "Do you collect prompts, responses, or secrets?",
-              a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
-            },
-            {
-              q: "What environments are supported?",
-              a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
-            },
-            {
-              q: "Can I uninstall easily?",
-              a: "Yes. One Helm uninstall detaches all kernel hooks. No residual processes remain. Although do note that we will be sad to see you go :(",
-            },
-            {
-              q: "How is this different from Wiz or Datadog?",
-              a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.They",
-            },
-            {
-              q: "I am a large finacial org and need a PaaS option.",
-              a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
-            },
-            {
-              q: "I read through all this, but didn't understand what AIOStack does.",
-              a: "No problem.  AIOStack is an eBPF based tool that you can deploy to Kubernetes to discover, track and monitor AI services no matter what they are named or claim to be. Additionally we can tell you what databases, applications and external domains they communicate with and if you should be concerned about its behaviour.",
-            },
-            {
-              q: "I really liked the product and want alerts, SSO and integration with Slack and Jira.",
-              a: "We are thrilled that you liked our product ! Reach out to us so that we can upgrade you to the Data Guard plan.",
-            },
-            {
-              q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
-              a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
-            },
+          <SectionHeader eyebrow="FAQ" title="Answering your questions" center />
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                q: "I really liked the product and want Slack and Jira integration",
+                a: "We're thrilled that you liked our product ! Please reach out so that we can upgrade you to the Data Guard plan.",
+              }, {
+                q: "Do you collect prompts, responses, or secrets?",
+                a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
+              },
+              {
+                q: "What environments are supported?",
+                a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
+              },
+
+              {
+                q: "How is this different from Wiz or Datadog?",
+                a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.",
+              },
+              {
+                q: "I am a large finacial org and need a PaaS option.",
+                a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
+              },
+
+              {
+                q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
+                a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
+              },
             ].map((f, i) => (
               <div key={i} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
                 <div className="text-sm font-semibold text-foreground">{f.q}</div>
@@ -1270,6 +1682,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           </div>
         </Container>
       </section>
+
+      {/* UFO Animation Section */}
+
     </main>
   );
 }
