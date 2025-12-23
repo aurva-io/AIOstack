@@ -1176,7 +1176,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 Secure every AI service in your cloud <span className="text-emerald-600 dark:text-emerald-300">in 10 minutes</span>
               </h1>
               <p className="text-center md:text-left mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Automatically discover AI apps, AI Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We'll make sure nothing escapes you.
+                Automatically discover AI apps, AI Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We&apos;ll make sure nothing escapes you.
               </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-3 justify-center md:justify-start">
@@ -1319,7 +1319,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               Most teams need <span className="font-semibold text-rose-600 dark:text-rose-400">2-4 weeks</span> to manually audit and secure their AI usage.
             </p>
             <p className="sm:text-xl text-muted-foreground">
-              In this age of AI, that's <span className="text-rose-600 dark:text-rose-400">dangerously slow</span>.
+              In this age of AI, that&apos;s <span className="text-rose-600 dark:text-rose-400">dangerously slow</span>.
             </p>
             <p className="text-muted-foreground leading-relaxed sm:text-lg">
               A new frontier of problems demands
