@@ -19,7 +19,9 @@ export default async function BlogPage() {
             Stay up to date with the latest updates, insights, and announcements from AIOStack
           </p>
         </div>
+        <div className="relative w-full">
 
+        </div>
         {/* Posts Grid */}
         {posts.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-2 lg:gap-10">

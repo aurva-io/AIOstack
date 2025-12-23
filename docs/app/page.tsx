@@ -567,9 +567,22 @@ function AnimatedTextSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative mt-10 sm:mt-30 overflow-hidden flex flex-col items-center justify-start"
+      className="relative mt-10 sm:mt-30 flex flex-col items-center justify-start"
     >
-      <Container>
+      {/* Background image - full screen width, positioned at section level */}
+      {showImage && (
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen pointer-events-none">
+          <Image
+            src="/bg1.svg"
+            alt="Background"
+            width={1000}
+            height={800}
+            className="w-full h-auto opacity-50"
+          />
+        </div>
+      )}
+
+      <Container className="relative z-10">
         {/* Animated Text */}
         <div className="flex items-center justify-center mb-4 sm:mb-8 mt-2 sm:mt-4">
           <div
@@ -579,7 +592,7 @@ function AnimatedTextSection() {
               opacity: showAIOStack ? 0 : 1,
             }}
           >
-            <h2 className="text-2xl sm:text-2xl font-bold ">
+            <h2 className="text-2xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-300 via-emerald-100 to-emerald-500 bg-clip-text text-transparent">
               A new frontier solution
             </h2>
           </div>
@@ -592,7 +605,7 @@ function AnimatedTextSection() {
               transitionDelay: showAIOStack ? '300ms' : '0ms',
             }}
           >
-            <h2 className="text-3xl sm:text-6xl font-bold">
+            <h2 className="text-3xl sm:text-6xl font-bold bg-gradient-to-r from-emerald-100 via-emerald-300 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_3px_rgba(16,185,129,0.5)]">
               AIOStack
             </h2>
           </div>
@@ -600,19 +613,19 @@ function AnimatedTextSection() {
 
         {/* Image that fades in */}
         <div
-          className="flex items-center justify-center transition-all duration-1000 ease-out"
+          className="relative flex items-center justify-center transition-all duration-1000 ease-out"
           style={{
             opacity: showImage ? 1 : 0,
             transform: showImage ? 'translateY(0)' : 'translateY(20px)',
           }}
         >
-
+          {/* Foreground graph image */}
           <Image
             src="/aiostack-graph.svg"
             alt="AIOStack heartbeat"
-            width={1000}
-            height={1000}
-            className="w-full max-w-5xl h-auto drop-shadow-xl"
+            width={900}
+            height={900}
+            className="w-full max-w-5xl  opacity-100 h-auto drop-shadow-xl relative z-10"
           />
         </div>
       </Container>
@@ -1280,29 +1293,17 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
-      {/* Decorative Motif 2 */}
-      <div className="relative py-10 overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-full max-w-5xl h-32">
-            {/* Network connection lines */}
-            <svg className="absolute inset-0 w-full h-full" style={{ opacity: 0.15 }}>
-              <line x1="20%" y1="50%" x2="40%" y2="30%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" />
-              <line x1="40%" y1="30%" x2="60%" y2="50%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-              <line x1="60%" y1="50%" x2="80%" y2="40%" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-[pulse_3s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            </svg>
-
-            {/* Animated nodes */}
-            <div className="absolute left-[20%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5s_ease-in-out_infinite]" />
-            <div className="absolute left-[40%] top-[30%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/50 ring-2 ring-emerald-400/30 animate-[float-slow_6s_ease-in-out_infinite]" style={{ animationDelay: '1s' }} />
-            <div className="absolute left-[60%] top-[50%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-500/40 ring-2 ring-emerald-500/20 animate-[float-slow_5.5s_ease-in-out_infinite]" style={{ animationDelay: '2s' }} />
-            <div className="absolute left-[80%] top-[40%] h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/45 ring-2 ring-emerald-400/25 animate-[float-slow_6.5s_ease-in-out_infinite]" style={{ animationDelay: '1.5s' }} />
-
-            {/* Gradient blobs */}
-            <div className="absolute left-1/4 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-500/5 to-emerald-400/10 blur-2xl animate-[pulse-glow_6s_ease-in-out_infinite]" />
-            <div className="absolute right-1/4 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-l from-emerald-500/10 to-emerald-400/5 blur-3xl animate-[pulse-glow_7s_ease-in-out_infinite]" style={{ animationDelay: '3s' }} />
-          </div>
-        </div>
+      <div className="relative w-full">
+        <Image
+          src="/bg2.svg"
+          alt="Background"
+          width={1000}
+          height={800}
+          className="w-[150%] sm:w-full h-auto opacity-85 translate-x-[5%] sm:translate-x-0"
+        />
       </div>
+
+
 
       <section id="problems" className="pt-14 sm:pt-16 ">
         <Container>

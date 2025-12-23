@@ -56,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
-      <body className={`${inter.variable} font-regular`}>
+      <body className={`${inter.variable} font-regular overflow-x-hidden`}>
         <Providers>
           <Navbar />
           <ConditionalPadding>{children}</ConditionalPadding>
