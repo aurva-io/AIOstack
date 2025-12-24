@@ -1,11 +1,8 @@
 "use client"
 
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { GitHubLink, Navigations } from "@/settings/navigation"
 import { LuArrowUpRight, LuGithub } from "react-icons/lu"
-
-import { buttonVariants } from "@/components/ui/button"
 import { SheetClose } from "@/components/ui/sheet"
 import Anchor from "@/components/navigation/anchor"
 import { Logo } from "@/components/navigation/logo"

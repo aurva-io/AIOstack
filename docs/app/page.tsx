@@ -981,7 +981,7 @@ function UFOAnimation() {
         <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs text-emerald-300/90">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-            <span>eBPF Sensor Active</span>
+            <span>eBPF Sensors Active</span>
           </div>
 
         </div>
@@ -1176,23 +1176,22 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 Secure every AI service in your cloud <span className="text-emerald-600 dark:text-emerald-300">in 10 minutes</span>
               </h1>
               <p className="text-center md:text-left mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Automatically discover AI apps, AI Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We&apos;ll make sure nothing escapes you.
+                Automatically discover AI apps, Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We&apos;ll make sure nothing escapes you.
               </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-3 justify-center md:justify-start">
+              <div className="mt-6 flex flex-wrap items-center gap-5 justify-center md:justify-start">
                 <PrimaryButton href="#install" >
-                  <Play size={16} className="mr-2" /> Try AIOStack Now
+                  Try AIOStack Free
                 </PrimaryButton>
-                {/* <GhostButton href="#sample">
-                  <Eye size={16} className="mr-2" /> View Sample Report
-                </GhostButton> */}
+                <GhostButton href="#sample">
+                  Talk to an Engineer
+                </GhostButton>
               </div>
               <div className="mt-14 hidden sm:flex flex-wrap items-center gap-2">
                 <Pill icon={Gauge} text="Extremely Fast" />
                 <Pill icon={Lock} text="No sensitive data stored" />
                 <Pill icon={Activity} text="<2% CPU used" />
                 <Pill icon={CircleDollarSign} text="Free" />
-
               </div>
               {/* 
               <div className="mt-6 hidden flex flex-wrap gap-2 text-white/70">
@@ -1452,18 +1451,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             ← Scroll horizontally to see all columns →
           </div>
 
-          <div className="mt-6 flex flex-wrap text-center items-center gap-3 text-sm text-muted-foreground">
-            <Pill icon={Info} text="Owner (lite) is inferred from labels/tags" />
-            <Pill icon={Info} text="Confidence blends endpoint + SNI + process hints" />
-            <Pill icon={Info} text="Privacy: metadata only - no prompts or outputs" />
-          </div>
+
         </Container>
       </section>
-
-
-
-
-
 
       {/* Metrics Overview */}
       {/* <section className="py-14 sm:py-16">
@@ -1509,60 +1499,180 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
       </section> */}
 
 
-
-
-
-
       {/* Pricing / Add-on value */}
       <section id="pricing" className="py-14 sm:py-16">
         <Container>
           <SectionHeader
             eyebrow="Add-on value"
-            title="Enterprise features"
+            title="Choose your starting point"
             subtitle="Keep the free runtime inventory. Add lineage, intent policies, and regulated alerts when you're ready."
             center
           />
-          <div className="grid items-start gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-              <div className="mb-2 text-sm font-semibold text-foreground">Free - AI Runtime Inventory</div>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "Auto-discover AI agents and LLM endpoints",
-                  "Shadow AI flags (no owner/review, first-seen in prod)",
-                  "Owner (lite) inference from labels/tags",
-                  "Database fingerprints (Oracle, PSQL, MySQL, Redis and more)",
-                  "Data classification and sensitivity labels (lite) ",
-                  "Standard Login",
-                  "7-day lookback, community support",
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 text-emerald-600 dark:text-emerald-300" />{li}</li>
-                ))}
-              </ul>
+          <div className="grid items-stretch gap-6 md:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card p-6 ring-1 ring-border">
+              <div className="mb-3 text-xl font-semibold text-foreground">AIOStack Community</div>
+              <div className="mb-4 text-sm font-medium text-muted-foreground">AI Security Posture Management + Runtime Telemetry</div>
+
+              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                The open-core foundation for AI runtime security. Deploy on your Kubernetes cluster in minutes and gain complete visibility into your AI infrastructure.
+              </p>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-foreground">Shadow AI Discovery</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {[
+                    "Automatically discover all AI agents, tools, and MCP servers",
+                    "Map every LLM endpoint and API call",
+                    "Track which data systems your agents access",
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-foreground">Runtime Observability</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {[
+                    "eBPF-based telemetry with no code changes",
+                    "Protocol-aware: MCP, function calling, tool use, A2A",
+                    "Minimal overhead (<2% CPU impact)"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-foreground">AI-BOM Generation</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {[
+                    "Complete inventory of AI assets",
+                    "Dependency tracking for models and tools with versions",
+                    "Basic compliance reporting (OWASP, MITRE ATLAS)"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-foreground">Open Architecture</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {[
+                    "Kubernetes-native (EKS, GKE, AKS)",
+                    "Full control with self-hosted infrastructure",
+                    "Cost estimators for various providers"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
+                <h4 className="mb-3 text-sm font-semibold text-foreground">What You Get</h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {[
+                    "Complete AI asset inventory",
+                    "Real-time runtime telemetry",
+                    "Data access visibility",
+                    "Community support",
+                    "Free forever"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <p className="mt-8 mb-4 text-sm text-muted-foreground">Free forever. No credit card required.</p>
+
               <div className="mt-4 flex flex-wrap gap-2">
+                <GhostButton href="#install">
+                  Install Now
+                </GhostButton>
                 <GhostButton href="/docs/home">
-                  Read Docs <Book size={14} className="ml-2" />
+                  Read The Docs <Book size={14} className="ml-2" />
                 </GhostButton>
               </div>
             </div>
-            <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-5 ring-1 ring-emerald-400/30">
-              <div className="mb-2 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">
-                <Rocket size={16} /> Paid v1 - AI Data Guard
+            <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6 ring-1 ring-emerald-400/30">
+              <div className="mb-3 text-xl font-semibold text-emerald-700 dark:text-emerald-200">
+                Aurva Enterprise
               </div>
-              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {["Long term data retention",
-                  "Intent policies by team/service and provider allowlists",
-                  "Regulated egress alerts with evidence",
-                  "SIEM export",
-                  "SSO support",
-                  "Deep Data Classification and Sensitive data scans",
-                  "24/7 Support"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 text-emerald-600 dark:text-emerald-300" />{li}</li>
-                ))}
-              </ul>
+              <div className="mb-4 text-sm font-medium text-emerald-700/90 dark:text-emerald-200/90">AI Detection & Response (AIDR)</div>
+
+              <p className="mb-6 text-sm leading-relaxed text-emerald-800/90 dark:text-emerald-100/90">
+                Enterprise-grade threat detection and automated response for production AI systems. Built on AIOStack&apos;s telemetry with advanced security operations.
+              </p>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Advanced Threat Detection</h4>
+                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                  {["Prompt injection and jailbreak attempts",
+                    "Sensitive data egress (PII, credentials)",
+                    "Unauthorized tool and database access",
+                    "Anomalous agent behavior patterns",
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Automated Response</h4>
+                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                  {["Real-time alerting with evidence bundles",
+                    "Policy enforcement: block, quarantine, disable",
+                    "Customizable response playbooks"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Enterprise Integrations</h4>
+                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                  {["SIEM/SOAR: Splunk, Sentinel, Chronicle",
+                    "Identity: Okta, Azure AD and more",
+                    "Ticketing: Jira, ServiceNow, PagerDuty",
+                    "Communication: Slack, Microsoft Teams",
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-5">
+                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Compliance & Governance</h4>
+                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                  {["Compliance workflows (SOC 2, GDPR, HIPAA)",
+                    "Audit logging and reporting",
+                    "SLA support with dedicated CSM and Engineers"
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <h4 className="mb-3 text-sm font-semibold text-emerald-700 dark:text-emerald-200">What You Get</h4>
+                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                  {[
+                    "Plus Everything in AIOStack",
+                    "Advanced threat detection",
+                    "Enterprise integrations",
+                    "Compliance reporting",
+                    "Priority support & SLAs",
+                  ].map((li) => (
+                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                  ))}
+                </ul>
+              </div>
+
               <div className="mt-4 flex flex-wrap gap-2">
                 <PrimaryButton href="#contact">
-                  Get in touch <ArrowRight size={14} className="ml-2" />
+                  Get a Demo <ArrowRight size={14} className="ml-2" />
                 </PrimaryButton>
               </div>
             </div>
@@ -1591,9 +1701,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
         <Container className="relative z-10">
           <SectionHeader
-            eyebrow="Agentic installer"
+
             title="Install now"
-            subtitle="Don't like it ? Uninstall is one command"
+            subtitle="One line is all it takes"
             center
           />
 
@@ -1601,15 +1711,12 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           {/* One-Line Installation */}
           <div className="mx-auto max-w-4xl space-y-6">
             <div>
-
               <CopyField
                 label="INSTALLLER"
                 value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
                 footnote=""
               />
             </div>
-
-
 
             <div>
               <CopyField
@@ -1680,6 +1787,52 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 <div className="mt-2 text-sm text-muted-foreground">{f.a}</div>
               </div>
             ))}
+          </div>
+        </Container>
+      </section>
+
+
+
+      {/* Backed By Section */}
+      <section className="py-8 sm:py-20 bg-background">
+        <div className="relative w-full">
+          <Image
+            src="/bg2.svg"
+            alt="Background"
+            width={600}
+            height={400}
+            className="w-[150%] sm:w-[150%] h-[50%] opacity-80 translate-x-[15%] sm:translate-x-30"
+          />
+        </div>
+
+        <Container>
+          <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto mb-16 sm:mb-20">
+            {/* Left side - Heading */}
+            <div className="flex items-center justify-center md:justify-start">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center md:text-left leading-tight">
+                Not just <span className="text-emerald-600 dark:text-emerald-300" >trusted by the best</span> <br />We&apos;re backed by them too
+              </h2>
+            </div>
+
+            {/* Right side - Investor Logo */}
+            <div className="flex items-center justify-center">
+              <div className="flex items-center justify-center p-8 rounded-2xl border border-border bg-card ring-1 ring-border w-full">
+                <Image
+                  src="/nexus_logo.png"
+                  alt="Nexus Venture Partners"
+                  width={300}
+                  height={150}
+                  className="w-full max-w-[180px] sm:max-w-[200px] h-auto opacity-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom - Team credentials */}
+          <div className="text-center items-center justify-center p-4 rounded-2xl border border-border bg-card ring-1 ring-border ">
+            <h3 className="text-sm sm:font-bold ">
+              Built by former Meta AI Security leaders
+            </h3>
           </div>
         </Container>
       </section>
