@@ -16,42 +16,23 @@ keywords:
   ]
 ---
 
-<Step>
-<StepItem title="Get up and running in 5 minutes">
 
-## Supported Platforms
-- Kubernetes 1.29+ with eBPF support ( If you're on EKS, GKE or AKS, this is already met )
-
-## Prerequisites
-- Linux kernel 5.15+ 
-- Helm 3.0+ (for installation)
-- Cluster admin privileges for eBPF programs
-
----
-<Note title="Try Our Agentic Installation Wizard ✨" type="success">
-
-Skip the manual steps! We built an intelligent one-liner that handles everything for you automatically.
-
+<Note title="Skip the manual steps! ✨" type="success">
+ We built an intelligent one-liner that handles everything for you automatically.
 - Zero configuration required
 - Automatic chart pull, edits and setup
 - Self-healing installation process
 - Get running in under 2 minutes
 
-[Try the Wizard →](/#install)
+[Try the Install Wizard →](/#install)
 </Note>
-
-
-
-
-
 
 ---
 
-## Install Manually with Helm
+<Step>
+<StepItem title="Install Manually with Helm">
 
-## Step 1: Add the Helm Repository
-
-**One-time setup:**
+### Step 1: Add the Helm Repository
 
 ```bash
 helm repo add aiostack https://charts.aurva.ai/
@@ -63,22 +44,20 @@ helm repo list
 
 ---
 
-## Step 2: Get Your Free Account
-
-**Create your account and grab your credentials:**
+### Step 2: Get Your Free Account
 
 1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
-2. **Copy your credentials** from an email sent to you:
+2. **Copy your credentials** from the email sent to you:
    - Company ID
    - AIOStack Validation Key
 
-💡 **Security Note:** All validation happens inside your cluster. No inbound internet access required - your data stays private.
+💡 **Security Note:** All validation happens inside your cluster. No internet access required - your data stays private.
 
 <img src="/signup_screen.png" alt="Account Setup Dashboard" width="80%" />
 
 ---
 
-## Step 3: Configure Your Credentials
+### Step 3: Configure Your Credentials
 
 **Replace the environment variables with your credentials:**
 
@@ -103,7 +82,7 @@ helm show values aiostack/aiostack > values.yaml
 > 💡 **Tip:** Ctrl/Cmd + F the word "MODIFY" to find the values to replace.
 ---
 
-## Step 4: Deploy to Your Cluster
+### Step 4: Deploy to Your Cluster
 
 
 ```bash
@@ -118,9 +97,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
 ---
 
-## Step 5: Verify Installation
-
-**Check if everything is running:**
+### Step 5: Verify Installation
 ```bash
 kubectl get pods -n aiostack
 ```
@@ -137,9 +114,7 @@ aiostack-outpost-xxx     1/1     Running   0          2m
 ---
 
 ## 🎉 You're Done!
-
-**Next steps:**
-Access your dashboard:
+**Now** access your dashboard:
 - **URL:** [https://app.aurva.ai](https://app.aurva.ai) 
 - **Login:** Use the email and password you signed up with.
 
@@ -153,8 +128,7 @@ Access your dashboard:
 - **Missing data?** Ensure your applications are instrumented
 
 **Get support:**
-- 📧 Email: business@aurva.io
-- 📖 Docs: [Full documentation](/docs/home)
+- 📧 Email: support@aurva.io
 
 </StepItem>
 </Step>

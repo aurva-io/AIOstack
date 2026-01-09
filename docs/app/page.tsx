@@ -3,16 +3,8 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot, X } from "lucide-react";
+
 
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
@@ -28,7 +20,7 @@ function Badge({ children }: { children: React.ReactNode }) {
   );
 }
 
-function PrimaryButton({ children, href = "#", onClick, className = "" }: { children: React.ReactNode; href?: string; onClick?: () => void; className?: string }) {
+function PrimaryButton({ children, href = "#", onClick, className = "" }: { children: React.ReactNode; href?: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void; className?: string }) {
   return (
     <a
       href={href}
@@ -40,7 +32,7 @@ function PrimaryButton({ children, href = "#", onClick, className = "" }: { chil
   );
 }
 
-function GhostButton({ children, href = "#", onClick, className = "" }: { children: React.ReactNode; href?: string; onClick?: () => void; className?: string }) {
+function GhostButton({ children, href = "#", onClick, className = "" }: { children: React.ReactNode; href?: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void; className?: string }) {
   return (
     <a
       href={href}
@@ -123,10 +115,117 @@ function CopyField({ label, value, footnote }: { label?: string; value: string; 
   );
 }
 
-const callsData = Array.from({ length: 14 }).map((_, i) => ({
-  day: `D${i + 1}`,
-  calls: Math.round(200 + Math.sin(i / 2) * 80 + Math.random() * 50),
-}));
+
+function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-6 ring-1 ring-border shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          aria-label="Close"
+        >
+          <X size={18} />
+        </button>
+
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold text-foreground">Talk to an Engineer</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Fill out the form below OR email us at support@aurva.io and a real person will get back to you within 24 hours.
+
+          </p>
+        </div>
+
+        {/* Form */}
+        <form action="https://api.staticforms.dev/submit" method="POST" className="space-y-4">
+          <input type="hidden" name="accessKey" value="sf_031a13a2bl7aijbdcjl41i1n" />
+          <input type="hidden" name="redirectTo" value="https://aurva.ai/thank-you" />
+
+          {/* Honeypot field */}
+          <input
+            type="text"
+            name="honeypot"
+            style={{ display: 'none' }}
+            tabIndex={-1}
+            autoComplete="off"
+          />
+
+          {/* Name */}
+          <div>
+            <label htmlFor="name" className="mb-2 block text-sm font-medium text-foreground">
+              Name *
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              className="w-full rounded-xl border border-border bg-background px-4 py-2 text-sm text-foreground ring-1 ring-border transition focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              placeholder="Your name"
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label htmlFor="email" className="mb-2 block text-sm font-medium text-foreground">
+              Email *
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              className="w-full rounded-xl border border-border bg-background px-4 py-2 text-sm text-foreground ring-1 ring-border transition focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          {/* Company */}
+          <div>
+            <label htmlFor="company" className="mb-2 block text-sm font-medium text-foreground">
+              Company
+            </label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              className="w-full rounded-xl border border-border bg-background px-4 py-2 text-sm text-foreground ring-1 ring-border transition focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              placeholder="Your company"
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <label htmlFor="message" className="mb-2 block text-sm font-medium text-foreground">
+              Message *
+            </label>
+            <textarea
+              id="message"
+              name="message"
+              required
+              rows={4}
+              className="w-full rounded-xl border border-border bg-background px-4 py-2 text-sm text-foreground ring-1 ring-border transition focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              placeholder="Tell us about your AI security needs..."
+            />
+          </div>
+
+          {/* Submit button */}
+          <button
+            type="submit"
+            className="w-full inline-flex items-center justify-center rounded-2xl px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/40 transition hover:scale-[1.01] hover:bg-emerald-500/90 focus:outline-none focus:ring-2 focus:ring-emerald-300 active:scale-[.99] bg-emerald-500"
+          >
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 
 const inventoryRows = [
   {
@@ -236,20 +335,7 @@ const shadowFlags = [
   },
 ];
 
-function Metric({ icon: Icon, label, value, helper }: { icon: React.ComponentType<{ size?: number }>; label: string; value: string; helper?: string }) {
-  return (
-    <div className="flex flex-1 items-center gap-4 rounded-2xl border border-border bg-muted/50 p-4 ring-1 ring-border">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
-        <Icon size={18} />
-      </div>
-      <div className="min-w-0">
-        <div className="truncate text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-        <div className="truncate text-lg font-semibold text-foreground">{value}</div>
-        {helper ? <div className="text-xs text-muted-foreground">{helper}</div> : null}
-      </div>
-    </div>
-  );
-}
+
 
 interface GroundObject {
   id: number;
@@ -426,7 +512,7 @@ function FeatureGridSection() {
     {
       icon: FileText,
       title: "AI Bill of Materials (AIBOM)",
-      description: "Every discovery becomes part of your AI BOM - a complete inventory of AI services, providers, dependencies, and data flows. Answer compliance instantly.",
+      description: "Every discovery becomes part of your AIBOM - a complete inventory of AI services, providers, dependencies, and data flows. Answer compliance instantly.",
       comingSoon: false
     },
 
@@ -468,7 +554,7 @@ function FeatureGridSection() {
         <div className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl font-semibold text-foreground mb-4">
-              AI visibility in <span className="text-emerald-600 dark:text-emerald-300 font-bold">10 minutes</span>
+              Secure your AI Estate in <span className="text-emerald-600 dark:text-emerald-300 font-bold">10 minutes</span>
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
               One command. Full inventory. Zero blind spots.
@@ -608,6 +694,9 @@ function AnimatedTextSection() {
             <h2 className="text-3xl sm:text-6xl font-bold bg-gradient-to-r from-emerald-100 via-emerald-300 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_3px_rgba(16,185,129,0.5)]">
               AIOStack
             </h2>
+            <div className="mt-2 leading-relaxed text-muted-foreground">
+              Runtime security for enterprise AI workloads
+            </div>
           </div>
         </div>
 
@@ -632,7 +721,6 @@ function AnimatedTextSection() {
     </section>
   );
 }
-
 
 function UFOAnimation() {
   const canvasRef = React.useRef<HTMLDivElement>(null);
@@ -1009,6 +1097,7 @@ function UFOAnimation() {
 
 export default function Home() {
   const [installTab, setInstallTab] = useState("helm");
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const { setTheme, theme: currentTheme } = useTheme();
 
   // Force dark mode on home page only
@@ -1023,16 +1112,7 @@ export default function Home() {
     };
   }, [setTheme]);
 
-  // Generate static stars once
-  const staticStars = React.useMemo(() =>
-    Array.from({ length: 80 }).map(() => ({
-      width: 1 + Math.random() * 2,
-      height: 1 + Math.random() * 2,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      opacity: 0.2 + Math.random() * 0.3,
-    }))
-    , []);
+
 
   // Pool of possible services for rotation
   const servicePool = React.useMemo(() => [
@@ -1073,9 +1153,7 @@ export default function Home() {
       setActivityItems(prev => {
         if (updateCount % 1 === 0) {
           const randomIndex = Math.floor(Math.random() * prev.length);
-          const availableServices = servicePool.filter(
-            poolItem => !prev.some(item => item.service === poolItem.service)
-          );
+          const availableServices = servicePool.filter(poolItem => !prev.some(item => item.service === poolItem.service));
 
           if (availableServices.length > 0) {
             const newService = availableServices[Math.floor(Math.random() * availableServices.length)];
@@ -1168,8 +1246,6 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
       {/* Hero */}
       <section className="relative overflow-hidden py-10 sm:py-32">
         <Container>
-
-
           <div className="grid items-start gap-10 md:grid-cols-2">
             <div>
               <h1 className="text-center md:text-left text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
@@ -1183,7 +1259,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                 <PrimaryButton href="#install" >
                   Try AIOStack Free
                 </PrimaryButton>
-                <GhostButton href="#sample">
+                <GhostButton onClick={(e) => { e.preventDefault(); setIsContactModalOpen(true); }}>
                   Talk to an Engineer
                 </GhostButton>
               </div>
@@ -1302,10 +1378,119 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         />
       </div>
 
+      {/* Used by developers from */}
+      <section className="py-12 sm:py-16 overflow-hidden">
+        <Container>
+          <div className="text-center mb-10">
+            <p className="text-sm sm:text-base font-medium text-muted-foreground">
+              Used by developers from
+            </p>
+          </div>
 
+          <div className="relative marquee-fade-mask">
+            <div className="flex animate-scroll">
+              <div className="flex flex-shrink-0">
+                {[
+                  { name: "6sense", file: "6sense.svg" },
+                  { name: "AskWisdom", file: "askwisdom.svg" },
+                  { name: "Nykaa", file: "nykaa.svg" },
+                  { name: "R Systems", file: "rsystems.svg" },
+                  { name: "Yugen", file: "yugen.svg" },
+                  { name: "Aurva", file: "aurva-mono.svg" },
+                  { name: "Rapyuta", file: "rapyuta.svg" },
+                  { name: "PB", file: "pb.svg" },
+
+
+                ].map((company, index) => (
+                  <div
+                    key={`first-${index}`}
+                    className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+                  >
+                    <Image
+                      src={`/aiostack-logos/${company.file}`}
+                      alt={company.name}
+                      width={60}
+                      height={24}
+                      className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[36px]"
+                      style={{ filter: 'brightness(0) invert(1)' }}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Duplicate set for seamless loop */}
+              <div className="flex flex-shrink-0">
+                {[
+                  { name: "6sense", file: "6sense.svg" },
+                  { name: "AskWisdom", file: "askwisdom.svg" },
+                  { name: "Nykaa", file: "nykaa.svg" },
+                  { name: "R Systems", file: "rsystems.svg" },
+                  { name: "Yugen", file: "yugen.svg" },
+                  { name: "Aurva", file: "aurva-mono.svg" },
+                  { name: "Rapyuta", file: "rapyuta.svg" },
+                  { name: "PB", file: "pb.svg" },
+
+
+                ].map((company, index) => (
+                  <div
+                    key={`second-${index}`}
+                    className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+                  >
+                    <Image
+                      src={`/aiostack-logos/${company.file}`}
+                      alt={company.name}
+                      width={60}
+                      height={24}
+                      className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[36px]"
+                      style={{ filter: 'brightness(0) invert(1)' }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+
+        <style jsx>{`
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .marquee-fade-mask {
+      mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 10%,
+        black 90%,
+        transparent
+      );
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 10%,
+        black 90%,
+        transparent
+      );
+    }
+
+    .animate-scroll {
+      animation: scroll 20s linear infinite;
+      display: flex;
+      width: fit-content;
+    }
+
+  `}</style>
+      </section>
 
       <section id="problems" className="pt-14 sm:pt-16 ">
+
         <Container>
+
           <SectionHeader
             title="AI forward companies get a lot of questions"
             center
@@ -1315,13 +1500,13 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
           <div className="mt-12 text-center max-w-4xl mx-auto space-y-4">
             <p className="text-muted-foreground sm:text-lg">
-              Most teams need <span className="font-semibold text-rose-600 dark:text-rose-400">2-4 weeks</span> to manually audit and secure their AI usage.
+              Most teams need <span className="font-semibold text-rose-600 dark:text-rose-400">2-4 weeks</span> to manually secure their AI usage.
             </p>
-            <p className="sm:text-xl text-muted-foreground">
-              In this age of AI, that&apos;s <span className="text-rose-600 dark:text-rose-400">dangerously slow</span>.
+            <p className=" leading-relaxed sm:text-lg text-muted-foreground">
+              In this age of AI, that&apos;s <span className=" font-semibold text-rose-600 dark:text-rose-400">dangerously slow</span>.
             </p>
             <p className="text-muted-foreground leading-relaxed sm:text-lg">
-              A new frontier of problems demands
+              A new frontier of problems needs
             </p>
           </div>
         </Container>
@@ -1362,6 +1547,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
           </div>
         </Container>
       </section> */}
+
+      <SupportedLogoWall />
+
 
       {/* Inventory */}
       <section id="inventory" className="py-10 sm:py-16">
@@ -1455,285 +1643,9 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
-      {/* Metrics Overview */}
-      {/* <section className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow="Metrics"
-            title="Get comprehensive visibility into your AI usage"
-            subtitle="Track AI calls, detect patterns, and monitor your infrastructure in real-time."
-            center
-          />
+      <PricingSection setIsContactModalOpen={setIsContactModalOpen} />
 
-          <div className="rounded-3xl border border-border bg-card p-6 ring-1 ring-border">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-base font-semibold text-foreground">AI Calls (last 14d)</h3>
-              <div className="text-xs text-muted-foreground">demo data</div>
-            </div>
-
-            <div className="h-64 w-full">
-              <ResponsiveContainer>
-                <AreaChart data={callsData} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#34d399" stopOpacity={0.7} />
-                      <stop offset="100%" stopColor="#34d399" stopOpacity={0.05} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
-                  <XAxis dataKey="day" stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <Tooltip contentStyle={{ background: "#0b1220", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 12 }} labelStyle={{ color: "#e2e8f0" }} itemStyle={{ color: "#34d399" }} />
-                  <Area type="monotone" dataKey="calls" stroke="#34d399" fill="url(#g1)" strokeWidth={2} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <Metric icon={Server} label="Agents detected" value="37" helper="Active services" />
-              <Metric icon={Network} label="LLM providers" value="5" helper="OpenAI, Anthropic, Bedrock, Vertex, Custom" />
-              <Metric icon={Shield} label="Shadow AI flags" value="6" helper="Requires attention" />
-            </div>
-          </div>
-        </Container>
-      </section> */}
-
-
-      {/* Pricing / Add-on value */}
-      <section id="pricing" className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow="Add-on value"
-            title="Choose your starting point"
-            subtitle="Keep the free runtime inventory. Add lineage, intent policies, and regulated alerts when you're ready."
-            center
-          />
-          <div className="grid items-stretch gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-card p-6 ring-1 ring-border">
-              <div className="mb-3 text-xl font-semibold text-foreground">AIOStack Community</div>
-              <div className="mb-4 text-sm font-medium text-muted-foreground">AI Security Posture Management + Runtime Telemetry</div>
-
-              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-                The open-core foundation for AI runtime security. Deploy on your Kubernetes cluster in minutes and gain complete visibility into your AI infrastructure.
-              </p>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-foreground">Shadow AI Discovery</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "Automatically discover all AI agents, tools, and MCP servers",
-                    "Map every LLM endpoint and API call",
-                    "Track which data systems your agents access",
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-foreground">Runtime Observability</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "eBPF-based telemetry with no code changes",
-                    "Protocol-aware: MCP, function calling, tool use, A2A",
-                    "Minimal overhead (<2% CPU impact)"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-foreground">AI-BOM Generation</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "Complete inventory of AI assets",
-                    "Dependency tracking for models and tools with versions",
-                    "Basic compliance reporting (OWASP, MITRE ATLAS)"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-foreground">Open Architecture</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "Kubernetes-native (EKS, GKE, AKS)",
-                    "Full control with self-hosted infrastructure",
-                    "Cost estimators for various providers"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
-                <h4 className="mb-3 text-sm font-semibold text-foreground">What You Get</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {[
-                    "Complete AI asset inventory",
-                    "Real-time runtime telemetry",
-                    "Data access visibility",
-                    "Community support",
-                    "Free forever"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <p className="mt-8 mb-4 text-sm text-muted-foreground">Free forever. No credit card required.</p>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                <GhostButton href="#install">
-                  Install Now
-                </GhostButton>
-                <GhostButton href="/docs/home">
-                  Read The Docs <Book size={14} className="ml-2" />
-                </GhostButton>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6 ring-1 ring-emerald-400/30">
-              <div className="mb-3 text-xl font-semibold text-emerald-700 dark:text-emerald-200">
-                Aurva Enterprise
-              </div>
-              <div className="mb-4 text-sm font-medium text-emerald-700/90 dark:text-emerald-200/90">AI Detection & Response (AIDR)</div>
-
-              <p className="mb-6 text-sm leading-relaxed text-emerald-800/90 dark:text-emerald-100/90">
-                Enterprise-grade threat detection and automated response for production AI systems. Built on AIOStack&apos;s telemetry with advanced security operations.
-              </p>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Advanced Threat Detection</h4>
-                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                  {["Prompt injection and jailbreak attempts",
-                    "Sensitive data egress (PII, credentials)",
-                    "Unauthorized tool and database access",
-                    "Anomalous agent behavior patterns",
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Automated Response</h4>
-                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                  {["Real-time alerting with evidence bundles",
-                    "Policy enforcement: block, quarantine, disable",
-                    "Customizable response playbooks"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Enterprise Integrations</h4>
-                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                  {["SIEM/SOAR: Splunk, Sentinel, Chronicle",
-                    "Identity: Okta, Azure AD and more",
-                    "Ticketing: Jira, ServiceNow, PagerDuty",
-                    "Communication: Slack, Microsoft Teams",
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-5">
-                <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Compliance & Governance</h4>
-                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                  {["Compliance workflows (SOC 2, GDPR, HIPAA)",
-                    "Audit logging and reporting",
-                    "SLA support with dedicated CSM and Engineers"
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-                <h4 className="mb-3 text-sm font-semibold text-emerald-700 dark:text-emerald-200">What You Get</h4>
-                <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                  {[
-                    "Plus Everything in AIOStack",
-                    "Advanced threat detection",
-                    "Enterprise integrations",
-                    "Compliance reporting",
-                    "Priority support & SLAs",
-                  ].map((li) => (
-                    <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                <PrimaryButton href="#contact">
-                  Get a Demo <ArrowRight size={14} className="ml-2" />
-                </PrimaryButton>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Install */}
-      <section id="install" className="relative py-14 sm:py-16 overflow-hidden">
-
-        <div className="absolute inset-0 pointer-events-none">
-          {staticStars.map((star, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full bg-white"
-              style={{
-                width: `${star.width}px`,
-                height: `${star.height}px`,
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                opacity: star.opacity,
-              }}
-            />
-          ))}
-        </div>
-
-        <Container className="relative z-10">
-          <SectionHeader
-
-            title="Install now"
-            subtitle="One line is all it takes"
-            center
-          />
-
-
-          {/* One-Line Installation */}
-          <div className="mx-auto max-w-4xl space-y-6">
-            <div>
-              <CopyField
-                label="INSTALLLER"
-                value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
-                footnote=""
-              />
-            </div>
-
-            <div>
-              <CopyField
-                label="UNINSTALLER"
-                value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash"
-              />
-            </div>
-          </div>
-
-          <div className="mt-8 flex justify-center">
-            <GhostButton href="/docs/installation/steps">
-              <FileText size={16} className="mr-2" /> View Detailed Installation Guide
-            </GhostButton>
-          </div>
-        </Container>
-      </section>
-
+      <InstallSection />
 
       <section id="animation" className="relative  overflow-hidden">
         <Container>
@@ -1743,102 +1655,583 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             subtitle="Our eBPF sensors detect AI services in real-time - at lightning speed"
             center
           />
-
         </Container>
 
         <UFOAnimation />
       </section>
 
 
-      {/* FAQ */}
-      <section id="faq" className="py-14 sm:py-20">
-        <Container>
-          <SectionHeader eyebrow="FAQ" title="Answering your questions" center />
-          <div className="grid gap-4 md:grid-cols-3">
+      <FAQSection />
+
+      <InvestorSection />
+
+
+      <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
+    </main>
+  );
+}
+
+
+function SupportedLogoWall() {
+  return (
+    <Container className="py-14 sm:py-20 overflow-hidden">
+      <SectionHeader
+        eyebrow=""
+        title="Supports 100+ frameworks, services, and packages"
+        subtitle=""
+        center
+      />
+
+      <div className="relative space-y-4 marquee-fade-mask">
+        <div className="flex animate-scroll">
+          <div className="flex flex-shrink-0">
             {[
-              {
-                q: "I really liked the product and want Slack and Jira integration",
-                a: "We're thrilled that you liked our product ! Please reach out so that we can upgrade you to the Data Guard plan.",
-              }, {
-                q: "Do you collect prompts, responses, or secrets?",
-                a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
-              },
-              {
-                q: "What environments are supported?",
-                a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
-              },
+              { name: "gpt", file: "gpt.png" },
+              { name: "claude", file: "claude.png" },
+              { name: "k8s", file: "k8s.png" },
+              { name: "airflow", file: "airflow.png" },
+              { name: "mcp", file: "mcp.png" },
+              { name: "tflow", file: "tflow.png" },
+              { name: "pytorch", file: "pytorch.png" },
 
-              {
-                q: "How is this different from Wiz or Datadog?",
-                a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.",
-              },
-              {
-                q: "I am a large finacial org and need a PaaS option.",
-                a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
-              },
 
-              {
-                q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
-                a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
-              },
-            ].map((f, i) => (
-              <div key={i} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-                <div className="text-sm font-semibold text-foreground">{f.q}</div>
-                <div className="mt-2 text-sm text-muted-foreground">{f.a}</div>
+
+            ].map((company, index) => (
+              <div
+                key={`first-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
               </div>
             ))}
           </div>
-        </Container>
-      </section>
+
+          <div className="flex flex-shrink-0">
+            {[
+              { name: "gpt", file: "gpt.png" },
+              { name: "claude", file: "claude.png" },
+              { name: "k8s", file: "k8s.png" },
+              { name: "airflow", file: "airflow.png" },
+              { name: "mcp", file: "mcp.png" },
+              { name: "tflow", file: "tflow.png" },
+              { name: "pytorch", file: "pytorch.png" },
+
+            ].map((company, index) => (
+              <div
+                key={`second-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex animate-scroll-reverse">
+          <div className="flex flex-shrink-0">
+            {[
+              { name: "gpt", file: "psql.png" },
+              { name: "claude", file: "hf.png" },
+              { name: "k8s", file: "gemini.png" },
+              { name: "airflow", file: "weav.png" },
+              { name: "mcp", file: "milvus.png" },
+              { name: "tflow", file: "mlflow.png" },
+              { name: "pytorch", file: "chouse.png" },
+            ].map((company, index) => (
+              <div
+                key={`first-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-shrink-0">
+            {[
+              { name: "gpt", file: "psql.png" },
+              { name: "claude", file: "hf.png" },
+              { name: "k8s", file: "gemini.png" },
+              { name: "airflow", file: "weav.png" },
+              { name: "mcp", file: "milvus.png" },
+              { name: "tflow", file: "mlflow.png" },
+              { name: "pytorch", file: "chouse.png" },
+
+            ].map((company, index) => (
+              <div
+                key={`second-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex animate-scroll">
+          <div className="flex flex-shrink-0">
+            {[
+              { name: "gpt", file: "langch.png" },
+              { name: "claude", file: "mongo.png" },
+              { name: "k8s", file: "qq.png" },
+              { name: "airflow", file: "lakefs.png" },
+              { name: "mcp", file: "mcp.png" },
+              { name: "tflow", file: "temp.png" },
+              { name: "pytorch", file: "celery.png" },
+            ].map((company, index) => (
+              <div
+                key={`first-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-shrink-0">
+            {[
+              { name: "gpt", file: "langch.png" },
+              { name: "claude", file: "mongo.png" },
+              { name: "k8s", file: "qq.png" },
+              { name: "airflow", file: "lakefs.png" },
+              { name: "mcp", file: "mcp.png" },
+              { name: "tflow", file: "temp.png" },
+              { name: "pytorch", file: "celery.png" },
+
+            ].map((company, index) => (
+              <div
+                key={`second-${index}`}
+                className="flex items-center justify-center p-2 sm:p-4 mx-2 sm:mx-4 rounded-xl border border-border/100 bg-card ring-1 ring-border/50 min-w-[90px] sm:min-w-[140px] h-16 sm:h-20 flex-shrink-0"
+              >
+                <Image
+                  src={`/integrations/${company.file}`}
+                  alt={company.name}
+                  width={60}
+                  height={24}
+                  className="w-auto h-auto max-w-[50px] sm:max-w-[80px] max-h-[20px] sm:max-h-[40px]"
+                  style={{}}
+                />
+
+              </div>
+            ))}
+          </div>
+        </div>
 
 
+      </div>
 
-      {/* Backed By Section */}
-      <section className="py-8 sm:py-20 bg-background">
-        <div className="relative w-full">
-          <Image
-            src="/bg2.svg"
-            alt="Background"
-            width={600}
-            height={400}
-            className="w-[150%] sm:w-[150%] h-[50%] opacity-80 translate-x-[15%] sm:translate-x-30"
+      <style jsx>{`
+@keyframes scroll {
+0% {
+  transform: translateX(0);
+}
+100% {
+  transform: translateX(-50%);
+}
+}
+
+@keyframes scroll-reverse {
+0% {
+  transform: translateX(-50%);
+}
+100% {
+  transform: translateX(0);
+}
+}
+
+@keyframes fade {
+to {
+opacity: 0;
+visibility: hidden;
+}
+}
+
+.marquee-fade-mask {
+mask-image: linear-gradient(
+  to right,
+  transparent,
+  black 10%,
+  black 90%,
+  transparent
+);
+-webkit-mask-image: linear-gradient(
+  to right,
+  transparent,
+  black 10%,
+  black 90%,
+  transparent
+);
+}
+
+.animate-scroll {
+animation: scroll 20s linear infinite;
+display: flex;
+width: fit-content;
+}
+
+
+.animate-scroll-reverse {
+animation: scroll-reverse 20s linear infinite;
+display: flex;
+width: fit-content;
+}
+
+
+`}</style>
+
+    </Container>
+  )
+
+}
+
+function InvestorSection() {
+  return (
+    <section className="py-8 sm:py-20 bg-background">
+      <div className="relative w-full">
+        <Image
+          src="/bg2.svg"
+          alt="Background"
+          width={600}
+          height={400}
+          className="w-[150%] sm:w-[150%] h-[50%] opacity-80 translate-x-[15%] sm:translate-x-30"
+        />
+      </div>
+      <Container>
+        <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto mb-16 sm:mb-20">
+          {/* Left side - Heading */}
+          <div className="flex items-center justify-center md:justify-start">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center md:text-left leading-tight">
+              Not just <span className="text-emerald-600 dark:text-emerald-300" >trusted by the best</span> <br />We&apos;re backed by them too
+            </h2>
+          </div>
+
+          {/* Right side - Investor Logo */}
+          <div className="flex items-center justify-center">
+            <div className="flex items-center justify-center p-8 rounded-2xl border border-border bg-card ring-1 ring-border w-full">
+              <Image
+                src="/nexus_logo.png"
+                alt="Nexus Venture Partners"
+                width={300}
+                height={150}
+                className="w-full max-w-[180px] sm:max-w-[200px] h-auto opacity-100"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom - Team credentials */}
+        <div className="text-center items-center justify-center p-4 rounded-2xl border border-border bg-card ring-1 ring-border ">
+          <h3 className="text-sm sm:font-bold ">
+            Built by former Meta AI Security leaders
+          </h3>
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+function FAQSection() {
+  return (
+    <section id="faq" className="py-14 sm:py-20">
+      <Container>
+
+        <SectionHeader eyebrow="FAQ" title="Answering your questions" center />
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            {
+              q: "I really liked the product and want Slack and Jira integration",
+              a: "We're thrilled that you liked our product ! Please reach out so that we can upgrade you to the Data Guard plan.",
+            }, {
+              q: "Do you collect prompts, responses, or secrets?",
+              a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
+            },
+            {
+              q: "What environments are supported?",
+              a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
+            },
+
+            {
+              q: "How is this different from Wiz or Datadog?",
+              a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.",
+            },
+            {
+              q: "I am a large finacial org and need a PaaS option.",
+              a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
+            },
+
+            {
+              q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
+              a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
+            },
+          ].map((f, i) => (
+            <div key={i} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
+              <div className="text-sm font-semibold text-foreground">{f.q}</div>
+              <div className="mt-2 text-sm text-muted-foreground">{f.a}</div>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+function InstallSection() {
+  return (< section id="install" className="relative py-14 sm:py-16 overflow-hidden" >
+    <Container className="relative z-10">
+      <SectionHeader
+        title="Install now"
+        subtitle="One line is all it takes"
+        center
+      />
+
+      {/* One-Line Installation */}
+      <div className="mx-auto max-w-4xl space-y-6">
+        <div>
+          <CopyField
+            label="INSTALLLER"
+            value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
+            footnote=""
           />
         </div>
 
-        <Container>
-          <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto mb-16 sm:mb-20">
-            {/* Left side - Heading */}
-            <div className="flex items-center justify-center md:justify-start">
-              <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center md:text-left leading-tight">
-                Not just <span className="text-emerald-600 dark:text-emerald-300" >trusted by the best</span> <br />We&apos;re backed by them too
-              </h2>
+        <div>
+          <CopyField
+            label="UNINSTALLER"
+            value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash"
+          />
+        </div>
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <GhostButton href="/docs/installation/steps">
+          <FileText size={16} className="mr-2" /> View Detailed Installation Guide
+        </GhostButton>
+      </div>
+    </Container>
+  </section >
+  )
+}
+
+function PricingSection({ setIsContactModalOpen }: { setIsContactModalOpen: (value: boolean) => void }) {
+  return (
+    <section id="pricing" className="py-14 sm:py-16">
+
+      <Container>
+        <SectionHeader
+          eyebrow="Add-on value"
+          title="Choose your starting point"
+          subtitle="Keep the free runtime inventory. Add lineage, intent policies, and regulated alerts when you're ready."
+          center
+        />
+        <div className="grid items-stretch gap-6 md:grid-cols-2">
+
+          <div className="rounded-2xl border border-border bg-card p-6 ring-1 ring-border">
+            <div className="mb-3 text-xl font-semibold text-foreground">AIOStack Community</div>
+            <div className="mb-4 text-sm font-medium text-muted-foreground">AI Security Posture Management + Runtime Telemetry</div>
+
+            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+              The open-core foundation for AI runtime security. Deploy on your Kubernetes cluster in minutes and gain complete visibility into your AI infrastructure.
+            </p>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-foreground">Shadow AI Discovery</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {[
+                  "Automatically discover all AI agents, tools, and MCP servers",
+                  "Map every LLM endpoint and API call",
+                  "Track which data systems your agents access",
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
             </div>
 
-            {/* Right side - Investor Logo */}
-            <div className="flex items-center justify-center">
-              <div className="flex items-center justify-center p-8 rounded-2xl border border-border bg-card ring-1 ring-border w-full">
-                <Image
-                  src="/nexus_logo.png"
-                  alt="Nexus Venture Partners"
-                  width={300}
-                  height={150}
-                  className="w-full max-w-[180px] sm:max-w-[200px] h-auto opacity-100"
-                />
-              </div>
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-foreground">Runtime Observability</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {[
+                  "eBPF-based telemetry with no code changes",
+                  "Protocol-aware: MCP, function calling, tool use, A2A",
+                  "Minimal overhead (<2% CPU impact)",
+
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-foreground">AI-BOM Generation</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {[
+                  "Complete inventory of AI assets",
+                  "Dependency tracking for models and tools with versions",
+                  "Basic compliance reporting (OWASP, MITRE ATLAS)"
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-foreground">Open Architecture</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {[
+                  "Kubernetes-native (EKS, GKE, AKS)",
+                  "Full control with self-hosted infrastructure",
+                  "Cost estimators for various providers"
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            {/* <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
+              <h4 className="mb-3 text-sm font-semibold text-foreground">What You Get</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {[
+                  "Complete AI asset inventory",
+                  "Real-time runtime telemetry",
+                  "Data access visibility",
+                  "Community support",
+                  "Free forever"
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div> */}
+
+            <p className="mt-8 mb-4 text-sm text-muted-foreground">Free forever. No credit card required.</p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <GhostButton href="#install">
+                Install Now
+              </GhostButton>
+              <GhostButton href="/docs/home">
+                Read The Docs <Book size={14} className="ml-2" />
+              </GhostButton>
             </div>
           </div>
+          <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6 ring-1 ring-emerald-400/30">
+            <div className="mb-3 text-xl font-semibold text-emerald-700 dark:text-emerald-200">
+              Aurva Enterprise
+            </div>
+            <div className="mb-4 text-sm font-medium text-emerald-700/90 dark:text-emerald-200/90">AISPM + AI Detection & Response (AIDR)</div>
 
-          {/* Bottom - Team credentials */}
-          <div className="text-center items-center justify-center p-4 rounded-2xl border border-border bg-card ring-1 ring-border ">
-            <h3 className="text-sm sm:font-bold ">
-              Built by former Meta AI Security leaders
-            </h3>
+            <p className="mb-6 text-sm leading-relaxed text-emerald-800/90 dark:text-emerald-100/90">
+              Enterprise-grade threat detection and automated response for production AI systems. Built on AIOStack&apos;s telemetry with advanced security operations.
+            </p>
+
+
+
+            <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+              <ul className="text-sm text-emerald-800 dark:text-emerald-100">
+                {[
+                  "Everything in AIOStack Community, plus",
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Advanced Threat Detection</h4>
+              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                {["Prompt injection and jailbreak attempts",
+                  "Sensitive data egress (PII, credentials)",
+                  "Unauthorized tool and database access",
+                  "Anomalous agent behavior patterns",
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Automated Response</h4>
+              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                {["Real-time alerting with evidence bundles",
+                  "Customizable response playbooks"
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Enterprise Integrations</h4>
+              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                {["SIEM/SOAR: Splunk, Sentinel, Coralogix",
+                  "Identity: Okta, Azure AD and more",
+                  "Ticketing: Jira, ServiceNow, PagerDuty",
+                  "Communication: Slack, Microsoft Teams",
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5">
+              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Compliance & Governance</h4>
+              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
+                {["Compliance workflows (SOC 2, GDPR, HIPAA)",
+                  "Audit logging and reporting",
+                  "SLA support with dedicated CSM and Engineers"
+                ].map((li) => (
+                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
+                ))}
+              </ul>
+            </div>
+
+
+
+            <div className="mt-4 flex flex-wrap gap-2">
+
+              <PrimaryButton onClick={(e) => { e.preventDefault(); setIsContactModalOpen(true); }}>
+                Get a Demo <ArrowRight size={14} className="ml-2" />
+              </PrimaryButton>
+            </div>
           </div>
-        </Container>
-      </section>
-
-      {/* UFO Animation Section */}
-
-    </main>
-  );
+        </div>
+      </Container>
+    </section>)
 }

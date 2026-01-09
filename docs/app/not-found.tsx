@@ -1,66 +1,54 @@
 import Image from "next/image"
 import { Link } from "lib/transition"
-
 import { Settings } from "@/lib/meta"
-import { buttonVariants } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+
 
 export default function NotFound() {
   return (
-    <>
-      {/* Animated background elements */}
-      <div className="background-animation">
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-        <div className="floating-shape"></div>
-      </div>
-
-      <section className="flex min-h-[86.5vh] flex-col items-center justify-center px-2 py-8 text-center">
-        <div className="mb-8 flex items-center gap-3">
+    <main className="min-h-screen bg-background flex items-center justify-center">
+      <div className="max-w-2xl w-full text-center">
+        <div className="absolute inset-0 opacity-[0.15]"
+          style={{ backgroundImage: `radial-gradient(white 1px, transparent 0)`, backgroundSize: '40px 40px' }} />
+        <div className="mb-6 flex items-center justify-center gap-4">
           <Image
             src={Settings.siteicon}
-            alt={`${Settings.title} main logo`}
+            alt={`${Settings.title} logo`}
             width={48}
             height={48}
             loading="lazy"
             decoding="async"
             className="dark:invert"
           />
-          <h1 className="text-4xl font-bold sm:text-7xl">404</h1>
+          <h1 className="text-4xl sm:text-4xl font-bold">
+            404 | Page Not Found
+          </h1>
         </div>
 
-        <h2 className="mb-4 text-2xl font-semibold sm:text-3xl">
-          Page Not Found
+        <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
+
         </h2>
 
-        <p className="text-foreground mb-8 max-w-[600px] leading-relaxed sm:text-lg">
-          The page you&apos;re looking for doesn&apos;t exist or has been moved. Let&apos;s get
-          you back on track.
+        <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
+          Space is big. You just won&apos;t believe how vastly, hugely, mind-bogglingly big it is.
+          Unfortunately, the page you&apos;re looking for isn&apos;t here.<br />Let&apos;s get you back on track.
         </p>
 
-        <div className="flex items-center gap-5">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/"
-            className={buttonVariants({ className: "px-6", size: "lg" })}
+            className="inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-400/40 transition hover:scale-[1.01] hover:bg-emerald-500/90 focus:outline-none focus:ring-2 focus:ring-emerald-300 active:scale-[.99] bg-emerald-500"
           >
-            Return Home &crarr;
+            Return Home
           </Link>
-          <Link
+          {/* <Link
             href="/docs/home"
-            className={buttonVariants({
-              variant: "outline",
-              className: "px-6",
-              size: "lg",
-            })}
+            className="inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold text-emerald-600 dark:text-emerald-200 ring-1 ring-border transition hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-emerald-400"
           >
             Browse Docs
-          </Link>
+          </Link> */}
         </div>
-      </section>
-    </>
+      </div>
+    </main>
   )
 }
