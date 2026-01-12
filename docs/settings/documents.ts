@@ -1,24 +1,11 @@
 import { Paths } from "@/lib/pageroutes"
 
 export const Documents: Paths[] = [
-  {
-    // heading: "Contents",
-    title: "Introduction",
-    href: "/home",
-    items: [
-      {
-        title: "Why we built AIOStack",
-        href: "/overview",
-      },
-      {
-        title: "Architecture",
-        href: "/architecture",
-      },
-    ],
-  },
+
   {
     title: "Installation",
     href: "/installation",
+    noLink: true,
     items: [
       {
         title: "Pre-requisites",
@@ -36,13 +23,22 @@ export const Documents: Paths[] = [
     ],
   },
   {
-    title: "Miscellaneous",
-    href: "/misc",
+    // heading: "Contents",
+    title: "Introduction",
+    href: "/home",
     items: [
       {
-        title: "Security Notice",
-        href: "/security",
+        title: "Why we built AIOStack",
+        href: "/overview",
+      },
+      {
+        title: "Architecture",
+        href: "/architecture",
       },
     ],
+  },
+  {
+    title: "Miscellaneous",
+    href: "/misc",
   }
 ]

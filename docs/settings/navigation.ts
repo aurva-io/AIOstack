@@ -10,6 +10,14 @@ export const Navigations = [
     href: "/blog",
   },
   {
+    title: "Pricing",
+    href: "/pricing",
+  },
+  {
+    title: "About",
+    href: "/about",
+  },
+  {
     title: "Home",
     href: "https://aurva.io",
     external: false,

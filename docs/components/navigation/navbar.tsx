@@ -38,7 +38,7 @@ function GhostButton({ children, href = "#", onClick, className = "" }: { childr
 
 export function Navbar() {
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
+  const isHomePage = pathname === '/' || pathname === '/about'
 
   return (
     <nav className="bg-opacity-5 sticky top-0 z-50 h-16 w-full border-b px-2 backdrop-blur-xl backdrop-filter md:px-4">

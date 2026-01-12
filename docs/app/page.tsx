@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Play, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot, X } from "lucide-react";
+import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot, X } from "lucide-react";
 
 
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -12,13 +12,6 @@ function Container({ children, className = "" }: { children: React.ReactNode; cl
   );
 }
 
-function Badge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-border bg-muted/50 px-3 py-1 text-xs font-medium tracking-wide text-foreground backdrop-blur">
-      {children}
-    </span>
-  );
-}
 
 function PrimaryButton({ children, href = "#", onClick, className = "" }: { children: React.ReactNode; href?: string; onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void; className?: string }) {
   return (
@@ -53,13 +46,6 @@ function Pill({ icon: Icon, text }: { icon?: React.ComponentType<{ size?: number
   );
 }
 
-function Code({ children }: { children: React.ReactNode }) {
-  return (
-    <code className="rounded-xl bg-muted px-2 py-1 font-mono text-[13px] text-emerald-600 dark:text-emerald-200 ring-1 ring-border">
-      {children}
-    </code>
-  );
-}
 
 function SectionHeader({ eyebrow, title, subtitle, center = false }: { eyebrow?: string; title?: string; subtitle?: string; center?: boolean }) {
   return (
@@ -314,28 +300,6 @@ const inventoryRows = [
   },
 ];
 
-const shadowFlags = [
-  {
-    id: 1,
-    title: "Prod service 'webapp-nextjs' calling OpenAI",
-    why: [
-      "No owner tags found",
-      "Interacts with 2 medium sensitivity apps",
-      "Egress volume much higher than your baseline.",
-    ],
-    severity: "High",
-    lastSeen: "6m ago",
-  },
-  {
-    id: 2,
-    title: "'auth-mgr' reading user tables + calling Vertex",
-    why: ["No security_reviewed tag", "Accesses 4 low risk DBs with PII", "Accesses 1 DB identified to hold user data"],
-    severity: "Medium",
-    lastSeen: "22m ago",
-  },
-];
-
-
 
 interface GroundObject {
   id: number;
@@ -357,7 +321,7 @@ function ProblemQuestions() {
   const questions = [
     { text: "Which services in your infrastructure are calling LLMs?", from: "Security Team", icon: Shield },
     { text: "Which ones are accessing databases with PII before making those calls?", from: "Compliance Officer", icon: Lock },
-    { text: "Are any of them self-hosted models your security team doesn't know about?", from: "CISO", icon: Eye },
+    { text: "Are any of them self-hosted models your secOps team doesn't know about?", from: "CISO", icon: Eye },
     { text: "When we ask for 'AI bill of materials', how long will it take you to produce it?", from: "Audit Team", icon: FileText },
   ];
 
@@ -504,18 +468,17 @@ function FeatureGridSection() {
       comingSoon: false
     },
     {
-      icon: Network,
-      title: "Intelligent Data Lineage",
-      description: "Connect each service to the databases it accesses. See which ones are touching PII, customer data, or regulated information before making LLM calls.",
-      comingSoon: false
-    },
-    {
       icon: FileText,
       title: "AI Bill of Materials (AIBOM)",
       description: "Every discovery becomes part of your AIBOM - a complete inventory of AI services, providers, dependencies, and data flows. Answer compliance instantly.",
       comingSoon: false
     },
-
+    {
+      icon: Network,
+      title: "Intelligent Data Lineage",
+      description: "Connect each service to the databases it accesses. See which ones are touching PII, customer data, or regulated information before making LLM calls.",
+      comingSoon: false
+    },
     {
       icon: Shield,
       title: "Shadow AI Detection",
@@ -549,15 +512,15 @@ function FeatureGridSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="py-14 sm:py-20">
+    <section ref={sectionRef} className="py-4 sm:py-0">
       <Container>
         <div className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground mb-4">
-              Secure your AI Estate in <span className="text-emerald-600 dark:text-emerald-300 font-bold">10 minutes</span>
+            <h2 className="mb-4 text-3xl sm:text-6xl font-bold bg-gradient-to-r from-emerald-400 via-emerald-200 to-emerald-400 bg-clip-text text-transparent drop-shadow-[0_0_3px_rgba(16,185,129,0.5)]">
+              AIOStack
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
-              One command. Full inventory. Zero blind spots.
+            <p className="text-base  sm:text-lg text-muted-foreground  max-w-3xl mx-auto">
+              The runtime security layer built for enterprise AI infrastructure.
             </p>
           </div>
 
@@ -603,60 +566,9 @@ function FeatureGridSection() {
 }
 
 function AnimatedTextSection() {
-  const [scrollProgress, setScrollProgress] = React.useState(0);
-  const [showAIOStack, setShowAIOStack] = React.useState(false);
-  const [showImage, setShowImage] = React.useState(false);
-  const sectionRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-
-      const section = sectionRef.current;
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-
-      // Calculate scroll progress (0 to 1) based on section visibility
-      // Start animation when section enters viewport
-      const startPoint = windowHeight * 0.8;
-      const endPoint = windowHeight * 0.2;
-
-      if (rect.top <= startPoint && rect.top >= endPoint) {
-        const progress = (startPoint - rect.top) / (startPoint - endPoint);
-        setScrollProgress(Math.min(Math.max(progress, 0), 1));
-
-        // Trigger AIOStack morph at 70% scroll progress
-        if (progress >= 0.7 && !showAIOStack) {
-          setShowAIOStack(true);
-          // Show image after morph completes (1 second delay)
-          setTimeout(() => setShowImage(true), 500);
-        }
-      } else if (rect.top > startPoint) {
-        setScrollProgress(0);
-        setShowAIOStack(false);
-        setShowImage(false);
-      } else if (rect.top < endPoint) {
-        setScrollProgress(1);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showAIOStack]);
-
-  // Calculate font size based on scroll progress (grows from base to 4x)
-  const fontSize = 1 + (scrollProgress * 2);
-
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative mt-10 sm:mt-30 flex flex-col items-center justify-start"
-    >
-      {/* Background image - full screen width, positioned at section level */}
-      {showImage && (
+    <section className="relative mt-10 sm:mt-12 flex flex-col items-center justify-start">
+      {(
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen pointer-events-none">
           <Image
             src="/bg1.svg"
@@ -669,46 +581,7 @@ function AnimatedTextSection() {
       )}
 
       <Container className="relative z-10">
-        {/* Animated Text */}
-        <div className="flex items-center justify-center mb-4 sm:mb-8 mt-2 sm:mt-4">
-          <div
-            className="text-center transition-all duration-500 ease-out"
-            style={{
-              transform: `scale(${fontSize})`,
-              opacity: showAIOStack ? 0 : 1,
-            }}
-          >
-            <h2 className="text-2xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-300 via-emerald-100 to-emerald-500 bg-clip-text text-transparent">
-              A new frontier solution
-            </h2>
-          </div>
-
-          <div
-            className="absolute text-center transition-all duration-800 ease-out"
-            style={{
-              opacity: showAIOStack ? 1 : 0,
-              transform: showAIOStack ? 'scale(1)' : 'scale(0.8)',
-              transitionDelay: showAIOStack ? '300ms' : '0ms',
-            }}
-          >
-            <h2 className="text-3xl sm:text-6xl font-bold bg-gradient-to-r from-emerald-100 via-emerald-300 to-emerald-500 bg-clip-text text-transparent drop-shadow-[0_0_3px_rgba(16,185,129,0.5)]">
-              AIOStack
-            </h2>
-            <div className="mt-2 leading-relaxed text-muted-foreground">
-              Runtime security for enterprise AI workloads
-            </div>
-          </div>
-        </div>
-
-        {/* Image that fades in */}
-        <div
-          className="relative flex items-center justify-center transition-all duration-1000 ease-out"
-          style={{
-            opacity: showImage ? 1 : 0,
-            transform: showImage ? 'translateY(0)' : 'translateY(20px)',
-          }}
-        >
-          {/* Foreground graph image */}
+        <div className="relative flex items-center justify-center ease-out" >
           <Image
             src="/aiostack-graph.svg"
             alt="AIOStack heartbeat"
@@ -877,7 +750,7 @@ function UFOAnimation() {
   }, []);
 
   return (
-    <div className="relative w-full border-none">
+    <div className="relative mt-4 w-full border-none">
       <div
         ref={canvasRef}
         className="relative h-[500px] w-full overflow-hidden"
@@ -1244,16 +1117,17 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 text-foreground">
 
       {/* Hero */}
-      <section className="relative overflow-hidden py-10 sm:py-32">
+      <section className="relative overflow-hidden py-10 sm:py-20">
+
         <Container>
+
           <div className="grid items-start gap-10 md:grid-cols-2">
             <div>
               <h1 className="text-center md:text-left text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
                 Secure every AI service in your cloud <span className="text-emerald-600 dark:text-emerald-300">in 10 minutes</span>
               </h1>
-              <p className="text-center md:text-left mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-                Automatically discover AI apps, Agents, LLMs, self-hosted models and databases they access. Ship AI fast. We&apos;ll make sure nothing escapes you.
-              </p>
+              <p className="text-center md:text-left mt-4 max-w-xl text-base text-muted-foreground leading-7 ">
+                You can&apos;t secure AI you don&apos;t know exists. AIOStack automatically discovers every AI app, agent, LLM, and self-hosted model across your cloud, then maps their access to sensitive databases and APIs. Get complete visibility into your AI attack surface and secure it—before it becomes your next security incident.              </p>
 
               <div className="mt-6 flex flex-wrap items-center gap-5 justify-center md:justify-start">
                 <PrimaryButton href="#install" >
@@ -1263,18 +1137,8 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
                   Talk to an Engineer
                 </GhostButton>
               </div>
-              <div className="mt-14 hidden sm:flex flex-wrap items-center gap-2">
-                <Pill icon={Gauge} text="Extremely Fast" />
-                <Pill icon={Lock} text="No sensitive data stored" />
-                <Pill icon={Activity} text="<2% CPU used" />
-                <Pill icon={CircleDollarSign} text="Free" />
-              </div>
-              {/* 
-              <div className="mt-6 hidden flex flex-wrap gap-2 text-white/70">
-                <Badge>Open-core • Metadata-only</Badge>
-                <Badge>eBPF • Kubernetes Native</Badge>
-                <Badge>One line install</Badge>
-              </div> */}
+
+
             </div>
 
             {/* Preview card */}
@@ -1365,21 +1229,12 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
               </div>
             </div>
           </div>
+
         </Container>
       </section>
 
-      <div className="relative w-full">
-        <Image
-          src="/bg2.svg"
-          alt="Background"
-          width={1000}
-          height={800}
-          className="w-[150%] sm:w-full h-auto opacity-85 translate-x-[5%] sm:translate-x-0"
-        />
-      </div>
-
       {/* Used by developers from */}
-      <section className="py-12 sm:py-16 overflow-hidden">
+      <section className="py-2 sm:py-0 overflow-hidden">
         <Container>
           <div className="text-center mb-10">
             <p className="text-sm sm:text-base font-medium text-muted-foreground">
@@ -1487,12 +1342,12 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
   `}</style>
       </section>
 
-      <section id="problems" className="pt-14 sm:pt-16 ">
+      {/* <section id="problems" className="pt-14 sm:pt-16 ">
 
         <Container>
 
           <SectionHeader
-            title="AI forward companies get a lot of questions"
+            title="Your security team is flying blind on AI."
             center
           />
 
@@ -1502,17 +1357,17 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
             <p className="text-muted-foreground sm:text-lg">
               Most teams need <span className="font-semibold text-rose-600 dark:text-rose-400">2-4 weeks</span> to manually secure their AI usage.
             </p>
-            <p className=" leading-relaxed sm:text-lg text-muted-foreground">
-              In this age of AI, that&apos;s <span className=" font-semibold text-rose-600 dark:text-rose-400">dangerously slow</span>.
+            <p className="text-muted-foreground sm:text-lg">
+              By then, Shadow AI has already accessed your production databases.
             </p>
-            <p className="text-muted-foreground leading-relaxed sm:text-lg">
-              A new frontier of problems needs
+            <p className="text-muted-foreground sm:text-lg">
+              What if you could see it all - instantly?
             </p>
           </div>
         </Container>
-      </section>
+      </section> */}
 
-      <section id="solutiongraph" className="pt-0 sm:pt-0 pb-6 sm:pb-8">
+      <section id="solutiongraph" className="pt-4 sm:pt-0 pb-6 sm:pb-8">
         <Container>
           <div className="text-center">
             <AnimatedTextSection />
@@ -1522,42 +1377,17 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
 
       <FeatureGridSection />
 
-      {/* How it works */}
-      {/* <section className="py-14 sm:py-16">
-        <Container>
-          <SectionHeader
-            eyebrow=""
-            title="Read-only sensors. Real-time results."
-            subtitle="Node eBPF collectors observe outbound connects and process hints. A curated endpoint catalog attributes LLM usage with confidence scoring."
-            center
-          />
-          <div className="grid gap-4 md:grid-cols-4">
-            {[{ icon: Cloud, title: "Deploy", text: "Helm one-liner installs DaemonSet on your cluster." },
-            { icon: Network, title: "Observe", text: "Traffic on your cluster +  process hints." },
-            { icon: Eye, title: "Attribute", text: "To providers like OpenAI, Anthropic, Bedrock and many more." },
-            { icon: Shield, title: "Flag", text: "Shadow AI: no owner/review, newly seen, unusually high volumes" }].map((s, idx) => (
-              <div key={idx} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 ring-1 ring-emerald-400/20">
-                  <s.icon size={18} />
-                </div>
-                <div className="text-sm font-semibold text-foreground">{s.title}</div>
-                <div className="mt-2 text-sm text-muted-foreground">{s.text}</div>
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section> */}
 
       <SupportedLogoWall />
 
 
       {/* Inventory */}
-      <section id="inventory" className="py-10 sm:py-16">
+      <section id="inventory" className="py-4 sm:py-4">
         <Container>
           <SectionHeader
             eyebrow="Runtime security for AI"
-            title="AI Agents, MCP Servers, Databases - We catch them all"
-            subtitle="We fingerprint outbound TLS + process hints to attribute LLM usage to real services, namespaces, and IAM roles."
+            title="Connect AI to real services, databases and IAM roles"
+            subtitle="Even the ones your developers didn't tell you about"
             center
           />
 
@@ -1643,28 +1473,24 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         </Container>
       </section>
 
-      <PricingSection setIsContactModalOpen={setIsContactModalOpen} />
-
-      <InstallSection />
-
-      <section id="animation" className="relative  overflow-hidden">
+      <section id="animation" className="relative mt-12 overflow-hidden">
         <Container>
           <SectionHeader
             eyebrow=""
-            title="Watch AIOStack in Action"
-            subtitle="Our eBPF sensors detect AI services in real-time - at lightning speed"
+            title="Identify risks before they surface"
+            subtitle="With ZERO code changes thanks to eBPF"
             center
           />
         </Container>
+
 
         <UFOAnimation />
       </section>
 
 
-      <FAQSection />
+      <InstallSection />
 
       <InvestorSection />
-
 
       <ContactModal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)} />
     </main>
@@ -1677,12 +1503,12 @@ function SupportedLogoWall() {
     <Container className="py-14 sm:py-20 overflow-hidden">
       <SectionHeader
         eyebrow=""
-        title="Supports 100+ frameworks, services, and packages"
+        title="Discovers shadow AI across 100+ tools, models, and databases"
         subtitle=""
         center
       />
 
-      <div className="relative space-y-4 marquee-fade-mask">
+      <div className="sm:py-8 relative space-y-4 marquee-fade-mask">
         <div className="flex animate-scroll">
           <div className="flex flex-shrink-0">
             {[
@@ -1856,8 +1682,6 @@ function SupportedLogoWall() {
             ))}
           </div>
         </div>
-
-
       </div>
 
       <style jsx>{`
@@ -1927,20 +1751,11 @@ width: fit-content;
 function InvestorSection() {
   return (
     <section className="py-8 sm:py-20 bg-background">
-      <div className="relative w-full">
-        <Image
-          src="/bg2.svg"
-          alt="Background"
-          width={600}
-          height={400}
-          className="w-[150%] sm:w-[150%] h-[50%] opacity-80 translate-x-[15%] sm:translate-x-30"
-        />
-      </div>
       <Container>
-        <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto mb-16 sm:mb-20">
+        <div className="grid gap-8 md:grid-cols-2 items-center max-w-5xl mx-auto">
           {/* Left side - Heading */}
           <div className="flex items-center justify-center md:justify-start">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-foreground text-center md:text-left leading-tight">
+            <h2 className="text-xl sm:text-3xl font-semibold text-foreground text-center md:text-left leading-tight">
               Not just <span className="text-emerald-600 dark:text-emerald-300" >trusted by the best</span> <br />We&apos;re backed by them too
             </h2>
           </div>
@@ -1953,74 +1768,26 @@ function InvestorSection() {
                 alt="Nexus Venture Partners"
                 width={300}
                 height={150}
-                className="w-full max-w-[180px] sm:max-w-[200px] h-auto opacity-100"
+                className="w-full max-w-[160px] sm:max-w-[200px] h-auto opacity-100"
               />
             </div>
+
           </div>
-        </div>
 
-        {/* Bottom - Team credentials */}
-        <div className="text-center items-center justify-center p-4 rounded-2xl border border-border bg-card ring-1 ring-border ">
-          <h3 className="text-sm sm:font-bold ">
-            Built by former Meta AI Security leaders
-          </h3>
         </div>
       </Container>
     </section>
   )
 }
 
-function FAQSection() {
-  return (
-    <section id="faq" className="py-14 sm:py-20">
-      <Container>
 
-        <SectionHeader eyebrow="FAQ" title="Answering your questions" center />
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              q: "I really liked the product and want Slack and Jira integration",
-              a: "We're thrilled that you liked our product ! Please reach out so that we can upgrade you to the Data Guard plan.",
-            }, {
-              q: "Do you collect prompts, responses, or secrets?",
-              a: "Never. We're metadata-only by design. To elucidate, we see that you called OpenAI, not what you sent.",
-            },
-            {
-              q: "What environments are supported?",
-              a: "Kubernetes(EKS/GKE) is the primary path. Feel free to reach out to us for your needs.",
-            },
-
-            {
-              q: "How is this different from Wiz or Datadog?",
-              a: "Wiz does cloud security posture. Datadog does observability. Neither shows AI-specific visibility like PII exposure in LLM calls or Shadow AI detection.",
-            },
-            {
-              q: "I am a large finacial org and need a PaaS option.",
-              a: "While we encourage SaaS, we'd be happy to help you out with a PaaS deployment if you have the genuine need. Reach out to our team for more info :)",
-            },
-
-            {
-              q: "I see a lot of \"AI\" here, will the Data Guard plan cost me a bomb ?",
-              a: "Haha, not really. We know that pricing can be scary, reach out to us and expect to be pleasantly surprised by how much we can save you   :)",
-            },
-          ].map((f, i) => (
-            <div key={i} className="rounded-2xl border border-border bg-card p-5 ring-1 ring-border">
-              <div className="text-sm font-semibold text-foreground">{f.q}</div>
-              <div className="mt-2 text-sm text-muted-foreground">{f.a}</div>
-            </div>
-          ))}
-        </div>
-      </Container>
-    </section>
-  )
-}
 
 function InstallSection() {
-  return (< section id="install" className="relative py-14 sm:py-16 overflow-hidden" >
+  return (< section id="install" className="relative py-14 sm:py-24 overflow-hidden" >
     <Container className="relative z-10">
       <SectionHeader
         title="Install now"
-        subtitle="One line is all it takes"
+        subtitle=""
         center
       />
 
@@ -2042,196 +1809,21 @@ function InstallSection() {
         </div>
       </div>
 
-      <div className="mt-8 flex justify-center">
+
+      {/* <div className="mt-6 hidden flex flex-wrap gap-2 text-white/70">
+        <Badge>Open-core • Metadata-only</Badge>
+        <Badge>eBPF • Kubernetes Native</Badge>
+        <Badge>One line install</Badge>
+      </div> */}
+
+      {/* <div className="mt-8 flex justify-center">
         <GhostButton href="/docs/installation/steps">
-          <FileText size={16} className="mr-2" /> View Detailed Installation Guide
+          <FileText size={16} className="mr-2" /> Read the docs
         </GhostButton>
-      </div>
+      </div> */}
+
     </Container>
   </section >
   )
 }
 
-function PricingSection({ setIsContactModalOpen }: { setIsContactModalOpen: (value: boolean) => void }) {
-  return (
-    <section id="pricing" className="py-14 sm:py-16">
-
-      <Container>
-        <SectionHeader
-          eyebrow="Add-on value"
-          title="Choose your starting point"
-          subtitle="Keep the free runtime inventory. Add lineage, intent policies, and regulated alerts when you're ready."
-          center
-        />
-        <div className="grid items-stretch gap-6 md:grid-cols-2">
-
-          <div className="rounded-2xl border border-border bg-card p-6 ring-1 ring-border">
-            <div className="mb-3 text-xl font-semibold text-foreground">AIOStack Community</div>
-            <div className="mb-4 text-sm font-medium text-muted-foreground">AI Security Posture Management + Runtime Telemetry</div>
-
-            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
-              The open-core foundation for AI runtime security. Deploy on your Kubernetes cluster in minutes and gain complete visibility into your AI infrastructure.
-            </p>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-foreground">Shadow AI Discovery</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "Automatically discover all AI agents, tools, and MCP servers",
-                  "Map every LLM endpoint and API call",
-                  "Track which data systems your agents access",
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-foreground">Runtime Observability</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "eBPF-based telemetry with no code changes",
-                  "Protocol-aware: MCP, function calling, tool use, A2A",
-                  "Minimal overhead (<2% CPU impact)",
-
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-foreground">AI-BOM Generation</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "Complete inventory of AI assets",
-                  "Dependency tracking for models and tools with versions",
-                  "Basic compliance reporting (OWASP, MITRE ATLAS)"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-foreground">Open Architecture</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "Kubernetes-native (EKS, GKE, AKS)",
-                  "Full control with self-hosted infrastructure",
-                  "Cost estimators for various providers"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            {/* <div className="mb-4 rounded-xl border border-border/50 bg-muted/30 p-4">
-              <h4 className="mb-3 text-sm font-semibold text-foreground">What You Get</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                {[
-                  "Complete AI asset inventory",
-                  "Real-time runtime telemetry",
-                  "Data access visibility",
-                  "Community support",
-                  "Free forever"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div> */}
-
-            <p className="mt-8 mb-4 text-sm text-muted-foreground">Free forever. No credit card required.</p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              <GhostButton href="#install">
-                Install Now
-              </GhostButton>
-              <GhostButton href="/docs/home">
-                Read The Docs <Book size={14} className="ml-2" />
-              </GhostButton>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6 ring-1 ring-emerald-400/30">
-            <div className="mb-3 text-xl font-semibold text-emerald-700 dark:text-emerald-200">
-              Aurva Enterprise
-            </div>
-            <div className="mb-4 text-sm font-medium text-emerald-700/90 dark:text-emerald-200/90">AISPM + AI Detection & Response (AIDR)</div>
-
-            <p className="mb-6 text-sm leading-relaxed text-emerald-800/90 dark:text-emerald-100/90">
-              Enterprise-grade threat detection and automated response for production AI systems. Built on AIOStack&apos;s telemetry with advanced security operations.
-            </p>
-
-
-
-            <div className="mb-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-              <ul className="text-sm text-emerald-800 dark:text-emerald-100">
-                {[
-                  "Everything in AIOStack Community, plus",
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Advanced Threat Detection</h4>
-              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {["Prompt injection and jailbreak attempts",
-                  "Sensitive data egress (PII, credentials)",
-                  "Unauthorized tool and database access",
-                  "Anomalous agent behavior patterns",
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Automated Response</h4>
-              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {["Real-time alerting with evidence bundles",
-                  "Customizable response playbooks"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Enterprise Integrations</h4>
-              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {["SIEM/SOAR: Splunk, Sentinel, Coralogix",
-                  "Identity: Okta, Azure AD and more",
-                  "Ticketing: Jira, ServiceNow, PagerDuty",
-                  "Communication: Slack, Microsoft Teams",
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="mb-5">
-              <h4 className="mb-2 text-sm font-semibold text-emerald-700 dark:text-emerald-200">Compliance & Governance</h4>
-              <ul className="space-y-2 text-sm text-emerald-800 dark:text-emerald-100">
-                {["Compliance workflows (SOC 2, GDPR, HIPAA)",
-                  "Audit logging and reporting",
-                  "SLA support with dedicated CSM and Engineers"
-                ].map((li) => (
-                  <li key={li} className="flex items-start gap-2"><Check size={16} className="mt-0.5 flex-shrink-0 text-emerald-600 dark:text-emerald-300" /><span>{li}</span></li>
-                ))}
-              </ul>
-            </div>
-
-
-
-            <div className="mt-4 flex flex-wrap gap-2">
-
-              <PrimaryButton onClick={(e) => { e.preventDefault(); setIsContactModalOpen(true); }}>
-                Get a Demo <ArrowRight size={14} className="ml-2" />
-              </PrimaryButton>
-            </div>
-          </div>
-        </div>
-      </Container>
-    </section>)
-}

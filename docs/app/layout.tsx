@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Poppins } from "next/font/google"
 import { GoogleTagManager } from "@next/third-parties/google"
 
 import { Settings } from "@/lib/meta"
@@ -10,9 +10,10 @@ import { ConditionalPadding } from "@/components/conditional-padding"
 
 import "@/styles/globals.css"
 
-const inter = Inter({
+const inter = Poppins({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: "500"
 })
 
 const baseUrl = Settings.metadataBase

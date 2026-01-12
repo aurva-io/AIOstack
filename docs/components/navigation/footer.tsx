@@ -38,13 +38,13 @@ export function Footer() {
           <div className="flex items-center gap-4">
             <Link href="https://github.com/aurva-io/AIOstack/blob/main/LICENSE" target="_blank"
               rel="noopener noreferrer" className="hover:text-foreground">
-              Apache-2.0
-            </Link>
-            <Link href="#security" className="hover:text-foreground">
-              Security
+              License
             </Link>
             <Link href="/docs/home" className="hover:text-foreground">
               Docs
+            </Link>
+            <Link href="/faqs" className="hover:text-foreground">
+              FAQs
             </Link>
             {GitHubLink.href && (
               <Link
