@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot, X } from "lucide-react";
+import FeatureAccordion from "@/components/FeatureAccordion";
 
 
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -520,7 +521,7 @@ function FeatureGridSection() {
               AIOStack
             </h2>
             <p className="text-base  sm:text-lg text-muted-foreground  max-w-3xl mx-auto">
-              The runtime security layer built for enterprise AI infrastructure.
+              The runtime security layer built for enterprise AI.
             </p>
           </div>
 
@@ -750,7 +751,7 @@ function UFOAnimation() {
   }, []);
 
   return (
-    <div className="relative mt-4 w-full border-none">
+    <div className="relative py-4 w-full border-none">
       <div
         ref={canvasRef}
         className="relative h-[500px] w-full overflow-hidden"
@@ -990,17 +991,17 @@ export default function Home() {
   // Pool of possible services for rotation
   const servicePool = React.useMemo(() => [
     { service: "invoice-ai", provider: "OpenAI", ns: "billing", calls: 1200, time: 2, shadow: false, type: "AI App" },
-    { service: "new_frontend", provider: "Anthropic", ns: "pre-prod", calls: 847, time: 4, shadow: true, type: "MCP Client" },
-    { service: "sherlock-svc", provider: "Gemini 3 Flash", ns: "prod-core", calls: 340, time: 9, shadow: false, type: "AI Agent" },
+    { service: "new_frontend", provider: "Anthropic", ns: "preprod", calls: 847, time: 4, shadow: true, type: "MCP Client" },
+    { service: "sherlock-svc", provider: "GeminiFlash", ns: "prod-core", calls: 340, time: 9, shadow: false, type: "AI Agent" },
     { service: "customerbot", provider: "Bedrock", ns: "dev-test", calls: 2100, time: 12, shadow: true, type: "MCP Server" },
     { service: "analytics", provider: "OpenAI", ns: "prod-data", calls: 980, time: 3, shadow: false, type: "AI App" },
     { service: "coderabbit", provider: "Claude", ns: "dev-tools", calls: 520, time: 5, shadow: true, type: "AI Agent" },
     { service: "content-gen", provider: "Gemini", ns: "marketing", calls: 1450, time: 7, shadow: false, type: "AI App" },
     { service: "support-chat", provider: "Cohere", ns: "support", calls: 2800, time: 1, shadow: false, type: "MCP Client" },
-    { service: "doc-parser", provider: "OpenAI", ns: "stage-docs", calls: 670, time: 6, shadow: true, type: "AI Agent" },
+    { service: "doc-parser", provider: "OpenAI", ns: "stage-doc", calls: 670, time: 6, shadow: true, type: "AI Agent" },
     { service: "sentimentapi", provider: "HuggingFace", ns: "prod-ml", calls: 1100, time: 8, shadow: false, type: "AI App" },
     { service: "query-asst", provider: "Anthropic", ns: "prod-db", calls: 890, time: 4, shadow: false, type: "AI Agent" },
-    { service: "ocr-model", provider: "Vertex AI", ns: "prod-vision", calls: 1650, time: 11, shadow: true, type: "MCP Server" },
+    { service: "ocr-model", provider: "Vertex AI", ns: "prod-cv", calls: 1650, time: 11, shadow: true, type: "MCP Server" },
   ], []);
 
   // Dynamic activity feed state
@@ -1071,45 +1072,6 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, [servicePool]);
-
-  const helmCmd = `
-helm repo add aiostack https://charts.aurva.ai/
-helm repo update
-
-# Extract the default values file
-helm show values aiostack/aiostack > values.yaml
-
-# Edit the values.yaml file and replace:
-# In Outpost:
-# - name: COMMANDER_URL
-#   value: "aiostack-commander.<YOUR NAMESPACE>.svc.cluster.local:7470"
-# - name: COMPANY_ID
-#   value: "<YOUR COMPANY ID>"
-# - name: AIOSTACK_VALIDATION_KEY
-#   value: "<YOUR AIOSTACK VALIDATION KEY>"
-
-# In Observer:
-# - name: OUTPOST_URL
-#   value: "aiostack-outpost.<YOUR NAMESPACE>.svc.cluster.local:7471"
-# - name: IS_OUTPOST_URL_SECURE
-#   value: "false"
-
-# Create namespace 
-kubectl create namespace aiostack
-
-# Install with your configured values
-helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values.yaml
-
-`;
-
-  const tfCmd = ` Coming Soon :) `
-
-  const ctrCmd = `docker run --rm -d \\
-  --name aurva-ai-inventory \\
-  --privileged --pid=host --net=host \\
-  -e AURVA_CLUSTER=\"<your-cluster>\" \\
-  -e AURVA_ENV=\"prod\" \\
-  ghcr.io/aurva/ai-inventory:latest`;
 
 
 
@@ -1487,6 +1449,7 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
         <UFOAnimation />
       </section>
 
+      <FeatureDoublePane />
 
       <InstallSection />
 
@@ -1497,7 +1460,21 @@ helm install myaiostack aiostack/aiostack  --namespace aiostack  --values values
   );
 }
 
-
+function FeatureDoublePane() {
+  return (
+    <section className="py-4  sm:py-8 mt-8">
+      <Container>
+        <SectionHeader
+          eyebrow=""
+          title=" Everything you need to secure AI on your cloud"
+          subtitle="Our eBPF-powered system delivers all of this - with ZERO code changes"
+          center
+        />
+        <FeatureAccordion />
+      </Container>
+    </section>
+  )
+}
 function SupportedLogoWall() {
   return (
     <Container className="py-14 sm:py-20 overflow-hidden">
@@ -1786,8 +1763,8 @@ function InstallSection() {
   return (< section id="install" className="relative py-14 sm:py-24 overflow-hidden" >
     <Container className="relative z-10">
       <SectionHeader
-        title="Install now"
-        subtitle=""
+        title="Get Started Now - For Free!"
+        subtitle="Deploy in your Kubernetes cluster with a single command"
         center
       />
 
