@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, Shield, Eye, Network, Lock, Activity, ArrowDown } from "lucide-react";
+import { ArrowRight, Shield, Eye, Network, Lock, Activity } from "lucide-react";
 
 interface Feature {
   id: string;
