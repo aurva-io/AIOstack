@@ -1,217 +1,95 @@
-# AIOStack
+<p align="center">
+  <img src="docs/public/aiostack-logo.png" alt="AIOStack Logo" width="400"/>
+</p>
+
+
+<div align=center>
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.29+-blue.svg)](https://kubernetes.io/)
 [![eBPF](https://img.shields.io/badge/eBPF-Powered-green.svg)](https://ebpf.io/)
 
-## Find Shadow AI in your cloud
+</div>
 
-AIOStack automatically discovers AI components you didn't know existed and ties each to an owner. **No code changes required.** Runs in-cluster via eBPF.
+<div align=center>
 
-## Features
+[![Website](https://img.shields.io/website?up_message=AVAILABLE&down_message=DOWN&url=https%3A%2F%2Faurva.ai&style=for-the-badge)](https://aurva.ai)
 
-**Discovery**
-- Shadow AI across namespaces/clusters
-- AI agents, MCP servers/clients, LLM endpoints, Vector DBs
-- Orphaned/unused (“zombie”) AI services
-
-**Monitoring & Analytics**
-- Model/API calls (OpenAI, Anthropic, Gemini, etc.)
-- Model downloads and runtime inventory
-- Cost & usage insights
-
-**Security & Compliance**
-- Sensitive-data exposure cues and risky egress paths
-- Evidence for investigations with owner attribution (Pods/Deployments/ServiceAccounts)
-
-#
-
-### Supported Environments
-
-- **Kubernetes** 1.29+ with eBPF support  
-  *(EKS, GKE, AKS already satisfy this)*
-- **Linux kernel** 5.15+
-
-### Installation Requirements
-- **Helm** 3.x
-- **kubectl** configured
+</div>
 
 
-## Quick Start
+**eBPF-based observability for AI workloads in Kubernetes**
 
-> **Install in a jiffy. Don't like it? Uninstall is one command.**
 
-### One-Line Installation ⚡
 
-Get started in seconds with our interactive installer:
+AIOStack® automatically discovers and monitors AI infrastructure across your Kubernetes clusters using eBPF. It captures AI-related traffic (OpenAI, Anthropic, HuggingFace, vector databases, MCP servers) at the kernel level without requiring code changes or service restarts. Get immediate visibility into shadow AI deployments, per-team cost attribution, and security insights.
+
+## Key Features
+
+- **Zero-instrumentation discovery**: Automatically detect LLM API calls, model downloads, vector databases, and AI agents across all pods
+- **AI Bill of Materials (AIBOM)**: Complete inventory of models, APIs, and AI dependencies running in your infrastructure
+- **Cost attribution**: Map API usage and token consumption to Kubernetes namespaces, service accounts, and teams
+- **Compliance audit trails**: Generate evidence for GDPR, SOC2, and internal audits with pod-level attribution
+- **Language-agnostic**: Works with Python, Node.js, Go, Java, or any language making network calls
+- **Minimal overhead**: <2% CPU impact per node using kernel-level filtering
+- **Security alerts**: Real-time detection of unapproved AI services, data exfiltration patterns, and policy violations (coming soon)
+
+## Prerequisites
+
+- Kubernetes 1.29+ with eBPF support (EKS, GKE, AKS)
+- Linux kernel 5.15+
+- Helm 3.x
+ 
+## How to install (Kubernetes)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
 ```
 
-**What happens:**
-- ✅ Checks prerequisites (Helm, kubectl, cluster access)
-- ✅ Opens signup page in your browser
-- ✅ Guides you through credential entry
-- ✅ Installs and verifies deployment
-- ✅ Takes ~2 minutes total
+The installer will guide you through setup, open [app.aurva.ai](https://app.aurva.ai) for signup, and deploy AIOStack® to your cluster. Your AI inventory appears within 60 seconds.
 
-**Don't like it? Uninstall is just as easy:**
+See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manual Helm installation.
+
+**Uninstall**
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash
 ```
 
----
+## How It Works
 
-### 1. Create your Free Account
-1. **Sign up** at [app.aurva.ai](https://app.aurva.ai) (takes 30 seconds)
-2. **Copy your credentials** from the email sent to you:
-   - Company ID
-   - AIOStack Validation Key
+AIOStack deploys two components in your cluster:
 
-### 2) Installation Options
-
-#### Option A: Interactive Installer (Recommended)
-
-The easiest way to install AIOStack is with a single command:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
-```
-
-You can download the script too if you want to see what it does
-```bash
-# Download and run the interactive installer
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh -o install.sh
-chmod +x install.sh
-./install.sh
-```
+**Observer (DaemonSet)**: Runs on each node and loads eBPF programs that hook into kernel tracepoints (`tcp_sendmsg`, `tcp_recvmsg`, `execve`, `openat`). These programs capture network metadata, DNS queries, and process execution events, filtering for AI-specific patterns (API endpoints, model downloads, vector DB protocols) before forwarding to userspace.
 
 
-The interactive installer will:
-- Check prerequisites (Helm, kubectl, cluster access)
-- Guide you through configuration
-- Collect your credentials securely
-- Install and verify the deployment
+**Outpost (Deployment)**: Receives events from Observers, parses application protocols (HTTP/1.1, HTTP/2, gRPC), classifies AI services using signature matching, and enriches events with Kubernetes metadata by correlating socket inodes to pod identities via `/proc/net/tcp` and cgroup information.
 
-**See [INSTALLATION.md](INSTALLATION.md) for detailed installation guide**
+Traffic is analyzed at the syscall level—before TLS encryption on egress, after decryption on ingress—using uprobes on `SSL_write`/`SSL_read` functions. Only metadata (HTTP headers, payload sizes, latencies) is extracted; request/response bodies are never captured.
 
-#### Option B: Manual Helm Installation
+Read : [How we escaped the SSL/TLS Trap](https://aurva.io/blog/the-ssl-tls-trap-why-your-database-security-goes-blind-in-production)
 
-**Step 1: Configure Your Credentials**
+## Documentation
 
-```bash
-helm repo add aiostack https://charts.aurva.ai/
-helm repo update
+**Full documentation**: [aurva.ai/docs](https://aurva.ai/docs/home)
 
-# Extract the default values file
-helm show values aiostack/aiostack > values.yaml
-```
-Edit ```values.yaml``` and set your credentials/placeholders:
+- [Architecture Deep Dive](https://aurva.ai/docs/architecture)
+- [Installation Guide](https://aurva.ai/docs/installation/steps)
+- [Security Model](https://aurva.ai/docs/security)
 
-```yaml
-outpost:
-  env:
-    - name: COMPANY_ID
-      value: "<YOUR_COMPANY_ID>"
-    - name: AIOSTACK_VALIDATION_KEY
-      value: "<YOUR_VALIDATION_KEY>"
+## Feedback & Support
 
-observer:
-  env:
-    - name: IS_OUTPOST_URL_SECURE
-      value: "false"
-```
+We're actively developing AIOStack and would love to hear from you:
 
-*Optional: pin to the newest components by setting ```version: latest``` :*
-
-```yaml
-observer:
-  version: latest
-  ...
-
-outpost:
-  version: latest
-  ...
-```
-
-**Step 2: Deploy to Your Cluster**
-```bash
-# Create namespace
-kubectl create namespace aiostack
-
-# Install with your configured values
-helm install myaiostack aiostack/aiostack --namespace aiostack --values values.yaml
-```
-
-**Step 3: Verify Installation**
-```bash
-# Check if pods are running
-kubectl get pods -n aiostack
-```
-
-**Step 4: View the Dashboard**<br>
-
-That's it! You can now access your Shadow AI inventory at [app.aurva.io](https://app.aurva.ai) and login with your credentials (your username is the email you signed up with).
-
-
-## Supported Platforms
-
-| Platform | Status |
-|----------|--------|
-| EKS (AWS) | ✅ Full |
-| GKE (Google) | ✅ Full |
-| Kind/Minikube | ✅ Dev only |
-
-## Architecture
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Applications  │───▶│   eBPF Agents    │───▶│  Data Pipeline  │
-│                 │    │                  │    │                 │
-│ • Python ML     │    │ • Syscall hooks  │    │ • Classification│
-│ • Node.js AI    │    │ • Network trace  │    │ • Enrichment    │
-│ • Java services │    │ • Process trace  │    │ • Aggregation   │
-│ • Go binaries   │    │ • File I/O trace │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                        │
-┌─────────────────┐    ┌──────────────────┐             │
-│   Dashboards    │◀───│   ClickHouse     │◀────────────┘
-│                 │    │                  │
-│ • AIOStack UI   │    │ • Time-series DB │
-│ • Web Console   │    │ • 7-30 day       │
-│ • REST APIs     │    │   retention      │
-└─────────────────┘    └──────────────────┘
-```
-
-## Documentation & Support
-
-- **📖 Documentation**: https://aurva.ai/docs/home
-- **⚙️ Detailed Installation Guide** - https://aurva.ai/docs/installation/steps
-- **🐛 Bug Reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
-- **📧 Support**: support@aurva.io
-
-
-## 🔒 Security
-
-### Security Model
-- eBPF programs use only required, minimal capabilities.
-- Aligned with Kubernetes Security Contexts and Pod Security Standards.
-
-**Reporting Vulnerabilities:** support@aurva.io<br>
-**Security Audit:** Results will be continously published (as available).
-
-### Data Handling and Privacy
-
-- No TLS key access required; observability happens at syscall level.
-- In-cluster operation. Data remains in your environment.
-- Metadata Only:
-  - Request/response bodies are not stored.
-  - Sensitive values are classified in runtime.
+- **Feature requests**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- **Bug reports**: [GitHub Issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- **Questions**: support@aurva.io
 
 ## License
-AIOstack is open source.<br>
+
 Apache License 2.0 - see [LICENSE](LICENSE) for details.
+
+The hosted version at [app.aurva.ai](https://app.aurva.ai) provides managed ClickHouse® storage and UI hosting. All core observability logic will be open sourced in this repository once approved by our Chief Architect.
 
 ## ⭐ Star History
 
@@ -219,5 +97,4 @@ Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ---
 
-**Made with ❤️ by [Aurva](https://aurva.io)**
-*"See what others can't. Secure what others miss."*
+**Built by [Aurva](https://aurva.io)**
