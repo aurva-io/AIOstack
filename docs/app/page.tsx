@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useTheme } from "next-themes";
 import { Check, Clipboard, ClipboardCheck, CircleDollarSign, Shield, Zap, Eye, Server, Activity, Cloud, Lock, Database, Network, Gauge, ArrowRight, Rocket, FileText, Globe, Book, Info, IdCard, Bot, X } from "lucide-react";
 import FeatureAccordion from "@/components/FeatureAccordion";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 
 
 function Container({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -1763,41 +1764,27 @@ function InstallSection() {
   return (< section id="install" className="relative py-14 sm:py-24 overflow-hidden" >
     <Container className="relative z-10">
       <SectionHeader
-        title="Get Started Now - For Free!"
-        subtitle="Deploy in your Kubernetes cluster with a single command"
+        title="Get started in minutes, not weeks"
+        subtitle="One command. Zero code changes. Complete visibility into your AI infrastructure."
         center
       />
 
-      {/* One-Line Installation */}
-      <div className="mx-auto max-w-4xl space-y-6">
-        <div>
-          <CopyField
-            label="INSTALLLER"
-            value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash"
-            footnote=""
-          />
-        </div>
+      {/* Installation Tabs */}
+      <div className="mx-auto max-w-4xl">
+        <Tabs defaultValue="install">
+          <TabsList className="w-full justify-center mb-0">
+            <TabsTrigger value="install">Install</TabsTrigger>
+            <TabsTrigger value="uninstall">Uninstall</TabsTrigger>
+          </TabsList>
 
-        <div>
-          <CopyField
-            label="UNINSTALLER"
-            value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash"
-          />
-        </div>
+          <TabsContent value="install" className="pt-6">
+            <CopyField value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash" />
+          </TabsContent>
+          <TabsContent value="uninstall" className="pt-6">
+            <CopyField value="curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash" />
+          </TabsContent>
+        </Tabs>
       </div>
-
-
-      {/* <div className="mt-6 hidden flex flex-wrap gap-2 text-white/70">
-        <Badge>Open-core • Metadata-only</Badge>
-        <Badge>eBPF • Kubernetes Native</Badge>
-        <Badge>One line install</Badge>
-      </div> */}
-
-      {/* <div className="mt-8 flex justify-center">
-        <GhostButton href="/docs/installation/steps">
-          <FileText size={16} className="mr-2" /> Read the docs
-        </GhostButton>
-      </div> */}
 
     </Container>
   </section >
