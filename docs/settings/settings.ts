@@ -1,4 +1,4 @@
-export const url = "https://aurva.io"
+export const url = "https://aurva.ai"
 export const siteicon = "/logo.svg"
 export const siteicon2 = "/logo2.svg"
 
@@ -19,7 +19,7 @@ export const imagealt = "Aurva Documentation"
 export const twitterhandle = "@Aurva"
 
 export const companyname = "Aurva Inc"
-export const companylink = "https://aurva.io"
+export const companylink = "https://aurva.ai"
 
 export const branding = true
 export const rightsidebar = true
