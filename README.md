@@ -18,9 +18,26 @@
 </div>
 
 
-**eBPF-based observability for AI workloads in Kubernetes**
+## How to install (Kubernetes)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+```
+
+The installer will guide you through setup, open [app.aurva.ai](https://app.aurva.ai) for signup, and deploy AIOStack® to your cluster. Your AI inventory appears within 60 seconds.
+
+See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manual Helm installation.
 
 
+**Uninstall**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash
+```
+
+<hr/>
+
+### eBPF-based observability for AI workloads in Kubernetes
 
 AIOStack® automatically discovers and monitors AI infrastructure across your Kubernetes clusters using eBPF. It captures AI-related traffic (OpenAI, Anthropic, HuggingFace, vector databases, MCP servers) at the kernel level without requiring code changes or service restarts. Get immediate visibility into shadow AI deployments, per-team cost attribution, and security insights.
 
@@ -40,21 +57,6 @@ AIOStack® automatically discovers and monitors AI infrastructure across your Ku
 - Linux kernel 5.15+
 - Helm 3.x
  
-## How to install (Kubernetes)
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
-```
-
-The installer will guide you through setup, open [app.aurva.ai](https://app.aurva.ai) for signup, and deploy AIOStack® to your cluster. Your AI inventory appears within 60 seconds.
-
-See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manual Helm installation.
-
-**Uninstall**
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash
-```
 
 ## How It Works
 
@@ -73,9 +75,9 @@ Read : [How we escaped the SSL/TLS Trap](https://aurva.io/blog/the-ssl-tls-trap-
 
 **Full documentation**: [aurva.ai/docs](https://aurva.ai/docs/home)
 
-- [Architecture Deep Dive](https://aurva.ai/docs/architecture)
+- [Architecture Deep Dive](https://aurva.ai/docs/home/architecture)
 - [Installation Guide](https://aurva.ai/docs/installation/steps)
-- [Security Model](https://aurva.ai/docs/security)
+- [Security Model](https://aurva.ai/docs/misc)
 
 ## Feedback & Support
 
