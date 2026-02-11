@@ -41,7 +41,7 @@ export function Navbar() {
   const isHomePage = pathname === '/' || pathname === '/about'
 
   return (
-    <nav className="bg-opacity-5 sticky top-0 z-50 h-16 w-full border-b px-2 backdrop-blur-xl backdrop-filter md:px-4">
+    <nav className="bg-opacity-5 sticky top-0 z-50 h-16 w-fulls px-2 backdrop-blur-xl backdrop-filter md:px-4">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 p-1 sm:gap-8 sm:p-3 md:gap-12">
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-6">

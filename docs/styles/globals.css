@@ -41,7 +41,7 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -114,14 +114,58 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+
+@theme {
+  --color-aurva-primary-50: #F2FAEE;
+  --color-aurva-primary-100: #D8EFC9;
+  --color-aurva-primary-200: #C5E7AF;
+  --color-aurva-primary-300: #AADC8A;
+  --color-aurva-primary-400: #99D574;
+  --color-aurva-primary-500: #80CB51;
+  --color-aurva-primary-600: #74B94A;
+  --color-aurva-primary-700: #5B903A;
+  --color-aurva-primary-800: #46702D;
+  --color-aurva-primary-900: #365522;
+  --color-aurva-secondary-50: #F6EEF7;
+  --color-aurva-secondary-100: #E2CBE6;
+  --color-aurva-secondary-200: #D3B2DA;
+  --color-aurva-secondary-300: #BF8FC9;
+  --color-aurva-secondary-400: #B379BE;
+  --color-aurva-secondary-500: #A058AE;
+  --color-aurva-secondary-600: #92509E;
+  --color-aurva-secondary-700: #723E7C;
+  --color-aurva-secondary-800: #583060;
+  --color-aurva-secondary-900: #432549;
+  --color-aurva-tertiary-50: #F5FCFC;
+  --color-aurva-tertiary-100: #E0F6F7;
+  --color-aurva-tertiary-200: #D1F2F3;
+  --color-aurva-tertiary-300: #BBECEE;
+  --color-aurva-tertiary-400: #AEE9EA;
+  --color-aurva-tertiary-500: #9AE3E5;
+  --color-aurva-tertiary-600: #8CCFD0;
+  --color-aurva-tertiary-700: #6DA1A3;
+  --color-aurva-tertiary-800: #557D7E;
+  --color-aurva-tertiary-900: #415F60;
+  --color-aurva-blue-50: #E9EFFD;
+  --color-aurva-blue-200: #9AB7F6;
+  --color-aurva-blue-300: #6C96F2;
+  --color-aurva-blue-400: #5082EF;
+  --color-aurva-blue-500: #2463EB;
+  --color-aurva-blue-600: #215AD6;
+  --color-aurva-blue-700: #1A46A7;
+  --color-aurva-new-container-stroke: #E5E8EB;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     overflow-x: hidden;
     width: 100%;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-inter), Arial, Helvetica, sans-serif;
@@ -140,11 +184,11 @@
   margin: 0 !important;
 }
 
-.prose ul > li::marker {
+.prose ul>li::marker {
   color: hsl(0, 0%, 29%);
 }
 
-.dark .prose ul > li::marker {
+.dark .prose ul>li::marker {
   color: hsl(0, 0%, 79%);
 }
 
@@ -153,8 +197,7 @@
   color: inherit;
 }
 
-.prose
-  :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+.prose :where(ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   padding-inline-start: 0;
 }
 
@@ -168,7 +211,7 @@ pre {
   overflow-x: auto;
 }
 
-pre > code {
+pre>code {
   display: grid;
   max-width: inherit !important;
   padding: 14px 0 !important;
@@ -213,7 +256,7 @@ pre > code {
   @apply bg-neutral-200/90;
 }
 
-.highlight-comp > code {
+.highlight-comp>code {
   background-color: transparent !important;
 }
 
@@ -293,6 +336,7 @@ span.katex-html {
 .CollapsibleContent {
   overflow: hidden;
 }
+
 .CollapsibleContent[data-state="open"] {
   animation: slideDown 300ms ease-out;
 }
@@ -305,6 +349,7 @@ span.katex-html {
   from {
     height: 0;
   }
+
   to {
     height: var(--radix-collapsible-content-height);
   }
@@ -314,205 +359,27 @@ span.katex-html {
   from {
     height: var(--radix-collapsible-content-height);
   }
+
   to {
     height: 0;
   }
 }
 
-/* Animated background elements */
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-  }
-}
 
-@keyframes drift {
-  0% {
-    transform: translateX(0px) translateY(0px);
-  }
-  25% {
-    transform: translateX(10px) translateY(-10px);
-  }
-  50% {
-    transform: translateX(-5px) translateY(-20px);
-  }
-  75% {
-    transform: translateX(-10px) translateY(-5px);
-  }
-  100% {
-    transform: translateX(0px) translateY(0px);
-  }
-}
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.3;
-    transform: scale(1.1);
-  }
-}
 
-.background-animation {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-  overflow: hidden;
-}
 
-.floating-shape {
-  position: absolute;
-  opacity: 0.1;
-  animation-duration: 20s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-}
-
-.floating-shape:nth-child(1) {
-  top: 18%;
-  left: 20%;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(45deg, #333, #aaa);
-  border-radius: 50%;
-  animation-name: drift;
-  animation-delay: 0s;
-}
-
-.floating-shape:nth-child(2) {
-  top: 20%;
-  right: 15%;
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(45deg, #444, #777);
-  transform: rotate(45deg);
-  animation-name: drift;
-  animation-delay: -5s;
-}
-
-.floating-shape:nth-child(3) {
-  bottom: 30%;
-  left: 20%;
-  width: 80px;
-  height: 80px;
-  background: linear-gradient(45deg, #222, #555);
-  border-radius: 20%;
-  animation-name: float;
-  animation-delay: -10s;
-}
-
-.floating-shape:nth-child(4) {
-  bottom: 20%;
-  right: 25%;
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(45deg, #555, #888);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  animation-name: drift;
-  animation-delay: -15s;
-}
-
-.floating-shape:nth-child(5) {
-  top: 45%;
-  left: 10%;
-  width: 30px;
-  height: 30px;
-  background: linear-gradient(45deg, #111, #222);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  transform: rotate(20deg);
-  animation-name: drift;
-  animation-delay: -1s;
-}
-
-.floating-shape:nth-child(6) {
-  top: 60%;
-  right: 10%;
-  width: 45px;
-  height: 45px;
-  background: linear-gradient(45deg, #444, #777);
-  transform: rotate(30deg);
-  animation-name: float;
-  animation-delay: -12s;
-}
-
-.floating-shape:nth-child(7) {
-  top: 15%;
-  left: 50%;
-  width: 35px;
-  height: 35px;
-  background: linear-gradient(45deg, #222, #555);
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  animation-name: drift;
-  animation-delay: -3s;
-}
-
-.floating-shape:nth-child(8) {
-  bottom: 40%;
-  left: 70%;
-  width: 55px;
-  height: 55px;
-  background: linear-gradient(45deg, #555, #888);
-  border-radius: 30%;
-  animation-name: float;
-  animation-delay: -18s;
-}
-
-/* Dark mode adjustments */
-.dark .floating-shape {
-  opacity: 0.4;
-}
-
-.dark .floating-shape:nth-child(1) {
-  background: linear-gradient(45deg, #333, #666);
-}
-
-.dark .floating-shape:nth-child(2) {
-  background: linear-gradient(45deg, #444, #777);
-}
-
-.dark .floating-shape:nth-child(3) {
-  background: linear-gradient(45deg, #222, #555);
-}
-
-.dark .floating-shape:nth-child(4) {
-  background: linear-gradient(45deg, #555, #fff);
-}
-
-.dark .floating-shape:nth-child(5) {
-  background: linear-gradient(45deg, #333, #666);
-}
-
-.dark .floating-shape:nth-child(6) {
-  background: linear-gradient(45deg, #444, #777);
-}
-
-.dark .floating-shape:nth-child(7) {
-  background: linear-gradient(45deg, #222, #555);
-}
-
-.dark .floating-shape:nth-child(8) {
-  background: linear-gradient(45deg, #555, #888);
-}
 
 /* Logo cube rotation animations */
 @keyframes cube-rotate {
   0% {
     transform: rotateY(0deg);
   }
+
   50% {
     transform: rotateY(180deg);
   }
+
   100% {
     transform: rotateY(360deg);
   }
@@ -540,10 +407,12 @@ span.katex-html {
 
 
 @keyframes scale {
-  from, to {
+
+  from,
+  to {
     transform: scale(0);
   }
-  
+
   50% {
     transform: scale(1);
   }
@@ -553,7 +422,7 @@ span.katex-html {
   from {
     transform: rotate(0deg);
   }
-  
+
   to {
     transform: rotate(180deg);
   }
@@ -564,47 +433,8 @@ span.katex-html {
   from {
     background-position: 0% center;
   }
-  
+
   to {
     background-position: -200% center;
   }
-}
-
-.sparkle-purple {
-  animation: background-pan 3s linear infinite;
-  background: linear-gradient(
-    to right,
-    rgb(5, 142, 108),
-    rgb(1, 125, 131),
-    rgb(169, 43, 243),
-    rgb(5, 142, 108)
-  );
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  white-space: nowrap;
-}
-
-.magic-star {
-  --size: clamp(20px, 1.5vw, 30px);
-  
-  animation: scale 700ms ease forwards;
-  display: block;
-  height: var(--size);
-  left: var(--star-left);
-  position: absolute;
-  top: var(--star-top);
-  width: var(--size);
-}
-
-.magic-star > svg {
-  animation: rotate 1000ms linear infinite;
-  display: block;
-  opacity: 0.7;
-}
-
-
-.magic-star > svg > path {
-  fill: rgb(123, 31, 162);
 }
