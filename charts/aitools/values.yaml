@@ -14,7 +14,7 @@ n8n:
     annotations: {}
 
   httproute:
-    enabled: true
+    enabled: false
     name: n8n
     gateway:
       name: aurva-private-gateway
@@ -41,11 +41,28 @@ n8n:
     serviceName: ""
 
   ingress:
-    enabled: false
-    className: ""
-    annotations: {}
+    enabled: true
+    className: "alb"
+    annotations:
+      alb.ingress.kubernetes.io/actions.ssl-redirect: >-
+        {"Type": "redirect", "RedirectConfig":{"Protocol":"HTTPS","Port":"443","StatusCode":"HTTP_301"}}
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:145689162369:certificate/96d9c3f0-e3cb-4234-9e03-69ba895e76e1
+      alb.ingress.kubernetes.io/group.name: aurva-internal
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+      alb.ingress.kubernetes.io/load-balancer-name: aurva-internal
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-Ext1-2021-06
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/wafv2-acl-arn: arn:aws:wafv2:ap-south-1:145689162369:regional/webacl/aurva-aws-prod-waf/f63d3c29-c9ef-4fcd-84a5-bbdade6c4866
+    sslRedirect:
+      enabled: true
+      serviceName: ssl-redirect
+      servicePortName: use-annotation
+      path: /
+      pathType: Exact
     hosts:
-      - host: n8n.local
+      - host: n8n.internal.aurva.io
         paths:
           - path: /
             pathType: Prefix

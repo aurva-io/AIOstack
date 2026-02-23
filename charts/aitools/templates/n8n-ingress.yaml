@@ -30,6 +30,15 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
+          {{- if $.Values.n8n.ingress.sslRedirect.enabled }}
+          - path: {{ $.Values.n8n.ingress.sslRedirect.path }}
+            pathType: {{ $.Values.n8n.ingress.sslRedirect.pathType }}
+            backend:
+              service:
+                name: {{ $.Values.n8n.ingress.sslRedirect.serviceName }}
+                port:
+                  name: {{ $.Values.n8n.ingress.sslRedirect.servicePortName }}
+          {{- end }}
           {{- range .paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
