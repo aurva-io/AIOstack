@@ -47,14 +47,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "aitools.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "aitools.serviceAccountName" -}}
-{{- if .Values.mindsdb.serviceAccount.create }}
-{{- default (printf "%s-mindsdb" (include "aitools.fullname" .)) .Values.mindsdb.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.mindsdb.serviceAccount.name }}
-{{- end }}
-{{- end }}

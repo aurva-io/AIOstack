@@ -1,0 +1,16 @@
+{{- if and (.Values.n8n.enabled | default true) .Values.n8n.healthCheckPolicy.enabled }}
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: {{ .Values.n8n.healthCheckPolicy.name }}
+spec:
+  default:
+    logConfig:
+      enabled: {{ .Values.n8n.healthCheckPolicy.logConfig.enabled }}
+    config:
+      {{- toYaml .Values.n8n.healthCheckPolicy.config | nindent 6 }}
+  targetRef:
+    group: ""
+    kind: Service
+    name: {{ default (printf "%s-n8n" (include "aitools.fullname" .)) .Values.n8n.healthCheckPolicy.serviceName }}
+{{- end }}

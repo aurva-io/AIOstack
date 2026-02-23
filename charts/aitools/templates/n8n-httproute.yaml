@@ -1,0 +1,22 @@
+{{- if and (.Values.n8n.enabled | default true) .Values.n8n.httproute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.n8n.httproute.name }}
+  labels:
+    gateway: {{ .Values.n8n.httproute.gateway.name }}
+spec:
+  parentRefs:
+    - name: {{ .Values.n8n.httproute.gateway.name }}
+      namespace: {{ .Values.n8n.httproute.gateway.namespace }}
+  hostnames:
+    - "{{ .Values.n8n.httproute.host }}"
+  rules:
+    - backendRefs:
+        - name: {{ default (printf "%s-n8n" (include "aitools.fullname" .)) .Values.n8n.httproute.service.name }}
+          port: {{ .Values.n8n.httproute.service.port }}
+      {{- if .Values.n8n.httproute.matches }}
+      matches:
+        {{- toYaml .Values.n8n.httproute.matches | nindent 8 }}
+      {{- end }}
+{{- end }}

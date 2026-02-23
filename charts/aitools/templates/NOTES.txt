@@ -2,51 +2,6 @@ Thank you for installing {{ .Chart.Name }}!
 
 Your release is named {{ .Release.Name }}.
 
-{{- if .Values.mindsdb.enabled }}
-
-MindsDB has been deployed to your cluster.
-
-To access MindsDB:
-
-{{- if .Values.mindsdb.ingress.enabled }}
-  From outside the cluster:
-  {{- range $host := .Values.mindsdb.ingress.hosts }}
-  - http{{ if $.Values.mindsdb.ingress.tls }}s{{ end }}://{{ $host.host }}
-  {{- end }}
-{{- else if contains "NodePort" .Values.mindsdb.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "aitools.fullname" . }}-mindsdb)
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo "MindsDB URL: http://$NODE_IP:$NODE_PORT"
-{{- else if contains "LoadBalancer" .Values.mindsdb.service.type }}
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-  Watch the status with: kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "aitools.fullname" . }}-mindsdb
-
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "aitools.fullname" . }}-mindsdb --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  echo "MindsDB URL: http://$SERVICE_IP:{{ .Values.mindsdb.service.port }}"
-{{- else if contains "ClusterIP" .Values.mindsdb.service.type }}
-  From within the cluster:
-  - Service: {{ include "aitools.fullname" . }}-mindsdb.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.mindsdb.service.port }}
-
-  To access from outside the cluster:
-  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "aitools.fullname" . }}-mindsdb {{ .Values.mindsdb.service.port }}:{{ .Values.mindsdb.service.port }}
-
-  Then visit: http://localhost:{{ .Values.mindsdb.service.port }}
-{{- end }}
-
-Useful commands:
-  # Check MindsDB pod status
-  kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component=mindsdb,app.kubernetes.io/instance={{ .Release.Name }}"
-
-  # View MindsDB logs
-  kubectl logs --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component=mindsdb,app.kubernetes.io/instance={{ .Release.Name }}" -f
-
-  # Access MindsDB shell
-  kubectl exec -it --namespace {{ .Release.Namespace }} $(kubectl get pod --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component=mindsdb,app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath='{.items[0].metadata.name}') -- python -m mindsdb
-
-For more information about MindsDB, visit: https://docs.mindsdb.com/
-
-{{- end }}
-
 {{- if .Values.n8n.enabled }}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

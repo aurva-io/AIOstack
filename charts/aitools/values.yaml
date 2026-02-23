@@ -1,88 +1,3 @@
-mindsdb:
-  enabled: true
-  replicaCount: 1
-
-  image:
-    repository: mindsdb/mindsdb
-    pullPolicy: IfNotPresent
-    tag: "v25.9.1.0"
-
-  service:
-    type: ClusterIP
-    port: 47334
-    targetPort: 47334
-    annotations: {}
-
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
-    hosts:
-      - host: mindsdb.local
-        paths:
-          - path: /
-            pathType: Prefix
-    tls: []
-
-  persistence:
-    enabled: true
-    storageClass: ""
-    accessMode: ReadWriteOnce
-    size: 10Gi
-    annotations: {}
-
-  resources:
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-    requests:
-      cpu: 500m
-      memory: 2Gi
-
-  nodeSelector: {}
-
-  tolerations: []
-
-  affinity: {}
-
-  env:
-    - name: MINDSDB_STORAGE_DIR
-      value: "/root/mdb_storage"
-    - name: MINDSDB_DB_CON
-      value: "sqlite:////root/mdb_storage/mindsdb.db"
-
-  # Additional environment variables
-  extraEnv: []
-
-  serviceAccount:
-    create: true
-    annotations: {}
-    name: "mindsdb-sa"
-
-  # Security context
-  securityContext: {}
-
-  podSecurityContext: {}
-
-  # Probes
-  livenessProbe:
-    httpGet:
-      path: /api/status
-      port: 47334
-    initialDelaySeconds: 60
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
-  readinessProbe:
-    httpGet:
-      path: /api/status
-      port: 47334
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
 n8n:
   enabled: true
   replicaCount: 1
@@ -97,6 +12,33 @@ n8n:
     port: 5678
     targetPort: 5678
     annotations: {}
+
+  httproute:
+    enabled: true
+    name: n8n
+    gateway:
+      name: aurva-private-gateway
+      namespace: kube-system
+    host: "n8n.internal.staging.aurva.io"
+    service:
+      name: ""
+      port: 5678
+    matches:
+      - path:
+          type: PathPrefix
+          value: /
+
+  healthCheckPolicy:
+    enabled: false
+    name: n8n
+    logConfig:
+      enabled: false
+    config:
+      type: HTTP
+      httpHealthCheck:
+        port: 5678
+        requestPath: /healthz
+    serviceName: ""
 
   ingress:
     enabled: false
@@ -113,13 +55,10 @@ n8n:
     enabled: true
     storageClass: ""
     accessMode: ReadWriteOnce
-    size: 10Gi
+    size: 20Gi
     annotations: {}
 
   resources:
-    limits:
-      cpu: 1000m
-      memory: 2Gi
     requests:
       cpu: 250m
       memory: 512Mi

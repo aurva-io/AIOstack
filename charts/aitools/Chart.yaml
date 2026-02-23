@@ -1,6 +1,6 @@
 apiVersion: v2
 name: aitools
-description: A Helm chart for AI tools including MindsDB
+description: A Helm chart for deploying n8n
 type: application
 version: 1.0.0
-appVersion: "23.12.4.0"
+appVersion: "latest"
