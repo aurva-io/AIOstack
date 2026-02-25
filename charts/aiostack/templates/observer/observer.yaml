@@ -44,7 +44,7 @@ spec:
       containers:
       - name: observer
         image: "public.ecr.aws/l5a6x1y4/aiostack-observer:{{ .Values.observer.version }}"
-        imagePullPolicy: "IfNotPresent"
+        imagePullPolicy: "Always"
         env:
         - name: LOG_ENV
           value: "production"

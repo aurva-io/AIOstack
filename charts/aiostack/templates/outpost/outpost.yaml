@@ -24,7 +24,7 @@ spec:
       containers:
       - name: outpost
         image: "public.ecr.aws/l5a6x1y4/aiostack-outpost:{{ .Values.outpost.version }}"
-        imagePullPolicy: "IfNotPresent"
+        imagePullPolicy: "Always"
         ports:
         - name: http
           containerPort: {{ .Values.global.outpost.port }}
