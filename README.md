@@ -21,7 +21,7 @@
 ## How to install (Kubernetes)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+curl -fsSL https://aurva.ai/install.sh | bash
 ```
 
 The installer will guide you through setup, open [app.aurva.ai](https://app.aurva.ai) for signup, and deploy AIOStack® to your cluster. Your AI inventory appears within 60 seconds.
@@ -32,7 +32,7 @@ See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manua
 **Uninstall**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/uninstall.sh | bash
+curl -fsSL https://aurva.ai/uninstall.sh | bash
 ```
 
 <hr/>
