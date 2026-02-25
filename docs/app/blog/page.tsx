@@ -13,7 +13,7 @@ export default async function BlogPage() {
           <div className="flex items-center gap-2 mb-4">
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-4xl mb-5">
-            Newsroom
+            Blog
           </h1>
           <p className="text-lg leading-relaxed text-muted-foreground max-w-4xl">
             Stay up to date with the latest updates, insights, and announcements from AIOStack

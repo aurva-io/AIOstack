@@ -49,7 +49,7 @@ VALIDATION_KEY=""
 NAMESPACE="aiostack"
 RELEASE_NAME="myaiostack"
 IS_OUTPOST_URL_SECURE="false"
-SKIP_NAMESPACES="kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
+SKIP_NAMESPACES="kube-system,aiostack-test,myaiostack,aiostack,monitoring,gke-mcs"
 COMMANDER_URL="hq.aurva.ai:443"
 INSECURE_SKIP_VERIFY="true"
 OBSERVER_VERSION="latest"
@@ -78,13 +78,17 @@ print_color() {
 }
 
 # Print step header
+
 print_step() {
     CURRENT_STEP=$((CURRENT_STEP + 1))
-    echo ""
-    print_color "$BOLD$BRIGHT_GREEN" "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    print_color "$BOLD$BRIGHT_GREEN" "Step ${CURRENT_STEP}/${TOTAL_STEPS}: $1"
-    print_color "$BOLD$BRIGHT_GREEN" "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo ""
+    local label="Step ${CURRENT_STEP}/${TOTAL_STEPS}: $1"
+    local width=79  # total inner width (between │ chars)
+    local pad=$(( width - ${#label} - 1 ))  # -2 for "| " prefix space and " " before "|"
+    printf "\n"
+    print_color "$BOLD$BRIGHT_GREEN" "╭$(printf '─%.0s' $(seq 1 $width))╮"
+    print_color "$BOLD$BRIGHT_GREEN" "| ${label}$(printf ' %.0s' $(seq 1 $pad))|"
+    print_color "$BOLD$BRIGHT_GREEN" "╰$(printf '─%.0s' $(seq 1 $width))╯"
+    printf "\n"
 }
 
 # Print success message
@@ -201,18 +205,16 @@ open_browser() {
 print_banner() {
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                                                               ║
-    ║                  AIOStack Agentic Installer                   ║
-    ║                                                               ║
-    ║           Find Shadow AI in your Kubernetes clusters          ║
-    ║                                                               ║
-    ║                      Version ${VERSION}                            ║
-    ║                                                               ║
-    ╚═══════════════════════════════════════════════════════════════╝
+    ╭──────────────────────────────────────────────────────╮
+    │                                                      │
+    │ ▝▀▖▌ ▌▙▀▖▌ ▌▝▀▖  AIOStack ◎ Agentic Installer        │
+    │ ▞▀▌▌ ▌▌  ▐▐ ▞▀▌  v${VERSION}                              │
+    │ ▝▀▘▝▀▘▘   ▘ ▝▀▘  ◎ Runtime AI Security ◎             │
+    │                                                      │
+    ╰──────────────────────────────────────────────────────╯
     "
     print_info "Discover AI components you didn't know existed!"
-    print_info "Website: https://aurva.ai | Docs: https://aurva.ai/docs/home | Home: https://aurva.io"
+    print_info "Website: https://aurva.ai | Docs: https://aurva.ai/docs/home"
     echo ""
 }
 
@@ -220,6 +222,9 @@ print_banner() {
 show_help() {
     cat << EOF
 AIOStack Interactive Installer v${VERSION}
+
+EMAIL : 
+    support@aurva.io
 
 USAGE:
     $0 [OPTIONS]
@@ -241,7 +246,7 @@ EXAMPLES:
     $0 --verbose
 
     # Quick install via curl
-    curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+    curl -fsSL https://aurva.ai/install.sh | bash
 
 REQUIREMENTS:
     - Helm 3.x installed
@@ -396,7 +401,7 @@ collect_credentials() {
 
     if ! ask_yes_no "Have you received your credentials via email?"; then
         echo ""
-        print_warning "Please complete signup at https://app.aurva.ai/signup"
+        print_error "Please complete signup at https://app.aurva.ai/signup"
         print_info "Your credentials will be sent to your registered email address"
         print_info "Once you receive them, run this script again"
         exit 0

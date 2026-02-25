@@ -20,20 +20,25 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 text-foreground">
-      <div className="mx-auto w-full max-w-4xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <div className="mx-auto w-full max-w-5xl px-4 pt-6 sm:px-6 sm:pt-10 lg:px-8">
         <Link
           href="/blog"
           className="mb-8 inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition"
         >
-          ← Back to Newsroom
+          ← Back to the main page
         </Link>
 
         <article>
-          <header className="mb-8">
+          <header className=" px-6 ">
             <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
               {frontmatter.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            {frontmatter.description && (
+              <p className="mb-2 text-muted-foreground">
+                {frontmatter.description}
+              </p>
+            )}
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground border border-gray-200 rounded-xl px-6 py-6">
               <time dateTime={frontmatter.date}>
                 {new Date(frontmatter.date).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -54,17 +59,13 @@ export default async function BlogPostPage({ params }: PageProps) {
                 </>
               )}
             </div>
-            {frontmatter.description && (
-              <p className="mt-4 text-lg text-muted-foreground">
-                {frontmatter.description}
-              </p>
-            )}
+
           </header>
 
-          <Separator className="my-8" />
 
-          <Typography>
-            <section>{content}</section>
+
+          <Typography >
+            <section className="px-6 text-muted-foreground">{content}</section>
           </Typography>
         </article>
       </div>
