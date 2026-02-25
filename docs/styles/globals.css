@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.9753 0.004 106.47);
+  --background: oklch(0.9953 0.004 106.47);
   --foreground: oklch(0.262 0.0126 107.24);
   --card: oklch(0.95 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -175,9 +175,11 @@
 }
 
 .typography {
-  @apply prose prose-zinc prose-headings:scroll-m-20 prose-code:rounded-md prose-code:p-1 prose-code:leading-6 prose-code:before:content-none prose-code:after:content-none prose-pre:border prose-pre:bg-neutral-100 prose-img:rounded-md prose-img:border;
-  @apply prose-code:text-xs w-[85vw] !min-w-full pt-2 text-sm sm:mx-auto sm:w-full;
-  @apply dark:prose-invert prose-code:text-neutral-800 dark:prose-code:bg-neutral-900 dark:prose-code:text-white dark:prose-pre:bg-neutral-900;
+  @apply prose prose-lg prose-zinc prose-headings:scroll-m-20 prose-code:rounded-md prose-code:p-1 prose-code:leading-6 prose-code:before:content-none prose-code:after:content-none prose-pre:border prose-pre:bg-neutral-100 prose-img:rounded-md prose-img:border;
+  @apply prose-code:text-sm w-[85vw] !min-w-full pt-2 sm:mx-auto sm:w-full;
+  @apply dark:prose-invert dark:prose-p:text-neutral-200 dark:prose-headings:text-white dark:prose-strong:text-white dark:prose-li:text-neutral-200 dark:prose-lead:text-neutral-300;
+  @apply prose-a:text-aurva-primary-600 prose-a:underline dark:prose-a:text-aurva-primary-400;
+  @apply prose-code:text-neutral-800 dark:prose-code:bg-neutral-900 dark:prose-code:text-white dark:prose-pre:bg-neutral-900;
 }
 
 .prose {

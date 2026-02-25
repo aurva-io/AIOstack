@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import { getBlogPost, getAllBlogPosts } from "@/lib/blog"
 import { Settings } from "@/lib/meta"
-import { Separator } from "@/components/ui/separator"
 import { Typography } from "@/components/ui/typography"
 
 type PageProps = {
@@ -19,26 +18,34 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { frontmatter, content } = post
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 text-foreground">
-      <div className="mx-auto w-full max-w-5xl px-4 pt-6 sm:px-6 sm:pt-10 lg:px-8">
+    <main className="relative min-h-screen bg-white dark:bg-neutral-900 text-foreground">
+
+      {/* Gradient edges to blend into site background */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-background to-transparent dark:from-neutral-900" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-background to-transparent dark:from-neutral-900" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 bg-gradient-to-b from-background to-transparent dark:from-neutral-900" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-background to-transparent dark:from-neutral-900" />
+
+      <div className="relative mx-auto w-full max-w-3xl px-6 pt-10 pb-20 sm:px-8 sm:pt-14">
+
         <Link
           href="/blog"
-          className="mb-8 inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition"
+          className="mb-10 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← Back to the main page
+          ← Back
         </Link>
 
         <article>
-          <header className=" px-6 ">
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground">
+          <header className="mb-8">
+            <h1 className="mb-3 text-4xl  font-semibold leading-tight tracking-tight text-foreground">
               {frontmatter.title}
             </h1>
             {frontmatter.description && (
-              <p className="mb-2 text-muted-foreground">
+              <p className="mb-5 text-lg leading-relaxed text-muted-foreground">
                 {frontmatter.description}
               </p>
             )}
-            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground border border-gray-200 rounded-xl px-6 py-6">
+            <div className="flex flex-wrap items-center gap-3 border-t border-neutral-900 border-border dark:border-white pt-4 text-sm text-muted-foreground">
               <time dateTime={frontmatter.date}>
                 {new Date(frontmatter.date).toLocaleDateString("en-US", {
                   year: "numeric",
@@ -48,24 +55,21 @@ export default async function BlogPostPage({ params }: PageProps) {
               </time>
               {frontmatter.author && (
                 <>
-                  <span>•</span>
+                  <span className="opacity-40">·</span>
                   <span>{frontmatter.author}</span>
                 </>
               )}
               {frontmatter.readTime && (
                 <>
-                  <span>•</span>
+                  <span className="opacity-40">·</span>
                   <span>{frontmatter.readTime}</span>
                 </>
               )}
             </div>
-
           </header>
 
-
-
-          <Typography >
-            <section className="px-6 text-muted-foreground">{content}</section>
+          <Typography>
+            <section>{content}</section>
           </Typography>
         </article>
       </div>
