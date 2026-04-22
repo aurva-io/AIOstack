@@ -45,7 +45,6 @@ NC='\033[0m' # No Color
 
 # Configuration variables
 COMPANY_ID=""
-VALIDATION_KEY=""
 NAMESPACE="aiostack"
 RELEASE_NAME="myaiostack"
 IS_OUTPOST_URL_SECURE="false"
@@ -53,11 +52,15 @@ SKIP_NAMESPACES="kube-system,aiostack-test,myaiostack,aiostack,monitoring,gke-mc
 COMMANDER_URL="hq.aurva.ai:443"
 INSECURE_SKIP_VERIFY="true"
 OBSERVER_VERSION="latest"
-OUTPOST_VERSION="latest"
+OUTPOST_VERSION="trueID-alpha"
 CREATE_NAMESPACE="true"
 HELM_REPO_NAME="aiostack"
 HELM_REPO_URL="https://charts.aurva.ai/"
 HELM_CHART="${HELM_REPO_NAME}/aiostack"
+DEPLOYMENT_TYPE="kubernetes"
+CLOUD_PROVIDER="aws"
+REGION="unknown"
+CLUSTER_ID=""
 
 # State tracking
 CURRENT_STEP=0
@@ -205,13 +208,13 @@ open_browser() {
 print_banner() {
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
-    ╭──────────────────────────────────────────────────────╮
-    │                                                      │
-    │ ▝▀▖▌ ▌▙▀▖▌ ▌▝▀▖  AIOStack ◎ Agentic Installer        │
-    │ ▞▀▌▌ ▌▌  ▐▐ ▞▀▌  v${VERSION}                              │
-    │ ▝▀▘▝▀▘▘   ▘ ▝▀▘  ◎ Runtime AI Security ◎             │
-    │                                                      │
-    ╰──────────────────────────────────────────────────────╯
+╭───────────────────────────────────────────────────────────────╮
+│                                                               │
+│    ▝▀▖▌ ▌▙▀▖▌ ▌▝▀▖       AIOStack ◎ Agentic Installer         │
+│    ▞▀▌▌ ▌▌  ▐▐ ▞▀▌       v${VERSION}                               │
+│    ▝▀▘▝▀▘▘   ▘ ▝▀▘       ◎ Runtime AI Security ◎              │
+│                                                               │
+╰───────────────────────────────────────────────────────────────╯
     "
     print_info "Discover AI components you didn't know existed!"
     print_info "Website: https://aurva.ai | Docs: https://aurva.ai/docs/home"
@@ -340,6 +343,40 @@ check_prerequisites() {
     print_success "All prerequisites are met!"
 }
 
+# Extract cluster ID, cloud provider, and region from kubectl context
+extract_cluster_id() {
+    local context
+    context=$(kubectl config current-context 2>/dev/null || echo "")
+
+    if [[ -z "$context" ]]; then
+        CLUSTER_ID="unknown"
+        return
+    fi
+
+    # Use full context as cluster ID (includes account/project + region + cluster name for uniqueness)
+    CLUSTER_ID="$context"
+
+    # GKE format: gke_PROJECT_REGION_CLUSTER
+    if [[ "$context" =~ ^gke_([^_]+)_([^_]+)_(.+)$ ]]; then
+        CLOUD_PROVIDER="gcp"
+        REGION="${BASH_REMATCH[2]}"
+    # EKS/AWS ARN format: arn:aws:eks:REGION:ACCOUNT:cluster/CLUSTER_NAME
+    elif [[ "$context" =~ arn:aws:eks:([^:]+):[^:]+:cluster/(.+)$ ]]; then
+        CLOUD_PROVIDER="aws"
+        REGION="${BASH_REMATCH[1]}"
+    # AKS format: CLUSTER_NAME@RESOURCE_GROUP
+    elif [[ "$context" =~ ^([^@]+)@(.+)$ ]]; then
+        CLOUD_PROVIDER="azure"
+        REGION="unknown"
+    else
+        # Unknown format
+        CLOUD_PROVIDER="unknown"
+        REGION="unknown"
+    fi
+
+    print_verbose "Extracted - Cluster ID: ${CLUSTER_ID}, Cloud Provider: ${CLOUD_PROVIDER}, Region: ${REGION}"
+}
+
 # Setup Helm repository
 setup_helm_repo() {
     print_step "Setting Up Helm Repository"
@@ -385,7 +422,6 @@ collect_credentials() {
     print_info "1. Sign up for a free account (takes 30 seconds)"
     print_info "2. Check your registered email for your credentials:"
     print_info "   - Company ID"
-    print_info "   - AIOStack Validation Key"
     echo ""
 
     # Ask if they want to open the signup page
@@ -427,22 +463,10 @@ collect_credentials() {
         fi
     done
 
-    # Collect Validation Key
-    while [[ -z "$VALIDATION_KEY" ]]; do
-        VALIDATION_KEY=$(prompt_secure "AIOStack Validation Key (input hidden)")
-        # Trim leading and trailing whitespace
-        VALIDATION_KEY=$(echo "$VALIDATION_KEY" | xargs)
-
-        if [[ -z "$VALIDATION_KEY" ]]; then
-            print_error "Validation Key cannot be empty"
-        fi
-    done
-
     echo ""
     print_success "Credentials collected successfully"
     print_info "Whitespace automatically trimmed from inputs"
     print_verbose "Company ID: ${COMPANY_ID}"
-    print_verbose "Validation Key: [HIDDEN]"
 
     echo ""
     print_info "Press Enter to continue to namespace configuration..."
@@ -520,7 +544,6 @@ review_config() {
 
     print_color "$BOLD" "Credentials:"
     echo "  Company ID:              ${COMPANY_ID}"
-    echo "  Validation Key:          [HIDDEN - ${#VALIDATION_KEY} characters]"
     echo ""
 
     print_color "$BOLD" "Installation:"
@@ -539,6 +562,10 @@ review_config() {
     echo "  Skip Namespaces:         ${SKIP_NAMESPACES}"
     echo "  Commander URL:           ${COMMANDER_URL}"
     echo "  Insecure Skip Verify:    ${INSECURE_SKIP_VERIFY}"
+    echo "  Deployment Type:         ${DEPLOYMENT_TYPE}"
+    echo "  Cloud Provider:          ${CLOUD_PROVIDER}"
+    echo "  Region:                  ${REGION}"
+    echo "  Cluster ID:              ${CLUSTER_ID}"
     echo ""
 
     # Show the helm command
@@ -548,10 +575,16 @@ review_config() {
     if [[ "$CREATE_NAMESPACE" == "true" ]]; then
         print_color "$GREEN" "  --create-namespace \\"
     fi
-    print_color "$GREEN" "  --set outpost.env[0].name=COMPANY_ID \\"
-    print_color "$GREEN" "  --set outpost.env[0].value=${COMPANY_ID} \\"
-    print_color "$GREEN" "  --set outpost.env[1].name=AIOSTACK_VALIDATION_KEY \\"
-    print_color "$GREEN" "  --set outpost.env[1].value=[HIDDEN] \\"
+    print_color "$GREEN" "  --set outpost.env[3].name=COMPANY_ID \\"
+    print_color "$GREEN" "  --set outpost.env[3].value=${COMPANY_ID} \\"
+    print_color "$GREEN" "  --set outpost.env[4].name=DEPLOYMENT_TYPE \\"
+    print_color "$GREEN" "  --set outpost.env[4].value=${DEPLOYMENT_TYPE} \\"
+    print_color "$GREEN" "  --set outpost.env[5].name=CLOUD_PROVIDER \\"
+    print_color "$GREEN" "  --set outpost.env[5].value=${CLOUD_PROVIDER} \\"
+    print_color "$GREEN" "  --set outpost.env[6].name=REGION \\"
+    print_color "$GREEN" "  --set outpost.env[6].value=${REGION} \\"
+    print_color "$GREEN" "  --set outpost.env[7].name=CLUSTER_ID \\"
+    print_color "$GREEN" "  --set outpost.env[7].value=${CLUSTER_ID} \\"
     print_color "$GREEN" "  ... (and additional outpost.env and observer.env variables) \\"
     print_color "$GREEN" "  --set observer.env[9].name=IS_OUTPOST_URL_SECURE \\"
     print_color "$GREEN" "  --set observer.env[9].value=${IS_OUTPOST_URL_SECURE} \\"
@@ -583,12 +616,15 @@ save_config() {
 namespace: ${NAMESPACE}
 releaseName: ${RELEASE_NAME}
 companyId: ${COMPANY_ID}
-validationKey: ${VALIDATION_KEY}
 isOutpostUrlSecure: ${IS_OUTPOST_URL_SECURE}
 skipNamespaces: ${SKIP_NAMESPACES}
 commanderUrl: ${COMMANDER_URL}
 insecureSkipVerify: ${INSECURE_SKIP_VERIFY}
 createNamespace: ${CREATE_NAMESPACE}
+deploymentType: ${DEPLOYMENT_TYPE}
+cloudProvider: ${CLOUD_PROVIDER}
+region: ${REGION}
+clusterId: ${CLUSTER_ID}
 EOF
 
     chmod 600 "$config_file"
@@ -617,12 +653,15 @@ load_config() {
             namespace) NAMESPACE="$value" ;;
             releaseName) RELEASE_NAME="$value" ;;
             companyId) COMPANY_ID="$value" ;;
-            validationKey) VALIDATION_KEY="$value" ;;
             isOutpostUrlSecure) IS_OUTPOST_URL_SECURE="$value" ;;
             skipNamespaces) SKIP_NAMESPACES="$value" ;;
             commanderUrl) COMMANDER_URL="$value" ;;
             insecureSkipVerify) INSECURE_SKIP_VERIFY="$value" ;;
             createNamespace) CREATE_NAMESPACE="$value" ;;
+            deploymentType) DEPLOYMENT_TYPE="$value" ;;
+            cloudProvider) CLOUD_PROVIDER="$value" ;;
+            region) REGION="$value" ;;
+            clusterId) CLUSTER_ID="$value" ;;
         esac
     done < "$config_file"
 
@@ -671,8 +710,14 @@ install_aurva() {
         --set "outpost.env[2].value=${COMMANDER_URL}"
         --set "outpost.env[3].name=COMPANY_ID"
         --set "outpost.env[3].value=${COMPANY_ID}"
-        --set "outpost.env[4].name=AIOSTACK_VALIDATION_KEY"
-        --set "outpost.env[4].value=${VALIDATION_KEY}"
+        --set "outpost.env[4].name=DEPLOYMENT_TYPE"
+        --set "outpost.env[4].value=${DEPLOYMENT_TYPE}"
+        --set "outpost.env[5].name=CLOUD_PROVIDER"
+        --set "outpost.env[5].value=${CLOUD_PROVIDER}"
+        --set "outpost.env[6].name=REGION"
+        --set "outpost.env[6].value=${REGION}"
+        --set "outpost.env[7].name=CLUSTER_ID"
+        --set "outpost.env[7].value=${CLUSTER_ID}"
         --set "observer.env[0].name=TRACE_SSL"
         --set "observer.env[0].value=true"
         --set "observer.env[1].name=TRACE_EGRESS"
@@ -900,10 +945,20 @@ main() {
 
     # Run installation steps
     check_prerequisites
+    extract_cluster_id
+
+    echo ""
+    print_color "$BOLD$BRIGHT_GREEN" "Cluster Information:"
+    print_info "Cluster ID:              ${CLUSTER_ID}"
+    print_info "Cloud Provider:          ${CLOUD_PROVIDER}"
+    print_info "Region:                  ${REGION}"
+    print_info "Deployment Type:         ${DEPLOYMENT_TYPE}"
+    echo ""
+
     setup_helm_repo
 
     # Skip credential collection if loaded from config
-    if [[ -z "$COMPANY_ID" ]] || [[ -z "$VALIDATION_KEY" ]]; then
+    if [[ -z "$COMPANY_ID" ]]; then
         collect_credentials
     else
         print_info "Using credentials from config file"

@@ -6,10 +6,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
-  resources: ["pods", "services", "nodes"]
+  resources: ["pods", "services", "nodes","serviceaccounts", "namespaces",]
   verbs: ["get", "watch", "list"]
 - apiGroups: ["networking.k8s.io"]
-  resources: ["ingresses"]
+  resources: ["get","ingresses"]
   verbs: ["get", "watch", "list"]
+- apiGroups: ["apps"]
+  resources: ["deployments","statefulsets","daemonsets"]
+  verbs: ["get", "list"]
 
 {{- end }}

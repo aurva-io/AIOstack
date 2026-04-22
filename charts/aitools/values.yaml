@@ -46,10 +46,10 @@ n8n:
     annotations:
       alb.ingress.kubernetes.io/actions.ssl-redirect: >-
         {"Type": "redirect", "RedirectConfig":{"Protocol":"HTTPS","Port":"443","StatusCode":"HTTP_301"}}
-      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:145689162369:certificate/96d9c3f0-e3cb-4234-9e03-69ba895e76e1
-      alb.ingress.kubernetes.io/group.name: aurva-internal
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:145689162369:certificate/1c87d35c-cf63-4824-a882-a99dad77a7c4
+      alb.ingress.kubernetes.io/group.name: aurva-external
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-      alb.ingress.kubernetes.io/load-balancer-name: aurva-internal
+      alb.ingress.kubernetes.io/load-balancer-name: aurva-external
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS13-1-2-Ext1-2021-06
       alb.ingress.kubernetes.io/ssl-redirect: "443"
@@ -62,7 +62,7 @@ n8n:
       path: /
       pathType: Exact
     hosts:
-      - host: n8n.internal.aurva.io
+      - host: n8n.aurva.io
         paths:
           - path: /
             pathType: Prefix
@@ -88,11 +88,15 @@ n8n:
 
   env:
     - name: N8N_HOST
-      value: "0.0.0.0"
+      value: "n8n.aurva.io"
     - name: N8N_PORT
       value: "5678"
     - name: N8N_PROTOCOL
-      value: "http"
+      value: "https"
+    - name: WEBHOOK_URL
+      value: "https://n8n.aurva.io/"
+    - name: N8N_EDITOR_BASE_URL
+      value: "https://n8n.aurva.io/"
     - name: NODE_ENV
       value: "production"
     - name: EXECUTIONS_DATA_SAVE_ON_SUCCESS

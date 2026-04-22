@@ -63,5 +63,3 @@ outpost:
     # THE FOLLOWING ARE FOR YOU TO MODIFY
     - name: COMPANY_ID
       value: "<MODIFY>"
-    - name: AIOSTACK_VALIDATION_KEY
-      value: "<MODIFY>"
