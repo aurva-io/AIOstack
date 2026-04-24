@@ -50,8 +50,19 @@ outpost:
   serviceAccount:
     create: true
     name: aiostack-outpost-sa
-    annotations:
+    annotations: {}
     labels: {}
+    # AWS IRSA: set iamRoleArn to the ARN of the IAM role the outpost should assume.
+    # The role must allow the following actions on "*":
+    #   iam:ListRoles, iam:GetRole
+    #   iam:ListAttachedRolePolicies, iam:GetPolicy, iam:GetPolicyVersion
+    #   iam:ListRolePolicies, iam:GetRolePolicy
+    aws:
+      iamRoleArn: ""
+    # GCP Workload Identity: set serviceAccount to the GCP SA email the outpost should impersonate.
+    # The GCP SA must have roles/iam.securityReviewer or equivalent on the project.
+    gcp:
+      serviceAccount: ""
   env:
     - name: SKIP_NAMESPACES
       value: "kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
