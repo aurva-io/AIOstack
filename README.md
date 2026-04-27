@@ -17,7 +17,15 @@
 
 </div>
 
+# AI agents always look authorized. AIOStack tells you when they're not.
+ 
+AI agents act on behalf of users. They use real credentials, make real API calls, and touch real data. Most security tools see them as legitimate — because technically, they are.
+ 
+The problem isn't unauthorized access. It's when authorized access becomes inappropriate.
+ 
+AIOStack is a free community version AI security platform from Aurva, based on eBPF, that gives security and platform teams runtime visibility into every AI agent, LLM call, and AI service in your infrastructure. No code changes. No sidecars. No blind spots.
 
+---
 ## How to install (Kubernetes)
 
 ```bash
@@ -34,22 +42,32 @@ See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manua
 ```bash
 curl -fsSL https://aurva.ai/uninstall.sh | bash
 ```
+---
 
-<hr/>
-
-### eBPF-based observability for AI workloads in Kubernetes
-
-AIOStack® automatically discovers and monitors AI infrastructure across your Kubernetes clusters using eBPF. It captures AI-related traffic (OpenAI, Anthropic, HuggingFace, vector databases, MCP servers) at the kernel level without requiring code changes or service restarts. Get immediate visibility into shadow AI deployments, per-team cost attribution, and security insights.
+## What AIOStack answers
+ 
+Security teams can't monitor what they can't see. AIOStack gives you four answers at runtime:
+ 
+| Question | What you get |
+|---|---|
+| **What agents exist?** | Auto-discover every AI agent, LLM call, and AI service running in your cluster — including shadow deployments |
+| **What identities do they use?** | Map each agent to its Kubernetes service account, namespace, and pod identity |
+| **What privileges do they have?** | Surface which agents have access to which databases, APIs, and external services |
+| **What actions are they taking?** | Capture prompt activity, model usage, token consumption, and outbound AI traffic in real time |
+ 
+---
 
 ## Key Features
 
-- **Zero-instrumentation discovery**: Automatically detect LLM API calls, model downloads, vector databases, and AI agents across all pods
-- **AI Bill of Materials (AIBOM)**: Complete inventory of models, APIs, and AI dependencies running in your infrastructure
-- **Cost attribution**: Map API usage and token consumption to Kubernetes namespaces, service accounts, and teams
-- **Compliance audit trails**: Generate evidence for GDPR, SOC2, and internal audits with pod-level attribution
-- **Language-agnostic**: Works with Python, Node.js, Go, Java, or any language making network calls
-- **Minimal overhead**: <2% CPU impact per node using kernel-level filtering
-- **Security alerts**: Real-time detection of unapproved AI services, data exfiltration patterns, and policy violations (coming soon)
+- **Zero-instrumentation discovery**: Automatically detect LLM API calls, model downloads, vector databases, MCP servers, and AI agents across all pods — without touching application code.
+- **AI Bill of Materials (AIBOM)**: Complete runtime inventory of models, APIs, and AI dependencies in your infrastructure. Know what's running before an incident tells you.
+- **Agent identity mapping**: Correlate AI traffic to Kubernetes service accounts, namespaces, and workload identities. When an agent does something unexpected, you know exactly which one.
+- **Prompt and call monitoring**: Capture LLM request metadata, model routing, and token usage per service. No request bodies are stored — only the signals that matter for security.
+- **AI call lineage**: Trace multi-step agent workflows across services. See the full chain of calls an agent made, not just individual events.
+- **Cost and usage attribution**: Map API usage and token consumption to teams, namespaces, and service accounts. Useful for platform teams managing shared AI infrastructure.
+- **Compliance audit trails**: Generate pod-level evidence for GDPR, SOC2, and internal audits — timestamped, attributed, and queryable.
+- **Minimal overhead**: <2% CPU impact per node using kernel-level filtering. Built for production.
+
 
 ## Prerequisites
 
@@ -70,6 +88,37 @@ AIOStack deploys two components in your cluster:
 Traffic is analyzed at the syscall level—before TLS encryption on egress, after decryption on ingress—using uprobes on `SSL_write`/`SSL_read` functions. Only metadata (HTTP headers, payload sizes, latencies) is extracted; request/response bodies are never captured.
 
 Read : [How we escaped the SSL/TLS Trap](https://aurva.io/blog/the-ssl-tls-trap-why-your-database-security-goes-blind-in-production)
+
+---
+ 
+## Community vs. Enterprise
+ 
+AIOStack is free to use. All core eBPF-based features are available in the community edition with no feature gating.
+ 
+Enterprise adds integrations and support for teams running AI workloads outside of standard Kubernetes environments:
+ 
+| Feature | Community | Enterprise |
+|---|---|---|
+| Shadow AI discovery | ✅ | ✅ |
+| AIBOM | ✅ | ✅ |
+| Agent identity mapping | ✅ | ✅ |
+| Prompt and call monitoring | ✅ | ✅ |
+| AI call lineage | ✅ | ✅ |
+| Cost and usage attribution | ✅ | ✅ |
+| Compliance audit trails | ✅ | ✅ |
+| Managed UI + dashboards | ✅ via [app.aurva.ai](https://app.aurva.ai) | ✅ |
+| AWS CloudWatch log integration | — | ✅ |
+| AWS Bedrock log integration (agentless) | — | ✅ |
+| Azure AI Foundry log integration (agentless) | — | ✅ |
+| Alerting and policy enforcement | — | ✅ |
+| SSO + RBAC | — | ✅ |
+| Dedicated support SLA | — | ✅ |
+ 
+> **Note:** eBPF is not available on Bedrock, Vertex, Databricks or other managed PaaS runtimes. For those environments, contact us for Enterprise agentless based integrations.
+ 
+[Talk to us about Enterprise →](https://aurva.io)
+
+---
 
 ## Documentation
 
