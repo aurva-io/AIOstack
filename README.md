@@ -27,10 +27,7 @@ The bigger problem is when **authorized access becomes inappropriate at runtime*
 
 AIOStack is Aurva’s free community runtime visibility layer for AI workloads. It helps security and platform teams discover shadow AI, map agent identities, trace LLM and tool activity, and understand how AI systems behave inside Kubernetes environments.
 
-- No application code changes.  
-- No SDK dependency.  
-- No sidecars.  
-- Runtime visibility where AI workloads actually run.
+No application code changes. No SDK dependency. No sidecars. Runtime visibility where AI workloads actually run.
 
 ---
 ## How to install (Kubernetes)
