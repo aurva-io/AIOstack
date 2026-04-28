@@ -19,11 +19,18 @@
 
 # AI agents always look authorized. AIOStack tells you when they're not.
  
-AI agents act on behalf of users. They use real credentials, make real API calls, and touch real data. Most security tools see them as legitimate — because technically, they are.
- 
-The problem isn't unauthorized access. It's when authorized access becomes inappropriate.
- 
-AIOStack is a free community version AI security platform from Aurva, based on eBPF, that gives security and platform teams runtime visibility into every AI agent, LLM call, and AI service in your infrastructure. No code changes. No sidecars. No blind spots.
+AI agents act on behalf of users. They use real credentials, make real API calls, invoke tools, access APIs, and touch production systems.
+Most security tools see this activity as legitimate because, technically, it is.
+
+>The real problem is not only unauthorized access.<br>
+The bigger problem is when **authorized access becomes inappropriate at runtime**.
+
+AIOStack is Aurva’s free community runtime visibility layer for AI workloads. It helps security and platform teams discover shadow AI, map agent identities, trace LLM and tool activity, and understand how AI systems behave inside Kubernetes environments.
+
+- No application code changes.  
+- No SDK dependency.  
+- No sidecars.  
+- Runtime visibility where AI workloads actually run.
 
 ---
 ## How to install (Kubernetes)
@@ -43,18 +50,18 @@ See the [Installation Guide](https://aurva.ai/docs/installation/steps) for manua
 curl -fsSL https://aurva.ai/uninstall.sh | bash
 ```
 ---
-
-## What AIOStack answers
  
-Security teams can't monitor what they can't see. AIOStack gives you four answers at runtime:
+## What AIOStack answers
  
 | Question | What you get |
 |---|---|
-| **What agents exist?** | Auto-discover every AI agent, LLM call, and AI service running in your cluster — including shadow deployments |
-| **What identities do they use?** | Map each agent to its Kubernetes service account, namespace, and pod identity |
-| **What privileges do they have?** | Surface which agents have access to which databases, APIs, and external services |
-| **What actions are they taking?** | Capture prompt activity, model usage, token consumption, and outbound AI traffic in real time |
- 
+| **What agents exist?** | Auto-discover AI agents, LLM calls, shadow AI, and AI services running across your cluster |
+| **What identities do they use?** | Map each agent to its Kubernetes pod, namespace, service account, and workload identity |
+| **What AI systems are involved?** | Visibility into LLM APIs, model endpoints, vector databases, and MCP servers |
+| **What actions are they taking?** | Runtime metadata for AI calls — model, provider, token usage, destination, latency |
+| **How are calls chained?** | AI call lineage across services, tools, and agent workflows |
+| **Who owns the activity?** | Attribution to services, namespaces, and teams |
+  
 ---
 
 ## Key Features
