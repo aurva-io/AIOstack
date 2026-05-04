@@ -52,7 +52,7 @@ SKIP_NAMESPACES="kube-system,aiostack-test,myaiostack,aiostack,monitoring,gke-mc
 COMMANDER_URL="hq.aurva.ai:443"
 INSECURE_SKIP_VERIFY="true"
 OBSERVER_VERSION="latest"
-OUTPOST_VERSION="trueID-alpha"
+OUTPOST_VERSION="latest"
 CREATE_NAMESPACE="true"
 HELM_REPO_NAME="aiostack"
 HELM_REPO_URL="https://charts.aurva.ai/"
@@ -61,10 +61,12 @@ DEPLOYMENT_TYPE="kubernetes"
 CLOUD_PROVIDER="aws"
 REGION="unknown"
 CLUSTER_ID=""
+IAM_ROLE_ARN=""
+GCP_SERVICE_ACCOUNT=""
 
 # State tracking
 CURRENT_STEP=0
-TOTAL_STEPS=7
+TOTAL_STEPS=8
 HELM_REPO_ADDED=false
 NAMESPACE_CREATED=false
 INSTALLATION_STARTED=false
@@ -420,8 +422,7 @@ collect_credentials() {
     print_color "$BOLD$BRIGHT_GREEN" "Before proceeding, you need credentials from Aurva:"
     echo ""
     print_info "1. Sign up for a free account (takes 30 seconds)"
-    print_info "2. Check your registered email for your credentials:"
-    print_info "   - Company ID"
+    print_info "2. Check your registered email for your Company ID"
     echo ""
 
     # Ask if they want to open the signup page
@@ -534,6 +535,229 @@ collect_env_config() {
     print_success "Configuration completed"
 }
 
+# Collect IAM access configuration (AWS IRSA or GCP Workload Identity)
+collect_iam_config() {
+    print_step "Configuring IAM Access"
+
+    echo ""
+    print_info "The outpost needs cloud IAM access to enumerate roles in your account."
+    echo ""
+
+    case "$CLOUD_PROVIDER" in
+        aws) _collect_aws_iam_config ;;
+        gcp) _collect_gcp_iam_config ;;
+        *)
+            print_warning "Cloud provider '${CLOUD_PROVIDER}' — IAM fetch not supported yet."
+            print_info "Skipping IAM access configuration."
+            ;;
+    esac
+}
+
+_collect_aws_iam_config() {
+    print_color "$BOLD" "AWS IAM Access via IRSA (IAM Roles for Service Accounts)"
+    echo ""
+    print_info "The outpost assumes an IAM role through IRSA to call read-only APIs."
+    print_info "Required permissions on the role:"
+    echo ""
+    print_color "$WHITE" "   IAM inventory:"
+    print_color "$WHITE" "   iam:ListRoles                iam:GetRole"
+    print_color "$WHITE" "   iam:ListAttachedRolePolicies  iam:GetPolicy  iam:GetPolicyVersion"
+    print_color "$WHITE" "   iam:ListRolePolicies          iam:GetRolePolicy"
+    echo ""
+    print_color "$WHITE" "   RDS datasource inventory:"
+    print_color "$WHITE" "   rds:DescribeDBInstances      rds:DescribeDBClusters"
+    print_color "$WHITE" "   rds:DescribeDBSubnetGroups   rds:ListTagsForResource"
+    echo ""
+    print_color "$WHITE" "   S3 datasource inventory:"
+    print_color "$WHITE" "   s3:ListAllMyBuckets          s3:GetBucketLocation"
+    print_color "$WHITE" "   s3:GetBucketPublicAccessBlock s3:GetBucketTagging"
+    print_color "$WHITE" "   s3:GetBucketVersioning       s3:GetBucketAcl"
+    echo ""
+
+    # Attempt to derive account ID and OIDC issuer automatically
+    local aws_account_id="" oidc_issuer="" cluster_name=""
+
+    if [[ "$CLUSTER_ID" =~ arn:aws:eks:[^:]+:([^:]+):cluster/(.+)$ ]]; then
+        aws_account_id="${BASH_REMATCH[1]}"
+        cluster_name="${BASH_REMATCH[2]}"
+    fi
+
+    if command -v aws &> /dev/null; then
+        print_info "AWS CLI detected — fetching account and OIDC details..."
+        if [[ -z "$aws_account_id" ]]; then
+            aws_account_id=$(aws sts get-caller-identity --query Account --output text 2>/dev/null || echo "")
+        fi
+        if [[ -n "$cluster_name" && -n "$REGION" && "$REGION" != "unknown" ]]; then
+            oidc_issuer=$(aws eks describe-cluster \
+                --name "$cluster_name" --region "$REGION" \
+                --query "cluster.identity.oidc.issuer" \
+                --output text 2>/dev/null | sed 's|https://||' || echo "")
+        fi
+        if [[ -n "$aws_account_id" ]]; then
+            print_success "Account ID: ${aws_account_id}"
+        fi
+        if [[ -n "$oidc_issuer" ]]; then
+            print_success "OIDC issuer: ${oidc_issuer}"
+        fi
+        echo ""
+    fi
+
+    local acct="${aws_account_id:-YOUR_ACCOUNT_ID}"
+    local oidc="${oidc_issuer:-oidc.eks.${REGION}.amazonaws.com/id/YOUR_OIDC_ID}"
+    local role_name="aiostack-outpost-secure-readonly-role"
+    local sa_name="aiostack-outpost-sa"
+    local role_arn="arn:aws:iam::${acct}:role/${role_name}"
+
+    print_color "$BOLD$BRIGHT_GREEN" "Run these commands to create the role (copy-paste ready):"
+    echo ""
+    cat << AWSCMDS
+# 1. Create the IAM policy
+aws iam create-policy \\
+  --policy-name AIOStackOutpostSecureReadOnlyPolicy \\
+  --policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "IAMInventory",
+        "Effect": "Allow",
+        "Action": [
+          "iam:ListRoles","iam:GetRole",
+          "iam:ListAttachedRolePolicies","iam:GetPolicy","iam:GetPolicyVersion",
+          "iam:ListRolePolicies","iam:GetRolePolicy"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "RDSDatasourceInventory",
+        "Effect": "Allow",
+        "Action": [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBSubnetGroups",
+          "rds:ListTagsForResource"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "S3DatasourceInventory",
+        "Effect": "Allow",
+        "Action": [
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketTagging",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl"
+        ],
+        "Resource": "*"
+      }
+    ]
+  }'
+
+# 2. Create the role with OIDC trust for this cluster's service account
+aws iam create-role \\
+  --role-name ${role_name} \\
+  --assume-role-policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Principal": {"Federated": "arn:aws:iam::${acct}:oidc-provider/${oidc}"},
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {"StringEquals": {
+        "${oidc}:sub": "system:serviceaccount:${NAMESPACE}:${sa_name}",
+        "${oidc}:aud": "sts.amazonaws.com"
+      }}
+    }]
+  }'
+
+# 3. Attach the policy to the role
+aws iam attach-role-policy \\
+  --role-name ${role_name} \\
+  --policy-arn arn:aws:iam::${acct}:policy/AIOStackOutpostSecureReadOnlyPolicy
+AWSCMDS
+
+    echo ""
+    print_info "Expected role ARN: ${role_arn}"
+    echo ""
+
+    while true; do
+        IAM_ROLE_ARN=$(prompt "Paste your IAM Role ARN (press Enter to skip)" "")
+        IAM_ROLE_ARN=$(echo "$IAM_ROLE_ARN" | xargs)
+
+        if [[ -z "$IAM_ROLE_ARN" ]]; then
+            print_warning "No IAM role provided — outpost will not be able to enumerate IAM roles, RDS instances, or S3 buckets."
+            break
+        elif [[ "$IAM_ROLE_ARN" =~ ^arn:aws:iam::[0-9]{12}:role/.+$ ]]; then
+            print_success "IAM role ARN accepted."
+            break
+        else
+            print_error "That doesn't look like a valid IAM role ARN."
+            print_info "Expected format: arn:aws:iam::123456789012:role/role-name"
+        fi
+    done
+}
+
+_collect_gcp_iam_config() {
+    print_color "$BOLD" "GCP IAM Access via Workload Identity"
+    echo ""
+    print_info "The outpost impersonates a GCP Service Account to call IAM read APIs."
+    print_info "The service account needs roles/iam.securityReviewer (or equivalent)."
+    echo ""
+
+    local project_id=""
+    if command -v gcloud &> /dev/null; then
+        project_id=$(gcloud config get-value project 2>/dev/null || echo "")
+        if [[ -n "$project_id" ]]; then
+            print_success "GCP project: ${project_id}"
+            echo ""
+        fi
+    fi
+
+    local proj="${project_id:-YOUR_PROJECT_ID}"
+    local gsa_name="aiostack-outpost"
+    local gsa_email="${gsa_name}@${proj}.iam.gserviceaccount.com"
+    local ksa_name="aiostack-outpost-sa"
+
+    print_color "$BOLD$BRIGHT_GREEN" "Run these commands to set up Workload Identity (copy-paste ready):"
+    echo ""
+    cat << GCPCMDS
+# 1. Create the GCP Service Account
+gcloud iam service-accounts create ${gsa_name} \\
+  --project=${proj} \\
+  --display-name="AIOStack Outpost"
+
+# 2. Grant IAM read permissions
+gcloud projects add-iam-policy-binding ${proj} \\
+  --member="serviceAccount:${gsa_email}" \\
+  --role="roles/iam.securityReviewer"
+
+# 3. Allow the Kubernetes SA to impersonate the GCP SA
+gcloud iam service-accounts add-iam-policy-binding ${gsa_email} \\
+  --role="roles/iam.workloadIdentityUser" \\
+  --member="serviceAccount:${proj}.svc.id.goog[${NAMESPACE}/${ksa_name}]"
+GCPCMDS
+
+    echo ""
+    print_info "Expected service account email: ${gsa_email}"
+    echo ""
+
+    while true; do
+        GCP_SERVICE_ACCOUNT=$(prompt "Paste your GCP Service Account email (press Enter to skip)" "")
+        GCP_SERVICE_ACCOUNT=$(echo "$GCP_SERVICE_ACCOUNT" | xargs)
+
+        if [[ -z "$GCP_SERVICE_ACCOUNT" ]]; then
+            print_warning "No GCP SA provided — outpost will not be able to enumerate IAM roles."
+            break
+        elif [[ "$GCP_SERVICE_ACCOUNT" =~ ^[^@]+@[^@]+\.iam\.gserviceaccount\.com$ ]]; then
+            print_success "GCP service account accepted."
+            break
+        else
+            print_error "That doesn't look like a valid GCP service account email."
+            print_info "Expected format: name@project.iam.gserviceaccount.com"
+        fi
+    done
+}
+
 # Review configuration
 review_config() {
     print_step "Reviewing Configuration"
@@ -566,6 +790,16 @@ review_config() {
     echo "  Cloud Provider:          ${CLOUD_PROVIDER}"
     echo "  Region:                  ${REGION}"
     echo "  Cluster ID:              ${CLUSTER_ID}"
+    echo ""
+
+    print_color "$BOLD" "IAM Access:"
+    if [[ -n "$IAM_ROLE_ARN" ]]; then
+        echo "  AWS IAM Role ARN:        ${IAM_ROLE_ARN}"
+    elif [[ -n "$GCP_SERVICE_ACCOUNT" ]]; then
+        echo "  GCP Service Account:     ${GCP_SERVICE_ACCOUNT}"
+    else
+        echo "  IAM Access:              not configured (IAM fetch disabled)"
+    fi
     echo ""
 
     # Show the helm command
@@ -625,6 +859,8 @@ deploymentType: ${DEPLOYMENT_TYPE}
 cloudProvider: ${CLOUD_PROVIDER}
 region: ${REGION}
 clusterId: ${CLUSTER_ID}
+iamRoleArn: ${IAM_ROLE_ARN}
+gcpServiceAccount: ${GCP_SERVICE_ACCOUNT}
 EOF
 
     chmod 600 "$config_file"
@@ -662,6 +898,8 @@ load_config() {
             cloudProvider) CLOUD_PROVIDER="$value" ;;
             region) REGION="$value" ;;
             clusterId) CLUSTER_ID="$value" ;;
+            iamRoleArn) IAM_ROLE_ARN="$value" ;;
+            gcpServiceAccount) GCP_SERVICE_ACCOUNT="$value" ;;
         esac
     done < "$config_file"
 
@@ -741,6 +979,13 @@ install_aurva() {
         --set "observer.version=${OBSERVER_VERSION}"
         --set "outpost.version=${OUTPOST_VERSION}"
     )
+
+    if [[ -n "$IAM_ROLE_ARN" ]]; then
+        helm_cmd+=(--set "outpost.serviceAccount.aws.iamRoleArn=${IAM_ROLE_ARN}")
+    fi
+    if [[ -n "$GCP_SERVICE_ACCOUNT" ]]; then
+        helm_cmd+=(--set "outpost.serviceAccount.gcp.serviceAccount=${GCP_SERVICE_ACCOUNT}")
+    fi
 
     print_verbose "Running: ${helm_cmd[*]}"
 
@@ -966,6 +1211,7 @@ main() {
 
     configure_namespace
     collect_env_config
+    collect_iam_config
     review_config
     install_aurva
     verify_deployment

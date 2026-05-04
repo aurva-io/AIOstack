@@ -556,12 +556,22 @@ collect_iam_config() {
 _collect_aws_iam_config() {
     print_color "$BOLD" "AWS IAM Access via IRSA (IAM Roles for Service Accounts)"
     echo ""
-    print_info "The outpost assumes an IAM role through IRSA to call IAM read APIs."
+    print_info "The outpost assumes an IAM role through IRSA to call read-only APIs."
     print_info "Required permissions on the role:"
     echo ""
+    print_color "$WHITE" "   IAM inventory:"
     print_color "$WHITE" "   iam:ListRoles                iam:GetRole"
     print_color "$WHITE" "   iam:ListAttachedRolePolicies  iam:GetPolicy  iam:GetPolicyVersion"
     print_color "$WHITE" "   iam:ListRolePolicies          iam:GetRolePolicy"
+    echo ""
+    print_color "$WHITE" "   RDS datasource inventory:"
+    print_color "$WHITE" "   rds:DescribeDBInstances      rds:DescribeDBClusters"
+    print_color "$WHITE" "   rds:DescribeDBSubnetGroups   rds:ListTagsForResource"
+    echo ""
+    print_color "$WHITE" "   S3 datasource inventory:"
+    print_color "$WHITE" "   s3:ListAllMyBuckets          s3:GetBucketLocation"
+    print_color "$WHITE" "   s3:GetBucketPublicAccessBlock s3:GetBucketTagging"
+    print_color "$WHITE" "   s3:GetBucketVersioning       s3:GetBucketAcl"
     echo ""
 
     # Attempt to derive account ID and OIDC issuer automatically
@@ -606,15 +616,42 @@ aws iam create-policy \\
   --policy-name AIOStackOutpostSecureReadOnlyPolicy \\
   --policy-document '{
     "Version": "2012-10-17",
-    "Statement": [{
-      "Effect": "Allow",
-      "Action": [
-        "iam:ListRoles","iam:GetRole",
-        "iam:ListAttachedRolePolicies","iam:GetPolicy","iam:GetPolicyVersion",
-        "iam:ListRolePolicies","iam:GetRolePolicy"
-      ],
-      "Resource": "*"
-    }]
+    "Statement": [
+      {
+        "Sid": "IAMInventory",
+        "Effect": "Allow",
+        "Action": [
+          "iam:ListRoles","iam:GetRole",
+          "iam:ListAttachedRolePolicies","iam:GetPolicy","iam:GetPolicyVersion",
+          "iam:ListRolePolicies","iam:GetRolePolicy"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "RDSDatasourceInventory",
+        "Effect": "Allow",
+        "Action": [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBSubnetGroups",
+          "rds:ListTagsForResource"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Sid": "S3DatasourceInventory",
+        "Effect": "Allow",
+        "Action": [
+          "s3:ListAllMyBuckets",
+          "s3:GetBucketLocation",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketTagging",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketAcl"
+        ],
+        "Resource": "*"
+      }
+    ]
   }'
 
 # 2. Create the role with OIDC trust for this cluster's service account
@@ -648,7 +685,7 @@ AWSCMDS
         IAM_ROLE_ARN=$(echo "$IAM_ROLE_ARN" | xargs)
 
         if [[ -z "$IAM_ROLE_ARN" ]]; then
-            print_warning "No IAM role provided — outpost will not be able to enumerate IAM roles."
+            print_warning "No IAM role provided — outpost will not be able to enumerate IAM roles, RDS instances, or S3 buckets."
             break
         elif [[ "$IAM_ROLE_ARN" =~ ^arn:aws:iam::[0-9]{12}:role/.+$ ]]; then
             print_success "IAM role ARN accepted."
