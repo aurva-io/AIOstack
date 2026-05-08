@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ArrowRight, Binoculars, Fingerprint, GitBranch, Radar, ShieldCheck, SlidersHorizontal } from "lucide-react"
 
 const capabilities = [
@@ -50,10 +51,10 @@ export default function PlatformPage() {
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <a href="/solutions" className="inline-flex items-center rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/82 transition hover:bg-white/10">
+          <Link href="/solutions" className="inline-flex items-center rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/82 transition hover:bg-white/10">
             Explore solutions
             <ArrowRight size={16} className="ml-2" />
-          </a>
+          </Link>
         </div>
       </section>
     </main>
