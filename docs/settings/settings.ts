@@ -5,17 +5,21 @@ export const siteicon2 = "/logo2.svg"
 export const gtm = "GTM-XXXXXXX"
 export const gtmconnected = true
 
-export const sitename = "AIOStack | The AI Security Platform"
-export const description = ""
+export const sitename = "Aurva | Runtime Security for Agentic Data Access"
+export const description = "Aurva helps security teams discover AI agents, map identity chains, monitor sensitive data access, and detect when authorized agent behavior becomes inappropriate."
 export const keywords = [
-  "Next.js",
-  "documentation",
   "Aurva",
-  "open source",
-  "SEO",
+  "agentic security",
+  "AI agent security",
+  "runtime data security",
+  "non-human identity security",
+  "sensitive data monitoring",
+  "eBPF security",
+  "shadow AI",
+  "MCP security",
 ]
 export const urlimage = "/images/og-image.png"
-export const imagealt = "Aurva Documentation"
+export const imagealt = "Aurva runtime security for agentic data access"
 export const twitterhandle = "@Aurva"
 
 export const companyname = "Aurva Inc"
