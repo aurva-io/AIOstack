@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Poppins } from "next/font/google"
 import { GoogleTagManager } from "@next/third-parties/google"
 
@@ -13,7 +13,7 @@ import "@/styles/globals.css"
 const inter = Poppins({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: "500"
+  weight: ["300", "400", "500", "600", "700"],
 })
 
 const baseUrl = Settings.metadataBase
@@ -47,6 +47,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: baseUrl,
   },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 }
 
 export default function RootLayout({

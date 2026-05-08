@@ -1,6 +1,24 @@
 import { PageRoutes } from "@/lib/pageroutes"
 
-export const Navigations = [
+type NavigationItem = {
+  title: string
+  href: string
+  external?: boolean
+}
+
+export const Navigations: NavigationItem[] = [
+  {
+    title: "Platform",
+    href: "/platform",
+  },
+  {
+    title: "Solutions",
+    href: "/solutions",
+  },
+  {
+    title: "Use cases",
+    href: "/use-cases",
+  },
   {
     title: "Docs",
     href: `/docs${PageRoutes[0].href}`,
@@ -9,21 +27,8 @@ export const Navigations = [
     title: "Blog",
     href: "/blog",
   },
-  {
-    title: "Pricing",
-    href: "/pricing",
-  },
-  {
-    title: "About",
-    href: "/about",
-  },
-  {
-    title: "Home",
-    href: "https://aurva.io",
-    external: false,
-  },
 ]
 
 export const GitHubLink = {
-  href: "https://github.com/aurva-io/ai-observability-stack",
+  href: "https://github.com/aurva-io/AIOstack",
 }

@@ -7,7 +7,7 @@ import { GitHubLink } from "@/settings/navigation"
 
 export function Footer() {
   return (
-    <footer className="border-t py-8 text-sm text-muted-foreground">
+    <footer className="border-t border-white/10 bg-[#050B17] py-8 text-sm text-white/55">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <div className="flex items-center gap-2">
@@ -28,22 +28,28 @@ export function Footer() {
               </Link>
             )}
             <span>
-              AIOStack •
-              &copy; {new Date().getFullYear()}{" "}  <Link className="font-semibold hover:text-foreground" href={Company.link}>
+              Aurva •
+              &copy; {new Date().getFullYear()}{" "}  <Link className="font-semibold hover:text-white" href={Company.link}>
                 {Company.name}
               </Link>{" "}
 
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             <Link href="https://github.com/aurva-io/AIOstack/blob/main/LICENSE" target="_blank"
-              rel="noopener noreferrer" className="hover:text-foreground">
+              rel="noopener noreferrer" className="hover:text-white">
               License
             </Link>
-            <Link href="/docs/home" className="hover:text-foreground">
+            <Link href="/platform" className="hover:text-white">
+              Platform
+            </Link>
+            <Link href="/solutions" className="hover:text-white">
+              Solutions
+            </Link>
+            <Link href="/docs/home" className="hover:text-white">
               Docs
             </Link>
-            <Link href="/faqs" className="hover:text-foreground">
+            <Link href="/faqs" className="hover:text-white">
               FAQs
             </Link>
             {GitHubLink.href && (
@@ -51,7 +57,7 @@ export function Footer() {
                 href={GitHubLink.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 hover:text-foreground"
+                className="inline-flex items-center gap-1 hover:text-white"
               >
                 <LuGithub className="h-3.5 w-3.5" /> GitHub
               </Link>

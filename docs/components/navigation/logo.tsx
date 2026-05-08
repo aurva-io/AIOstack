@@ -1,34 +1,20 @@
 import Image from "next/image"
 import { Link } from "lib/transition"
 
-import { Settings } from "@/lib/meta"
+export function Logo({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const isLight = tone === "light"
 
-export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5">
-      <div className="relative w-7 h-7 perspective-1000">
-        <div className="relative w-full h-full preserve-3d animate-cube-rotate">
-          <Image
-            src={Settings.siteicon}
-            alt={`${Settings.title} main logo`}
-            width={28}
-            height={28}
-            loading="lazy"
-            decoding="async"
-            className="dark:invert absolute inset-0 backface-hidden"
-          />
-          <Image
-            src={Settings.siteicon2}
-            alt={`${Settings.title} secondary logo`}
-            width={28}
-            height={28}
-            loading="lazy"
-            decoding="async"
-            className="absolute inset-0 backface-hidden rotate-y-180"
-          />
-        </div>
-      </div>
-      <span className="text-md font-semibold">AIOStack</span>
+    <Link href="/" className="flex items-center">
+      <Image
+        src={isLight ? "/aiostack-logos/aurva.svg" : "/aiostack-logos/aurva-mono.svg"}
+        alt="Aurva"
+        width={isLight ? 121 : 180}
+        height={isLight ? 42 : 61}
+        loading="eager"
+        decoding="async"
+        className="h-8 w-auto"
+      />
     </Link>
   )
 }
