@@ -523,9 +523,13 @@ function InstallSection({ onDemo }: { onDemo: () => void }) {
   const command = activeCommand === "install" ? "curl -fsSL https://aurva.ai/install.sh | bash" : "curl -fsSL https://aurva.ai/uninstall.sh | bash"
 
   async function copyCommand() {
-    await navigator.clipboard.writeText(command)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1600)
+    try {
+      await navigator.clipboard.writeText(command)
+      setCopied(true)
+      window.setTimeout(() => setCopied(false), 1600)
+    } catch {
+      // clipboard unavailable — silently ignore or show fallback
+    }
   }
 
   return (
