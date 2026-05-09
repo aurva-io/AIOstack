@@ -26,19 +26,20 @@ type CustomerLogo = {
   src?: string
   text?: string
   className?: string
+  logoClassName?: string
 }
 
 const customers: CustomerLogo[] = [
-  { name: "Smallest.ai", text: "smallest.ai", className: "font-light" },
-  { name: "WisdomAI", text: "WisdomAI", className: "font-semibold" },
-  { name: "Yubi", text: "Yubi", className: "font-semibold" },
+  { name: "Smallest.ai", text: "smallest.ai" },
+  { name: "WisdomAI", text: "WisdomAI" },
+  { name: "Yubi", src: "/customer-logos/yubi.svg" },
   { name: "Meesho", src: "/customer-logos/meesho.svg" },
-  { name: "slice", src: "/customer-logos/slice.png" },
-  { name: "Razorpay", src: "/customer-logos/razorpay.png" },
-  { name: "Nykaa", src: "/aiostack-logos/nykaa.svg" },
+  { name: "slice", src: "/customer-logos/slice.svg", logoClassName: "max-h-[30px] max-w-[142px] sm:max-h-[32px] sm:max-w-[148px]" },
+  { name: "Razorpay", src: "/customer-logos/razorpay.svg" },
+  { name: "Nykaa", src: "/aiostack-logos/nykaa.svg", logoClassName: "max-h-[30px] max-w-[142px] sm:max-h-[32px] sm:max-w-[148px]" },
   { name: "Rapyuta Robotics", src: "/aiostack-logos/rapyuta.svg" },
-  { name: "Cyware", text: "CYWARE", className: "font-semibold tracking-[0.02em]" },
-  { name: "R Systems", text: "R Systems", className: "font-semibold" },
+  { name: "Cyware", src: "/customer-logos/cyware.svg", logoClassName: "max-h-[26px] max-w-[140px] sm:max-w-[150px]" },
+  { name: "R Systems", src: "/customer-logos/rsi.svg" },
   { name: "CansoAI", src: "/customer-logos/canso.svg" },
   { name: "Yugen AI", src: "/aiostack-logos/yugen.svg" },
   { name: "Instacart", src: "/customer-logos/instacart.svg" },
@@ -107,51 +108,16 @@ function Button({
 }
 
 function RuntimeMatrix() {
-  const rows = [
-    { label: "Actor", value: "claims_ops", icon: UserRound, states: [1, 1, 0, 0, 0] },
-    { label: "Agent", value: "claims assistant", icon: Bot, states: [0, 1, 1, 0, 0] },
-    { label: "Identity", value: "svc_claims", icon: Fingerprint, states: [0, 1, 1, 1, 0] },
-    { label: "Data", value: "KYC + balance", icon: Database, states: [0, 0, 1, 1, 1] },
-    { label: "Destination", value: "external API", icon: Globe2, states: [0, 0, 0, 1, 2] },
-  ]
-
   return (
-    <div className="relative overflow-hidden rounded-[18px] border border-[#D5D1C7] bg-[#0E1514] p-5 shadow-[0_24px_64px_rgba(31,34,31,0.14)] md:p-6">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(128,203,81,0.035)_1px,transparent_1px),linear-gradient(90deg,rgba(128,203,81,0.03)_1px,transparent_1px)] bg-[size:44px_44px]" />
-      <div className="relative flex items-center justify-between border-b border-white/[0.08] pb-4">
-        <div className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#80CB51]">AIOStack</div>
-        <div className="rounded-[8px] border border-white/[0.12] px-3 py-1 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">Runtime view</div>
-      </div>
-
-      <div className="relative mt-5 grid gap-2">
-        {rows.map(({ label, value, icon: Icon, states }) => (
-          <div key={label} className="grid min-h-[58px] grid-cols-[116px_42px_1fr] items-center gap-4 rounded-[12px] border border-white/[0.045] bg-white/[0.018] px-3 sm:grid-cols-[128px_42px_1fr]">
-            <div>
-              <div className="text-[11px] font-medium uppercase tracking-[0.16em] text-white">{label}</div>
-              <div className="mt-0.5 text-[11px] leading-4 text-slate-500">{value}</div>
-            </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-[#80CB51]/20 bg-[#80CB51]/[0.07] text-[#80CB51]">
-              <Icon className="h-[18px] w-[18px]" strokeWidth={1.65} />
-            </div>
-            <div className="grid grid-cols-5 items-center gap-2">
-              {states.map((state, idx) => (
-                <div key={idx} className="flex items-center">
-                  <div className={cn("h-px flex-1", state === 2 ? "bg-[#A058AE]/75" : state === 1 ? "bg-[#80CB51]/48" : "bg-white/[0.10]")} />
-                  <div className={cn("h-2.5 w-2.5 rounded-full border", state === 2 ? "border-[#A058AE] bg-[#A058AE]" : state === 1 ? "border-[#80CB51] bg-[#80CB51]" : "border-white/25 bg-[#0E1514]")} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="relative mt-4 grid grid-cols-[1fr_auto] items-center gap-4 rounded-[12px] border border-[#A058AE]/22 bg-[#A058AE]/[0.075] px-4 py-3">
-        <div>
-          <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-[#E2B9EB]">Context break</div>
-          <div className="mt-1 text-sm text-slate-300">Sensitive data exits the expected workflow.</div>
-        </div>
-        <div className="h-2.5 w-2.5 rounded-full bg-[#A058AE]" />
-      </div>
+    <div className="relative mx-auto aspect-[1322/842] w-full max-w-[640px] overflow-hidden shadow-[0_20px_54px_rgba(31,34,31,0.13)]">
+      <Image
+        src="/hero-runtime-evidence-chain.png"
+        alt="Runtime evidence chain showing actor, agent, identity, database principal, data, destination, allowed access, and context break"
+        fill
+        priority
+        sizes="(max-width: 1024px) 100vw, 640px"
+        className="object-contain"
+      />
     </div>
   )
 }
@@ -160,20 +126,19 @@ function Hero({ onDemo }: { onDemo: () => void }) {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_0%,rgba(128,203,81,0.08),transparent_30%),radial-gradient(circle_at_82%_18%,rgba(160,88,174,0.08),transparent_26%)]" />
-      <Shell className="relative flex flex-col justify-center gap-9 py-10 sm:py-12 lg:min-h-[calc(100svh-4rem)] lg:gap-12 xl:gap-14">
-        <div className="grid items-center gap-9 md:gap-10 lg:grid-cols-[0.92fr_1.08fr] xl:grid-cols-[0.9fr_1.1fr]">
+      <Shell className="relative flex flex-col gap-7 py-8 sm:py-9 lg:py-10 xl:py-11">
+        <div className="grid items-center gap-8 md:gap-9 lg:grid-cols-[0.88fr_1.12fr] xl:grid-cols-[0.86fr_1.14fr]">
           <div>
             <Eyebrow>Runtime security for agentic data access</Eyebrow>
-            <h1 className="mt-6 max-w-3xl text-[42px] font-light leading-[1.03] text-[#111411] sm:text-[54px] md:text-[64px] lg:text-[72px] xl:text-[76px]">
+            <h1 className="mt-6 max-w-3xl text-[42px] font-light leading-[1.03] text-[#111411] sm:text-[54px] md:text-[62px] lg:text-[66px] xl:text-[72px]">
               Authorized <span className="text-[#4B8E35]">≠</span> appropriate.
             </h1>
-            <p className="mt-5 max-w-2xl text-[20px] font-light leading-8 text-[#2A2F2A] md:text-[26px] md:leading-10 lg:text-[28px]">
-              AI agents can have the right permissions and still use sensitive data in the wrong context.
+            <p className="mt-5 max-w-[680px] text-[18px] font-light leading-7 text-[#2A2F2A] md:text-[20px] md:leading-8 lg:text-[21px]">
+              AIOStack connects agents, identities, DB principals, data, and destinations into a single runtime evidence chain.
+              <br className="hidden sm:block" />
+              Permissions alone do not make agents safe. <span className="text-[#3D7F2D]">Context does.</span>
             </p>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[#686D64] md:text-lg">
-              AIOStack follows every agentic access path from actor to identity to DB principal to sensitive data to destination, so teams can see when trusted access becomes risky.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-7 flex flex-wrap gap-3">
               <Button href="https://aurva.ai/#install">Try AIOStack Free</Button>
               <Button onClick={onDemo} variant="secondary">
                 Talk to an Engineer
@@ -190,17 +155,21 @@ function Hero({ onDemo }: { onDemo: () => void }) {
 
 function LogoTile({ customer, compact = false }: { customer: CustomerLogo; compact?: boolean }) {
   return (
-    <div className={cn("flex shrink-0 items-center justify-center overflow-hidden", compact ? "h-10 w-full px-2" : "h-14 w-[172px] px-5 sm:w-[196px]")}>
+    <div className={cn("flex shrink-0 items-center justify-center overflow-hidden", compact ? "h-9 w-full px-2" : "h-10 w-[134px] px-3 sm:w-[148px] md:w-[156px]")}>
       {customer.src ? (
         <Image
           src={customer.src}
           alt={`${customer.name} logo`}
           width={172}
           height={52}
-          className={cn("h-auto w-auto object-contain", compact ? "max-h-7 max-w-[130px]" : "max-h-8 max-w-[150px] sm:max-w-[170px]")}
+          className={cn(
+            "h-auto w-auto object-contain",
+            compact ? "max-h-[22px] max-w-[112px]" : "max-h-[24px] max-w-[116px] sm:max-w-[124px] md:max-w-[130px]",
+            !compact && customer.logoClassName
+          )}
         />
       ) : (
-        <span className={cn("whitespace-nowrap leading-none text-[#111411]", compact ? "text-[18px]" : "text-[22px]", customer.className)}>{customer.text}</span>
+        <span className={cn("whitespace-nowrap font-medium leading-none text-[#111411]", compact ? "text-base" : "text-[18px]", customer.className)}>{customer.text}</span>
       )}
     </div>
   )
@@ -212,15 +181,15 @@ function TrustRail() {
   return (
     <div className="pb-2 pt-1 sm:pb-3">
       <div className="text-center text-[10px] font-medium uppercase tracking-[0.28em] text-[#858A80]">Trusted by teams building with AI, data, and automation</div>
-      <div className="mt-5 grid grid-cols-2 items-center gap-x-8 gap-y-5 px-2 sm:hidden">
+      <div className="mt-5 grid grid-cols-2 items-center gap-x-6 gap-y-4 px-2 sm:hidden">
         {customers.slice(0, 6).map((customer) => (
           <LogoTile compact customer={customer} key={customer.name} />
         ))}
       </div>
-      <div className="relative mt-6 hidden overflow-hidden py-2 sm:block">
+      <div className="relative mt-5 hidden overflow-hidden py-1 sm:block">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#F7F5EF] to-transparent md:w-28" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#F7F5EF] to-transparent md:w-28" />
-        <div className="flex w-max animate-[customer-marquee_42s_linear_infinite] items-center gap-4">
+        <div className="flex w-max animate-[customer-marquee_42s_linear_infinite] items-center gap-3">
           {rail.map((customer, index) => (
             <LogoTile customer={customer} key={`${customer.name}-${index}`} />
           ))}
