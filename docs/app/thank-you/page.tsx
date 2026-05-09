@@ -17,11 +17,11 @@ export default function ThankYou() {
           <Check size={32} className="text-emerald-600 dark:text-emerald-300" />
         </div>
 
-        <h1 className="text-3xl font-semibold text-foreground mb-4">
+        <h1 className="type-section-title mb-4 text-foreground">
           Thank you for reaching out!
         </h1>
 
-        <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+        <p className="type-body mb-8 text-muted-foreground">
           We&apos;ve received your message and one of our engineers will get back to you within 24 hours.
         </p>
 

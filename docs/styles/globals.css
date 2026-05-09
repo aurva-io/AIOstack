@@ -174,6 +174,48 @@
   }
 }
 
+@layer components {
+  .type-eyebrow {
+    @apply inline-flex items-center gap-2 rounded-[9px] border border-[#80CB51]/25 bg-[#80CB51]/10 px-3 py-1.5 text-[10px] font-medium uppercase leading-none tracking-[0.24em] text-[#80CB51];
+  }
+
+  .type-eyebrow-light {
+    @apply border-[#80CB51]/30 text-[#3F7D2D];
+  }
+
+  .type-hero {
+    @apply text-[38px] font-light leading-[1.04] sm:text-[50px] md:text-[58px] lg:text-[62px] xl:text-[68px];
+  }
+
+  .type-hero-compact {
+    @apply text-[34px] font-light leading-[1.06] sm:text-[44px] md:text-[52px] lg:text-[58px];
+  }
+
+  .type-section-title {
+    @apply text-[30px] font-light leading-[1.08] md:text-[42px];
+  }
+
+  .type-section-title-large {
+    @apply text-[30px] font-light leading-[1.08] md:text-[42px] lg:text-[50px];
+  }
+
+  .type-card-title {
+    @apply text-xl font-medium leading-[1.18];
+  }
+
+  .type-body-lg {
+    @apply text-[18px] font-light leading-7 md:text-[20px] md:leading-8 lg:text-[21px];
+  }
+
+  .type-body {
+    @apply text-base font-light leading-7 md:text-lg;
+  }
+
+  .type-body-sm {
+    @apply text-sm font-light leading-6;
+  }
+}
+
 .typography {
   @apply prose prose-lg prose-zinc prose-headings:scroll-m-20 prose-code:rounded-md prose-code:p-1 prose-code:leading-6 prose-code:before:content-none prose-code:after:content-none prose-pre:border prose-pre:bg-neutral-100 prose-img:rounded-md prose-img:border;
   @apply prose-code:text-sm w-[85vw] !min-w-full pt-2 sm:mx-auto sm:w-full;

@@ -12,10 +12,10 @@ export default async function BlogPage() {
         <div className="mb-16">
           <div className="flex items-center gap-2 mb-4">
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-4xl mb-5">
+          <h1 className="type-hero-compact mb-5 text-foreground">
             Blog
           </h1>
-          <p className="text-lg leading-relaxed text-muted-foreground max-w-4xl">
+          <p className="type-body-lg max-w-4xl text-muted-foreground">
             Stay up to date with the latest updates, insights, and announcements from AIOStack
           </p>
         </div>
@@ -58,12 +58,12 @@ export default async function BlogPage() {
                     </div>
 
                     {/* Title */}
-                    <h2 className="mb-4 text-2xl font-bold text-foreground transition-colors duration-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 leading-tight">
+                    <h2 className="type-card-title mb-4 text-foreground transition-colors duration-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
                       {post.title}
                     </h2>
 
                     {/* Description */}
-                    <p className="text-base leading-relaxed text-muted-foreground mb-6">
+                    <p className="type-body-sm mb-6 text-muted-foreground">
                       {post.description}
                     </p>
 

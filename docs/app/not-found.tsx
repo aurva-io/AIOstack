@@ -1,7 +1,6 @@
 import Image from "next/image"
 import { Link } from "lib/transition"
 import { Settings } from "@/lib/meta"
-import { ArrowRight } from "lucide-react"
 
 
 export default function NotFound() {
@@ -20,16 +19,12 @@ export default function NotFound() {
             decoding="async"
             className="dark:invert"
           />
-          <h1 className="text-4xl sm:text-4xl font-bold">
+          <h1 className="type-section-title text-foreground">
             404 | Page Not Found
           </h1>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
-
-        </h2>
-
-        <p className="text-base sm:text-lg text-muted-foreground mb-10 leading-relaxed max-w-2xl mx-auto">
+        <p className="type-body mb-10 max-w-2xl mx-auto text-muted-foreground">
           Space is big. You just won&apos;t believe how vastly, hugely, mind-bogglingly big it is.
           Unfortunately, the page you&apos;re looking for isn&apos;t here.<br />Let&apos;s get you back on track.
         </p>

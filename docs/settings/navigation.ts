@@ -27,6 +27,10 @@ export const Navigations: NavigationItem[] = [
     title: "Blog",
     href: "/blog",
   },
+  {
+    title: "About us",
+    href: "/about-us",
+  },
 ]
 
 export const GitHubLink = {

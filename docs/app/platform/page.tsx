@@ -12,14 +12,14 @@ const capabilities = [
 
 export default function PlatformPage() {
   return (
-    <main className="bg-[#050605] text-white">
-      <section className="border-b border-white/10 py-24">
+    <main className="bg-[#F7F5EF] text-[#111411]">
+      <section className="border-b border-[#E2DED5] py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#79d957]">Platform</p>
-          <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-7xl">
+          <p className="type-eyebrow type-eyebrow-light border-transparent bg-transparent px-0 py-0">Platform</p>
+          <h1 className="type-hero mt-5 max-w-5xl">
             Runtime security for agentic data access.
           </h1>
-          <p className="mt-8 max-w-3xl text-xl leading-9 text-white/50">
+          <p className="type-body-lg mt-8 max-w-3xl text-[#686D64]">
             Aurva keeps agents, identities, data access, and downstream movement in one runtime context so teams can decide what matters.
           </p>
         </div>
@@ -28,22 +28,22 @@ export default function PlatformPage() {
       <section className="py-20">
         <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:px-6 md:grid-cols-2 lg:grid-cols-3 lg:px-8">
           {capabilities.map(([title, eyebrow, text, Icon]) => (
-            <div key={title} className="rounded-lg border border-white/10 bg-white/[0.03] p-6">
+            <div key={title} className="rounded-lg border border-[#D3D0C6] bg-[#FFFDF8] p-6 shadow-[0_16px_44px_rgba(31,34,31,0.06)]">
               <div className="flex items-center justify-between">
-                <div className="text-xs font-semibold uppercase tracking-wide text-white/35">{eyebrow}</div>
-                <Icon size={21} className="text-[#79d957]" />
-              </div>
-              <h2 className="mt-10 text-3xl font-semibold tracking-tight">{title}</h2>
-              <p className="mt-4 text-sm leading-7 text-white/48">{text}</p>
+              <div className="text-[10px] font-medium uppercase tracking-[0.24em] text-[#8A8F86]">{eyebrow}</div>
+              <Icon size={21} className="text-[#4B8E35]" />
+            </div>
+              <h2 className="type-section-title mt-10">{title}</h2>
+              <p className="type-body-sm mt-4 text-[#686D64]">{text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="border-y border-white/10 py-20">
+      <section className="border-y border-[#E2DED5] bg-[#FFFDF8] py-20">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
-          <h2 className="text-4xl font-semibold tracking-tight sm:text-6xl">Built around one question.</h2>
-          <p className="text-2xl leading-10 text-white/50">
+          <h2 className="type-section-title-large">Built around one question.</h2>
+          <p className="text-xl font-light leading-8 text-[#686D64] md:text-2xl md:leading-10">
             Was this data access appropriate for the agent, identity, workflow, data sensitivity, timing, and destination?
           </p>
         </div>
@@ -51,7 +51,7 @@ export default function PlatformPage() {
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Link href="/solutions" className="inline-flex items-center rounded-lg border border-white/15 px-5 py-3 text-sm font-semibold text-white/82 transition hover:bg-white/10">
+          <Link href="/solutions" className="inline-flex items-center rounded-[10px] border border-[#C9C6BC] bg-white/70 px-5 py-3 text-sm font-medium text-[#171A18] transition hover:bg-white">
             Explore solutions
             <ArrowRight size={16} className="ml-2" />
           </Link>

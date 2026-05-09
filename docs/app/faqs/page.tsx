@@ -8,17 +8,17 @@ function SectionHeader({ eyebrow, title, subtitle, center = false }: { eyebrow?:
     return (
         <div className={`mb-8 ${center ? "text-center" : ""}`}>
             {eyebrow && (
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground ring-1 ring-border">
+                <div className="type-eyebrow type-eyebrow-light mb-3">
                     <span>{eyebrow}</span>
                 </div>
             )}
             {title && (
-                <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                <h2 className="type-section-title text-foreground">
                     {title}
                 </h2>
             )}
             {subtitle && (
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base md:leading-7">
+                <p className="type-body mt-3 text-muted-foreground">
                     {subtitle}
                 </p>
             )}

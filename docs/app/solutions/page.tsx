@@ -9,11 +9,11 @@ const solutionGroups = [
 
 export default function SolutionsPage() {
   return (
-    <main className="bg-[#050605] text-white">
-      <section className="border-b border-white/10 py-24">
+    <main className="bg-[#F7F5EF] text-[#111411]">
+      <section className="border-b border-[#E2DED5] py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#79d957]">Solutions</p>
-          <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.04] tracking-tight sm:text-7xl">
+          <p className="type-eyebrow type-eyebrow-light border-transparent bg-transparent px-0 py-0">Solutions</p>
+          <h1 className="type-hero mt-5 max-w-5xl">
             Secure sensitive data use across AI, identities, and runtime workflows.
           </h1>
         </div>
@@ -22,13 +22,13 @@ export default function SolutionsPage() {
       <section className="py-20">
         <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
           {solutionGroups.map(([title, text, links, Icon]) => (
-            <article key={title} className="rounded-lg border border-white/10 bg-white/[0.03] p-6">
-              <Icon size={23} className="text-[#79d957]" />
-              <h2 className="mt-10 text-3xl font-semibold tracking-tight">{title}</h2>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-white/48">{text}</p>
+            <article key={title} className="rounded-lg border border-[#D3D0C6] bg-[#FFFDF8] p-6 shadow-[0_16px_44px_rgba(31,34,31,0.06)]">
+              <Icon size={23} className="text-[#4B8E35]" />
+              <h2 className="type-section-title mt-10">{title}</h2>
+              <p className="type-body-sm mt-4 max-w-xl text-[#686D64]">{text}</p>
               <div className="mt-8 grid gap-2">
                 {links.map((link) => (
-                  <a key={link} href="/use-cases" className="flex items-center justify-between border-t border-white/10 py-3 text-sm font-semibold text-white/78">
+                  <a key={link} href="/use-cases" className="flex items-center justify-between border-t border-[#E2DED5] py-3 text-sm font-medium text-[#2A2F2A]">
                     {link}
                     <ArrowRight size={15} />
                   </a>

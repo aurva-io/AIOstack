@@ -14,17 +14,17 @@ function SectionHeader({ eyebrow, title, subtitle, center = false }: { eyebrow?:
     return (
         <div className={`mb-8 ${center ? "text-center" : ""}`}>
             {eyebrow && (
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-muted/50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground ring-1 ring-border">
+                <div className="type-eyebrow type-eyebrow-light mb-3">
                     <span>{eyebrow}</span>
                 </div>
             )}
             {title && (
-                <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                <h2 className="type-section-title text-foreground">
                     {title}
                 </h2>
             )}
             {subtitle && (
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base md:leading-7">
+                <p className="type-body mt-3 text-muted-foreground">
                     {subtitle}
                 </p>
             )}
@@ -75,7 +75,7 @@ function ContactModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 
                 {/* Header */}
                 <div className="mb-6">
-                    <h2 className="text-2xl font-semibold text-foreground">Talk to an Engineer</h2>
+                    <h2 className="type-section-title text-foreground">Talk to an Engineer</h2>
                     <p className="mt-2 text-sm text-muted-foreground">
                         Fill out the form below OR email us at support@aurva.io and a real person will get back to you within 24 hours.
 
@@ -187,10 +187,10 @@ export default function PricingPage() {
                     <div className="grid items-stretch gap-6 md:grid-cols-2">
 
                         <div className="rounded-2xl border border-border bg-card p-6 ring-1 ring-border">
-                            <div className="mb-3 text-xl font-semibold text-foreground">AIOStack Community</div>
+                            <div className="type-card-title mb-3 text-foreground">AIOStack Community</div>
                             <div className="mb-4 text-sm font-medium text-muted-foreground">AI Security Posture Management + Runtime Telemetry</div>
 
-                            <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                            <p className="type-body-sm mb-6 text-muted-foreground">
                                 The open-core foundation for AI runtime security. Deploy on your Kubernetes cluster in minutes and gain complete visibility into your AI infrastructure.
                             </p>
 
@@ -274,7 +274,7 @@ export default function PricingPage() {
                             </div>
                         </div>
                         <div className="rounded-2xl border border-emerald-400/30 bg-emerald-500/10 p-6 ring-1 ring-emerald-400/30">
-                            <div className="mb-3 text-xl font-semibold text-emerald-700 dark:text-emerald-200">
+                            <div className="type-card-title mb-3 text-emerald-700 dark:text-emerald-200">
                                 Aurva Enterprise
                             </div>
                             <div className="mb-4 text-sm font-medium text-emerald-700/90 dark:text-emerald-200/90">AISPM + AI Detection & Response (AIDR)</div>
@@ -358,4 +358,3 @@ export default function PricingPage() {
         </>
     )
 }
-

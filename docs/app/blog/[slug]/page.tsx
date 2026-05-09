@@ -37,11 +37,11 @@ export default async function BlogPostPage({ params }: PageProps) {
 
         <article>
           <header className="mb-8">
-            <h1 className="mb-3 text-4xl  font-semibold leading-tight tracking-tight text-foreground">
+            <h1 className="type-hero-compact mb-3 text-foreground">
               {frontmatter.title}
             </h1>
             {frontmatter.description && (
-              <p className="mb-5 text-lg leading-relaxed text-muted-foreground">
+              <p className="type-body-lg mb-5 text-muted-foreground">
                 {frontmatter.description}
               </p>
             )}
