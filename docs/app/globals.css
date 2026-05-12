@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/utils.css";
+@import "../styles/v4-landing.css";
 
 @import "tw-animate-css";
 

@@ -9,8 +9,8 @@ interface ConditionalPaddingProps {
 export function ConditionalPadding({ children }: ConditionalPaddingProps) {
     const pathname = usePathname()
 
-    // Remove padding for root route (/)
-    const shouldRemovePadding = pathname === "/"
+    // Remove padding for root (/) and docs pages
+    const shouldRemovePadding = pathname === "/" || pathname.startsWith("/docs")
 
     return (
         <main className={`h-auto ${shouldRemovePadding ? "" : "px-5 sm:px-8"}`}>

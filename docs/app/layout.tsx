@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
-import { Poppins } from "next/font/google"
+import { Poppins, Inter_Tight, JetBrains_Mono } from "next/font/google"
 import { GoogleTagManager } from "@next/third-parties/google"
 
 import { Settings } from "@/lib/meta"
-import { Footer } from "@/components/navigation/footer"
 import { Navbar } from "@/components/navigation/navbar"
 import { Providers } from "@/components/providers"
 import { ConditionalPadding } from "@/components/conditional-padding"
@@ -14,6 +13,18 @@ const inter = Poppins({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: "500"
+})
+
+const interTight = Inter_Tight({
+  variable: "--font-v4-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-v4-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
 })
 
 const baseUrl = Settings.metadataBase
@@ -57,11 +68,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       {Settings.gtmconnected && <GoogleTagManager gtmId={Settings.gtm} />}
-      <body className={`${inter.variable} font-regular overflow-x-hidden`}>
+      <body className={`${inter.variable} ${interTight.variable} ${jetbrainsMono.variable} font-regular overflow-x-hidden`}>
         <Providers>
           <Navbar />
           <ConditionalPadding>{children}</ConditionalPadding>
-          <Footer />
         </Providers>
       </body>
     </html>

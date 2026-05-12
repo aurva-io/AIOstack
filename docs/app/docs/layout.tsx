@@ -1,14 +1,18 @@
-import { Sidebar } from "@/components/navigation/sidebar"
+import { DocsSidebar } from "@/components/docs/DocsSidebar"
 
-export default function Documents({
+export default function DocsLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex items-start gap-14">
-      <Sidebar />
-      <div className="flex-1 md:flex-[6]">{children}</div>{" "}
+    <div className="docs-page">
+      <div className="docs-shell">
+        <DocsSidebar />
+        <main className="docs-main">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

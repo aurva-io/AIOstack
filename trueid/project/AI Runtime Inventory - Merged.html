@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AI Runtime Inventory — Merged</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    html, body, #root { height: 100%; }
+    body.canvas-host { background: #f0eee9; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<template id="__bundler_thumbnail" data-bg-color="#f0eee9">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect x="80" y="120" width="1040" height="80" rx="8" fill="#ffffff" stroke="#e7e5e4"/>
+    <rect x="110" y="150" width="280" height="20" rx="4" fill="#0c0a09"/>
+    <rect x="80" y="220" width="1040" height="480" rx="8" fill="#ffffff" stroke="#e7e5e4"/>
+  </svg>
+</template>
+<body class="canvas-host">
+  <div id="root"></div>
+
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="components.jsx"></script>
+  <script type="text/babel" src="detail-panel.jsx"></script>
+  <script type="text/babel" src="filters.jsx"></script>
+  <script type="text/babel" src="direction-2.jsx"></script>
+
+  <script type="text/babel" data-presets="react">
+    const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
+      "defaultSelectedRow": "aurva-pii-analyzer-uat"
+    }/*EDITMODE-END*/;
+
+    function App() {
+      React.useEffect(() => {
+        const handler = (e) => {};
+        window.addEventListener('message', handler);
+        return () => window.removeEventListener('message', handler);
+      }, []);
+
+      const initial = window.INVENTORY_ROWS.find(r => r.id === TWEAK_DEFAULS.defaultSelectedRow) || null;
+      const W = 1400, H = 900;
+
+      return (
+        <DesignCanvas>
+          <DCSection id="merged" title="AI Runtime Inventory — Balanced (v2)"
+                     subtitle="Prioritized by risk. Click any slot in a row to open its tab in the side panel.">
+            <DCArtboard id="balanced" label="Balanced · 4-column workload table" width={W} height={H}>
+              <div className="artboard-frame" style={{width: W, height: H}}>
+                <DirectionBalanced initialSelected={null} />
+              </div>
+            </DCArtboard>
+            <DCArtboard id="risks-tab" label="Detail panel → Risks tab" width={W} height={H}>
+              <div className="artboard-frame" style={{width: W, height: H}}>
+                <DirectionBalanced initialSelected={initial} />
+              </div>
+            </DCArtboard>
+          </DCSection>
+
+          <DCPostIt x={30} y={40} w={260}>
+            <b>What changed</b><br/>
+            • Workload column now shows Cloud / Cluster / Account<br/>
+            • AI Posture dropped DB chips<br/>
+            • Identity & Access shows policy, resource & DB access counts<br/>
+            • New <b>Risks & Threats</b> column; click to open the Risks tab<br/>
+            • Rows sorted by severity by default; left-edge stripe colors by top severity
+          </DCPostIt>
+        </DesignCanvas>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

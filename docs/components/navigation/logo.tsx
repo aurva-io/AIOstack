@@ -3,7 +3,7 @@ import { Link } from "lib/transition"
 
 import { Settings } from "@/lib/meta"
 
-export function Logo() {
+export function Logo({ isDark = false }: { isDark?: boolean }) {
   return (
     <Link href="/" className="flex items-center gap-2.5">
       <div className="relative w-7 h-7 perspective-1000">
@@ -15,7 +15,7 @@ export function Logo() {
             height={28}
             loading="lazy"
             decoding="async"
-            className="dark:invert absolute inset-0 backface-hidden"
+            className={`${isDark ? "invert" : "dark:invert"} absolute inset-0 backface-hidden`}
           />
           <Image
             src={Settings.siteicon2}
@@ -28,7 +28,9 @@ export function Logo() {
           />
         </div>
       </div>
-      <span className="text-md font-semibold">AIOStack</span>
+      <span className={`text-md font-semibold ${isDark ? "text-white/90" : "text-gray-900 dark:text-white/90"}`}>
+        AIOStack
+      </span>
     </Link>
   )
 }

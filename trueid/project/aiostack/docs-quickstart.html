@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Quickstart — AIOStack Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="site.css"/>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel" src="components/primitives.jsx"></script>
+  <script type="text/babel" src="components/docs-shell.jsx"></script>
+
+  <script type="text/babel">
+    function App() {
+      return (
+        <>
+          <NavBar active="docs"/>
+          <div className="docs-shell" style={{ gridTemplateColumns: "260px 1fr 220px" }}>
+            <DocsSidebar activeId="quickstart"/>
+            <main className="docs-main">
+              <DocsBreadcrumb trail={["Docs", "Get started", "Quickstart"]}/>
+              <h1>Quickstart</h1>
+              <p style={{ fontSize: 17, color: "var(--space-text-2)", lineHeight: 1.6, marginTop: -4 }}>
+                Install AIOStack into a Kubernetes cluster and surface your first AI inventory in under ten minutes.
+              </p>
+
+              <div style={{ display: "flex", gap: 8, alignItems: "center", margin: "16px 0 0", fontSize: 12.5, color: "var(--space-text-3)", fontFamily: "var(--font-mono)" }}>
+                <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Icon name="zap" size={13}/> ~10 min</span>
+                <span style={{ opacity: .4 }}>·</span>
+                <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Icon name="cube" size={13}/> Kubernetes 1.24+</span>
+                <span style={{ opacity: .4 }}>·</span>
+                <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}><Icon name="cpu" size={13}/> Kernel 4.18+</span>
+              </div>
+
+              <h2 id="prereqs">Before you begin</h2>
+              <p>You'll need:</p>
+              <ul>
+                <li>A Kubernetes cluster (EKS, GKE, AKS, or self-managed) with <code>kubectl</code> access.</li>
+                <li>Linux nodes running kernel <strong>4.18+</strong> with BTF (most modern distros qualify).</li>
+                <li>Permission to create a namespace and install a privileged DaemonSet.</li>
+                <li>Read-only IAM credentials if you want the full identity graph (recommended).</li>
+              </ul>
+
+              <DocsCallout kind="tip" title="Try in a sandbox first">
+                <p style={{ margin: 0 }}>If you'd rather not install into a real cluster yet, spin up a kind or minikube cluster — AIOStack runs there too, and the install command is identical.</p>
+              </DocsCallout>
+
+              <h2 id="step-1">1. Install the agent</h2>
+              <p>Run the install script. It detects your cluster, picks sensible defaults, and provisions the AIOStack DaemonSet, console, and required RBAC.</p>
+
+              <DocsCodeBlock label="install · ~3 min">
+                <span className="tok-prompt">$</span> <span className="tok-cmd">curl</span> <span className="tok-flag">-fsSL</span> <span className="tok-str">https://aurva.ai/install.sh</span> | <span className="tok-cmd">bash</span>
+              </DocsCodeBlock>
+
+              <p>Expected output:</p>
+
+              <DocsCodeBlock label="output">
+                <span className="tok-comment"># detecting kernel version… 5.15.0 ✓ eBPF-ready</span>{"\n"}
+                <span className="tok-comment"># detecting cluster… eks · ap-south-1 ✓ 6 nodes</span>{"\n"}
+                <span className="tok-comment"># installing aiostack-agent (DaemonSet)…</span>{"\n"}
+                <span className="tok-comment"># installing aiostack-console…</span>{"\n"}
+                <span style={{ color: "var(--aio-primary-400)" }}>✓</span> Agent online on 6/6 nodes{"\n"}
+                <span style={{ color: "var(--aio-primary-400)" }}>✓</span> Console available at https://aiostack.local
+              </DocsCodeBlock>
+
+              <h2 id="step-2">2. Connect Cloud APIs (optional, recommended)</h2>
+              <p>To build the full identity graph, AIOStack needs read-only access to your Cloud + IAM APIs. The CLI walks you through it:</p>
+
+              <DocsCodeBlock label="aiostack cli">
+                <span className="tok-prompt">$</span> <span className="tok-cmd">aiostack</span> connect aws <span className="tok-flag">--profile prod</span>
+              </DocsCodeBlock>
+
+              <p>This creates a least-privilege role in your account with the policies listed in <a href="#">IAM permissions</a>. AIOStack only ever performs <code>List*</code> and <code>Get*</code> calls.</p>
+
+              <h2 id="step-3">3. Open the console</h2>
+              <p>Port-forward and open the inventory:</p>
+
+              <DocsCodeBlock label="console">
+                <span className="tok-prompt">$</span> <span className="tok-cmd">aiostack</span> console
+              </DocsCodeBlock>
+
+              <p>Within ~60 seconds you should see your first AI services appear in <strong>Inventory</strong>. Click any service to open its identity chain, prompts, and reachable assets.</p>
+
+              <h2 id="step-4">4. Generate your first AIBOM</h2>
+              <p>Export a live CycloneDX-compatible AI Bill of Materials covering every model and dependency in your environment:</p>
+
+              <DocsCodeBlock label="aibom">
+                <span className="tok-prompt">$</span> <span className="tok-cmd">aiostack</span> aibom export <span className="tok-flag">--format cyclonedx</span> <span className="tok-flag">--out aibom.json</span>
+              </DocsCodeBlock>
+
+              <h2 id="next">Where to next</h2>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginTop: 8 }}>
+                <DocsCard icon="graph" title="Identity graph" body="Trace the chain from ServiceAccount to IAM to assets." href="#"/>
+                <DocsCard icon="share" title="Prompt tracing" body="Capture, redact, and replay LLM calls in real time." href="#"/>
+                <DocsCard icon="alert" title="Risk surface" body="Detect overly-permissive identities and shadow AI." href="#"/>
+                <DocsCard icon="dollar" title="Upgrade" body="Add sensitive-data discovery via Aurva Enterprise." href="#"/>
+              </div>
+
+              <div style={{ marginTop: 56, padding: "20px 0", borderTop: "1px solid var(--space-line)", display: "flex", justifyContent: "space-between", fontSize: 13.5 }}>
+                <a href="docs.html" style={{ color: "var(--space-text-3)" }}>← Introduction</a>
+                <a href="#" style={{ color: "var(--aio-primary-300)" }}>System requirements →</a>
+              </div>
+            </main>
+
+            <aside className="docs-toc" style={{ padding: "56px 24px 0 0" }}>
+              <h6>On this page</h6>
+              <a href="#prereqs">Before you begin</a>
+              <a href="#step-1" className="active">1. Install the agent</a>
+              <a href="#step-2">2. Connect Cloud APIs</a>
+              <a href="#step-3">3. Open the console</a>
+              <a href="#step-4">4. Generate AIBOM</a>
+              <a href="#next">Where to next</a>
+            </aside>
+          </div>
+          <Footer/>
+        </>
+      );
+    }
+    function mount() {
+      if (typeof NavBar === "undefined" || typeof DocsSidebar === "undefined") return setTimeout(mount, 30);
+      ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+    }
+    mount();
+  </script>
+</body>
+</html>
