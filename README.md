@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/public/aiostack-logo.png" alt="AIOStack Logo" width="400"/>
+  <img src="newdocs/public/aiostack-logo.png" alt="AIOStack Logo" width="400"/>
 </p>
 
 

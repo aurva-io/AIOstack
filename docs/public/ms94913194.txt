@@ -1,5 +1,0 @@
-{
-  "Description": "Domain ownership verification file for Microsoft 365 - place in the website root",
-  "Domain": "aurva.ai",
-  "Id": "2120f8d3-2d94-4f6a-86a3-fa80c92007a6"
-}

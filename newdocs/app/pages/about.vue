@@ -372,7 +372,7 @@ const advisors = [
 }
 
 .v4-about-team-cell {
-  width: calc((100% - 4px * 4) / 5);
+  width: calc((100% - 4px * 2) / 3);
   padding: 20px 18px;
   border: 1px solid rgba(255, 255, 255, .07);
   background: rgba(255, 255, 255, .02);
@@ -526,7 +526,7 @@ const advisors = [
   }
 
   .v4-about-team-cell {
-    width: calc((100% - 4px * 2) / 3);
+    width: calc((100% - 4px) / 2);
   }
 
   .v4-advisor-cell {

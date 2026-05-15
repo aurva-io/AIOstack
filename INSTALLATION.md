@@ -1,533 +1,371 @@
-# AIOStack Interactive Installation Guide
+# AIOStack Installation Guide
 
-This document provides comprehensive instructions for using the interactive installation script for AIOStack.
+This document covers everything you need to install AIOStack on a Kubernetes cluster — the one-line installer, manual Helm installation, cloud IAM setup, and uninstallation.
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
+- [Prerequisites](#prerequisites)
 - [Installation Methods](#installation-methods)
+- [Cloud IAM Setup](#cloud-iam-setup)
 - [Configuration Options](#configuration-options)
-- [Advanced Usage](#advanced-usage)
+- [CLI Reference](#cli-reference)
+- [Post-Installation](#post-installation)
 - [Troubleshooting](#troubleshooting)
 - [Uninstallation](#uninstallation)
+- [Support](#support)
 
-## Overview
-
-The `install.sh` script provides an interactive, user-friendly way to install AIOStack on your Kubernetes cluster. It guides you through:
-
-1. Checking prerequisites (Helm, kubectl, cluster connectivity)
-2. Setting up the Helm repository
-3. Collecting your Aurva credentials
-4. Configuring namespace and settings
-5. Installing the application
-6. Verifying the deployment
-
-## Prerequisites
-
-Before running the installation script, ensure you have:
-
-### Required
-
-- **Helm 3.x** - Install from [helm.sh](https://helm.sh/docs/intro/install/)
-- **kubectl** - Install from [kubernetes.io](https://kubernetes.io/docs/tasks/tools/)
-- **Kubernetes Cluster Access** - kubectl must be configured to access your cluster
-- **Aurva Account** - Sign up at [app.aurva.ai](https://app.aurva.ai) to get credentials
-
-### Cluster Requirements
-
-- Kubernetes 1.29+ with eBPF support (EKS, GKE, AKS automatically satisfy this)
-- Linux kernel 5.15+ on cluster nodes
+---
 
 ## Quick Start
 
-### Method 1: Direct Download and Run
+The fastest path:
 
 ```bash
-# Download the script
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh -o install.sh
-
-# Make it executable
-chmod +x install.sh
-
-# Run the interactive installer
-./install.sh
+curl -fsSL https://aurva.ai/install.sh | bash
 ```
 
-### Method 2: One-Liner (curl to bash)
+The script is interactive — it detects your cluster, asks for Aurva credentials, generates copy-paste IAM commands for AWS/GCP, and runs the Helm install. Plan on 10 minutes end to end.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
-```
+---
 
-### Method 3: Clone Repository
+## Prerequisites
 
-```bash
-# Clone the repository
-git clone https://github.com/aurva-io/AIOstack.git
-cd AIOstack
+### Required tools
 
-# Run the installer
-./install.sh
-```
+- **Helm 3.x** — [helm.sh/docs/intro/install](https://helm.sh/docs/intro/install/)
+- **kubectl** — [kubernetes.io/docs/tasks/tools](https://kubernetes.io/docs/tasks/tools/)
+- Configured cluster context (`kubectl get nodes` must succeed)
+
+### Cluster requirements
+
+- Kubernetes **1.29+** with eBPF support (EKS, GKE, AKS qualify out of the box)
+- Linux kernel **5.15+** on worker nodes
+
+### Aurva account
+
+Sign up at [app.aurva.ai/signup](https://app.aurva.ai/signup) to get a **Company ID** and **Validation Key**. The installer will prompt for these.
+
+### Cloud IAM (recommended)
+
+To enable IAM, RDS, and S3 inventory the outpost needs read-only cloud access:
+
+- **AWS** — IAM Role for Service Account (IRSA) on EKS
+- **GCP** — Workload Identity on GKE
+
+The installer prints the exact commands. See [Cloud IAM Setup](#cloud-iam-setup) below.
+
+---
 
 ## Installation Methods
 
-### Interactive Mode (Recommended)
-
-The default mode guides you through each step with prompts:
+### Method 1 — One-line installer (recommended)
 
 ```bash
+curl -fsSL https://aurva.ai/install.sh | bash
+```
+
+What it does:
+
+1. Checks prerequisites (Helm, kubectl, cluster reachability)
+2. Detects cluster, region, and cloud provider
+3. Prompts for Aurva credentials and namespace
+4. Generates pre-populated IAM setup commands (AWS or GCP)
+5. Adds the Helm repository
+6. Installs the chart
+7. Verifies pods are running
+
+### Method 2 — Download and run
+
+```bash
+curl -fsSL https://aurva.ai/install.sh -o install.sh
+chmod +x install.sh
 ./install.sh
 ```
 
-**What you'll be asked:**
-
-1. Confirm prerequisites are met
-2. Enter your Aurva credentials (Company ID and Validation Key)
-3. Choose or create a namespace
-4. Configure optional settings (versions, security, namespace filtering)
-5. Review configuration before installation
-6. Save configuration for future use (optional)
-
-### Using Saved Configuration
-
-If you've previously saved a configuration, you can reuse it:
+### Method 3 — Clone the repository
 
 ```bash
-./install.sh --config aiostack-config-20240101-120000.yaml
+git clone https://github.com/aurva-io/ai-observability-stack.git
+cd ai-observability-stack
+./install.sh
 ```
 
-This will:
-- Load all settings from the config file
-- Skip credential prompts
-- Still allow you to review and modify settings
+### Method 4 — Manual Helm install
 
-### Verbose Mode
-
-For debugging or detailed output:
+If you prefer to skip the script entirely, see the [docs site](https://aurva.ai/docs/getting-started/installation) for the manual Helm flow. The condensed version:
 
 ```bash
-./install.sh --verbose
+helm repo add aiostack https://charts.aurva.ai/
+helm repo update
+
+helm install myaiostack aiostack/aiostack \
+  --namespace aiostack \
+  --create-namespace \
+  --set companyId=YOUR_COMPANY_ID \
+  --set validationKey=YOUR_VALIDATION_KEY
 ```
 
-This shows additional information like:
-- Tool paths (helm, kubectl locations)
-- Full cluster information
-- Detailed command execution
+For AWS IRSA or GCP Workload Identity, add the corresponding `serviceAccount.annotations` (see [Cloud IAM Setup](#cloud-iam-setup)).
+
+---
+
+## Cloud IAM Setup
+
+The outpost calls read-only cloud APIs to inventory IAM roles, RDS instances, and S3 buckets. The installer detects your cluster type and prints copy-paste commands. The summary is here for reference.
+
+### AWS — IRSA
+
+Permissions required on the IAM role:
+
+```
+IAM:      iam:ListRoles, iam:GetRole, iam:ListAttachedRolePolicies,
+          iam:GetPolicy, iam:GetPolicyVersion, iam:ListRolePolicies,
+          iam:GetRolePolicy
+RDS:      rds:DescribeDBInstances, rds:DescribeDBClusters,
+          rds:DescribeDBSubnetGroups, rds:ListTagsForResource
+S3:       s3:ListAllMyBuckets, s3:GetBucketLocation,
+          s3:GetBucketPublicAccessBlock, s3:GetBucketTagging,
+          s3:GetBucketVersioning, s3:GetBucketAcl
+```
+
+The installer generates the full `aws iam create-policy`, `create-role`, and trust-policy commands with your account ID and OIDC issuer pre-filled.
+
+After the role is created, install with:
+
+```bash
+helm install myaiostack aiostack/aiostack \
+  --namespace aiostack \
+  --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::ACCOUNT:role/aiostack-outpost-secure-readonly-role" \
+  --set companyId=... \
+  --set validationKey=...
+```
+
+### GCP — Workload Identity
+
+The installer generates `gcloud iam service-accounts create`, role binding, and Workload Identity binding commands. Required role: `roles/iam.securityReviewer` plus custom roles for RDS/S3 equivalents.
+
+After the GCP SA is bound, install with:
+
+```bash
+helm install myaiostack aiostack/aiostack \
+  --namespace aiostack \
+  --set serviceAccount.annotations."iam\.gke\.io/gcp-service-account"="aiostack-outpost@PROJECT.iam.gserviceaccount.com" \
+  --set companyId=... \
+  --set validationKey=...
+```
+
+### Skipping IAM
+
+If you skip cloud IAM, AIOStack still runs and observes kernel-level traffic. You won't get the IAM/RDS/S3 datasource inventory until it's enabled.
+
+---
 
 ## Configuration Options
 
-### Essential Configuration
+### Required values
 
-These are required for installation:
+| Setting          | Description                                  |
+| ---------------- | -------------------------------------------- |
+| `companyId`      | Your Aurva company identifier                |
+| `validationKey`  | Authentication key from [app.aurva.ai](https://app.aurva.ai) |
 
-| Setting | Description | Example |
-|---------|-------------|---------|
-| Company ID | Your Aurva company identifier | `company-abc123` |
-| Validation Key | Authentication key from Aurva | `key-xyz789...` |
+### Common values
 
-### Namespace Configuration
+| Setting              | Default                                                   | Description                              |
+| -------------------- | --------------------------------------------------------- | ---------------------------------------- |
+| `namespace`          | `aiostack`                                                | Kubernetes namespace                     |
+| `releaseName`        | `myaiostack`                                              | Helm release name                        |
+| `createNamespace`    | `true`                                                    | Create the namespace if missing          |
+| `observerVersion`    | `latest`                                                  | Observer (eBPF DaemonSet) image tag      |
+| `outpostVersion`     | `trueID-delta`                                            | Outpost (cluster service) image tag      |
+| `isOutpostUrlSecure` | `false`                                                   | Use HTTPS for outpost → commander        |
+| `skipNamespaces`     | `kube-system,aiostack-test,aiostack,monitoring,gke-mcs`   | Namespaces excluded from observation     |
+| `commanderUrl`       | `hq.aurva.ai:443`                                         | Control plane endpoint                   |
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Namespace | `aiostack` | Kubernetes namespace for installation |
-| Release Name | `myaiostack` | Helm release name |
-| Create Namespace | `true` | Create namespace if it doesn't exist |
+### Saved configuration file
 
-### Component Configuration
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Observer Version | `v1.0.5_alpha` | Observer component version |
-| Outpost Version | `v1.0.5_alpha` | Outpost component version |
-| Use Latest | `false` | Use latest versions instead of stable |
-
-### Security & Network
-
-| Setting | Default | Description |
-|---------|---------|-------------|
-| Outpost URL Secure | `false` | Use HTTPS for Outpost communication |
-| Skip Namespaces | `kube-system,aiostack-test,aiostack,monitoring,gke-mcs` | Namespaces to exclude from monitoring |
-
-## Advanced Usage
-
-### Custom Configuration File
-
-You can create a configuration file manually:
+The installer can save your config for reuse:
 
 ```yaml
-# aiostack-custom.yaml
-namespace: production-aiostack
-releaseName: aiostack-prod
-companyId: your-company-id
-validationKey: your-validation-key
-observerVersion: latest
-outpostVersion: latest
-isOutpostUrlSecure: true
-skipNamespaces: kube-system,aiostack,monitoring
-createNamespace: true
-```
-
-Then use it:
-
-```bash
-./install.sh --config aiostack-custom.yaml
-```
-
-### Environment Variables
-
-Override defaults with environment variables:
-
-```bash
-# Use verbose mode by default
-export VERBOSE=true
-./install.sh
-
-# Specify config file via environment
-export CONFIG_FILE=my-config.yaml
-./install.sh
-```
-
-### Non-Interactive Installation
-
-For CI/CD or automation, prepare a config file and use it:
-
-```bash
-# Prepare config file with all required values
-cat > auto-config.yaml << EOF
+# aiostack-config-YYYYMMDD-HHMMSS.yaml
 namespace: aiostack
 releaseName: myaiostack
-companyId: ${COMPANY_ID}
-validationKey: ${VALIDATION_KEY}
-observerVersion: v1.0.5_alpha
-outpostVersion: v1.0.5_alpha
+companyId: company-abc123
+validationKey: key-xyz789...
+observerVersion: latest
+outpostVersion: trueID-delta
 isOutpostUrlSecure: false
 skipNamespaces: kube-system,aiostack-test,aiostack,monitoring,gke-mcs
 createNamespace: true
-EOF
-
-# Run with config (will still prompt for confirmation)
-./install.sh --config auto-config.yaml
 ```
 
-### Installation Script Options
+Load it on a re-run:
 
 ```bash
+./install.sh --config aiostack-config-20251115-120000.yaml
+```
+
+> Saved configs contain credentials. Set `chmod 600` and never commit them.
+
+---
+
+## CLI Reference
+
+```
 ./install.sh [OPTIONS]
 
 OPTIONS:
-  -h, --help              Show help message
-  -v, --verbose           Enable verbose output
-  -c, --config FILE       Load configuration from file
-  --version               Show script version
+  -h, --help              Show help and exit
+  -v, --verbose           Print detailed command output
+  -c, --config FILE       Load a saved configuration file
+      --version           Print installer version and exit
 ```
+
+Environment overrides:
+
+```bash
+VERBOSE=true ./install.sh
+CONFIG_FILE=my-config.yaml ./install.sh
+```
+
+---
 
 ## Post-Installation
 
-### Verify Installation
-
-Check that all pods are running:
+### Verify pods
 
 ```bash
 kubectl get pods -n aiostack
 ```
 
-Expected output:
+Expected:
+
 ```
 NAME                              READY   STATUS    RESTARTS   AGE
 aiostack-observer-xxxxx           1/1     Running   0          2m
 aiostack-outpost-xxxxx            1/1     Running   0          2m
 ```
 
-### View Logs
+### View logs
 
-Observer logs:
 ```bash
+# observer (eBPF DaemonSet)
 kubectl logs -n aiostack -l app.kubernetes.io/name=observer --tail=100
-```
 
-Outpost logs:
-```bash
+# outpost (cluster service)
 kubectl logs -n aiostack -l app.kubernetes.io/name=outpost --tail=100
-```
 
-All components:
-```bash
+# everything from this release
 kubectl logs -n aiostack -l app.kubernetes.io/instance=myaiostack --all-containers --tail=50
 ```
 
-### Access Dashboard
+### Access the dashboard
 
-1. Visit [app.aurva.ai](https://app.aurva.ai)
-2. Login with your email (used during signup)
-3. View your Shadow AI inventory and analytics
-
-## Troubleshooting
-
-### Prerequisites Check Fails
-
-**Issue**: Helm not found
-```bash
-# macOS
-brew install helm
-
-# Linux
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-
-# Windows
-choco install kubernetes-helm
-```
-
-**Issue**: kubectl not found or cluster connection fails
-```bash
-# Verify kubectl configuration
-kubectl config current-context
-
-# List available contexts
-kubectl config get-contexts
-
-# Switch context
-kubectl config use-context <context-name>
-```
-
-### Installation Fails
-
-**Issue**: Namespace already exists with resources
-```bash
-# Use a different namespace
-./install.sh
-# When prompted, enter a different namespace name
-
-# Or use a different release name for the same namespace
-# The script will prompt you if it detects existing resources
-```
-
-**Issue**: Helm repository errors
-```bash
-# Manually add repository
-helm repo add aiostack https://charts.aurva.ai/
-helm repo update
-
-# Verify repository
-helm search repo aiostack
-```
-
-**Issue**: Permission denied errors
-```bash
-# Verify cluster permissions
-kubectl auth can-i create deployments -n aiostack
-
-# Check if you have cluster-admin or sufficient permissions
-kubectl get clusterrolebindings -o wide | grep $(kubectl config current-context)
-```
-
-### Pods Not Starting
-
-**Issue**: Pods in Pending state
-```bash
-# Check pod events
-kubectl describe pods -n aiostack
-
-# Common causes:
-# 1. Insufficient resources - check node capacity
-kubectl top nodes
-
-# 2. Image pull errors - check image pull secrets
-kubectl get events -n aiostack --sort-by='.lastTimestamp'
-```
-
-**Issue**: Pods in CrashLoopBackOff
-```bash
-# Check logs for errors
-kubectl logs -n aiostack <pod-name> --previous
-
-# Check resource limits
-kubectl describe pod -n aiostack <pod-name>
-```
-
-### Script Issues
-
-**Issue**: Script hangs or freezes
-```bash
-# Run with verbose mode to see where it's stuck
-./install.sh --verbose
-
-# If hanging on kubectl commands, check cluster connectivity
-kubectl get nodes
-```
-
-**Issue**: Invalid credentials
-- Double-check your credentials at [app.aurva.ai](https://app.aurva.ai)
-- Ensure no extra spaces when copying
-- Use the saved config file to avoid re-entering
-
-### Getting Help
-
-If you encounter issues:
-
-1. **Check logs**:
-   ```bash
-   kubectl logs -n aiostack --all-containers=true -l app.kubernetes.io/instance=myaiostack
-   ```
-
-2. **Check events**:
-   ```bash
-   kubectl get events -n aiostack --sort-by='.lastTimestamp'
-   ```
-
-3. **Review configuration**:
-   ```bash
-   helm get values myaiostack -n aiostack
-   ```
-
-4. **Get support**:
-   - Documentation: [aurva.ai/docs](https://aurva.ai/docs/home)
-   - GitHub Issues: [github.com/aurva-io/ai-observability-stack/issues](https://github.com/aurva-io/ai-observability-stack/issues)
-   - Email: support@aurva.io
-
-## Uninstallation
-
-### Complete Removal
-
-Remove AIOStack and all resources:
-
-```bash
-# Uninstall helm release
-helm uninstall myaiostack -n aiostack
-
-# Delete namespace (if you want to remove everything)
-kubectl delete namespace aiostack
-
-# Remove helm repository (optional)
-helm repo remove aiostack
-```
-
-### Keep Configuration
-
-If you want to reinstall later, save your configuration first:
-
-```bash
-# Export current values
-helm get values myaiostack -n aiostack > my-saved-values.yaml
-
-# Then uninstall
-helm uninstall myaiostack -n aiostack
-```
-
-### Reinstall with Same Configuration
-
-```bash
-# Use saved configuration file
-./install.sh --config aiostack-config-XXXXXX.yaml
-```
-
-## Best Practices
-
-### For Production Environments
-
-1. **Use stable versions**: Don't select "latest" for production
-2. **Custom namespace**: Use environment-specific namespaces
-3. **Save configuration**: Always save your config for disaster recovery
-4. **Resource limits**: Monitor resource usage and adjust if needed
-5. **Network policies**: Configure appropriate network policies for your cluster
-
-### For Development Environments
-
-1. **Use latest versions**: Stay up-to-date with new features
-2. **Verbose mode**: Enable for debugging
-3. **Test namespace**: Use separate namespace like `aiostack-dev`
-
-### Security Recommendations
-
-1. **Protect config files**: Saved configs contain credentials
-   ```bash
-   chmod 600 aiostack-config-*.yaml
-   ```
-
-2. **Don't commit credentials**: Add config files to `.gitignore`
-   ```bash
-   echo "aiostack-config-*.yaml" >> .gitignore
-   ```
-
-3. **Rotate keys**: Periodically rotate your validation keys
-
-4. **RBAC**: Use least-privilege service accounts
-
-## Script Features
-
-The installation script includes:
-
-- **Color-coded output**: Easy to read status messages
-- **Progress indicators**: Shows current step out of total
-- **Error handling**: Graceful failure with cleanup option
-- **Input validation**: Checks for valid credentials and settings
-- **Confirmation prompts**: Review before proceeding
-- **Configuration save/load**: Reuse settings across installations
-- **Verbose mode**: Detailed logging for troubleshooting
-- **Signal handling**: Clean interrupt with Ctrl+C
-- **Cleanup on failure**: Automatic rollback option
-
-## Examples
-
-### Basic Installation
-
-```bash
-# Download and run
-curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
-```
-
-### Development Environment
-
-```bash
-./install.sh \
-  --verbose
-
-# During prompts:
-# - Namespace: aiostack-dev
-# - Use latest versions: Yes
-# - Save configuration: Yes
-```
-
-### Production Environment
-
-```bash
-./install.sh \
-  --config production-config.yaml
-
-# Pre-created config with:
-# - Stable versions
-# - Production namespace
-# - HTTPS enabled
-# - Custom namespace exclusions
-```
-
-### Multiple Clusters
-
-```bash
-# Switch context
-kubectl config use-context production-cluster
-
-# Install with specific config
-./install.sh --config prod-config.yaml
-
-# Switch to staging
-kubectl config use-context staging-cluster
-./install.sh --config staging-config.yaml
-```
-
-## Support & Resources
-
-- **Documentation**: https://aurva.ai/docs/home
-- **Installation Guide**: https://aurva.ai/docs/installation/steps
-- **GitHub Repository**: https://github.com/aurva-io/ai-observability-stack
-- **Issue Tracker**: https://github.com/aurva-io/ai-observability-stack/issues
-- **Email Support**: support@aurva.io
-- **Dashboard**: https://app.aurva.ai
+Sign in at [app.aurva.ai](https://app.aurva.ai). Within a few minutes you'll see discovered AI workloads, identity chains, and data flows.
 
 ---
 
-**Made with ❤️ by [Aurva](https://aurva.io)**
+## Troubleshooting
 
-*"See what others can't. Secure what others miss."*
+### Prerequisite checks fail
+
+```bash
+# Helm missing
+brew install helm                                                         # macOS
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash   # Linux
+
+# kubectl missing or no cluster context
+kubectl config current-context
+kubectl config get-contexts
+kubectl config use-context <name>
+```
+
+### Pods pending
+
+```bash
+kubectl describe pods -n aiostack
+kubectl top nodes
+kubectl get events -n aiostack --sort-by='.lastTimestamp'
+```
+
+Common causes: node capacity, image pull permissions, missing IRSA/Workload-Identity binding.
+
+### Pods crash-looping
+
+```bash
+kubectl logs -n aiostack <pod-name> --previous
+kubectl describe pod -n aiostack <pod-name>
+```
+
+Most often a credential mismatch — verify `companyId` and `validationKey` in the console.
+
+### Helm repo errors
+
+```bash
+helm repo add aiostack https://charts.aurva.ai/
+helm repo update
+helm search repo aiostack
+```
+
+### Permission denied
+
+```bash
+kubectl auth can-i create deployments -n aiostack
+kubectl auth can-i create daemonsets -n aiostack
+```
+
+You need permissions to create namespaces, deployments, daemonsets, service accounts, and (cluster-)role bindings.
+
+### Script hangs
+
+```bash
+./install.sh --verbose
+kubectl get nodes
+```
+
+### Tools
+
+[k9s](https://k9scli.io/) makes inspecting pods and logs significantly faster. Recommended for any non-trivial debugging.
+
+For deeper troubleshooting see the [docs](https://aurva.ai/docs/getting-started/troubleshooting).
+
+---
+
+## Uninstallation
+
+### One-line uninstaller
+
+```bash
+curl -fsSL https://aurva.ai/uninstall.sh | bash
+```
+
+The uninstaller is also interactive — it finds your release, confirms before removing, and cleans up the namespace.
+
+### Manual removal
+
+```bash
+helm uninstall myaiostack -n aiostack
+kubectl delete namespace aiostack
+helm repo remove aiostack            # optional
+```
+
+### Keep a backup of your values
+
+```bash
+helm get values myaiostack -n aiostack > my-saved-values.yaml
+```
+
+Reinstall later with `./install.sh --config <saved>.yaml` or `helm install -f my-saved-values.yaml`.
+
+> Before uninstalling, we'd appreciate a quick note at [support@aurva.io](mailto:support@aurva.io) about what didn't work. It helps us improve the product.
+
+---
+
+## Support
+
+- **Docs** — [aurva.ai/docs](https://aurva.ai/docs/getting-started/introduction)
+- **GitHub** — [github.com/aurva-io/ai-observability-stack](https://github.com/aurva-io/ai-observability-stack)
+- **Issues** — [github.com/aurva-io/ai-observability-stack/issues](https://github.com/aurva-io/ai-observability-stack/issues)
+- **Email** — [support@aurva.io](mailto:support@aurva.io)
+- **Dashboard** — [app.aurva.ai](https://app.aurva.ai)

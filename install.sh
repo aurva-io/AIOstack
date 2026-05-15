@@ -210,16 +210,19 @@ open_browser() {
 print_banner() {
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
-╭───────────────────────────────────────────────────────────────╮
-│                                                               │
-│    ▝▀▖▌ ▌▙▀▖▌ ▌▝▀▖       AIOStack ◎ Agentic Installer         │
-│    ▞▀▌▌ ▌▌  ▐▐ ▞▀▌       v${VERSION}                               │
-│    ▝▀▘▝▀▘▘   ▘ ▝▀▘       ◎ Runtime AI Security ◎              │
-│                                                               │
-╰───────────────────────────────────────────────────────────────╯
-    "
-    print_info "Discover AI components you didn't know existed!"
-    print_info "Website: https://aurva.ai | Docs: https://aurva.ai/docs/home"
+   █████╗ ██╗   ██╗██████╗ ██╗   ██╗ █████╗
+  ██╔══██╗██║   ██║██╔══██╗██║   ██║██╔══██╗
+  ███████║██║   ██║██████╔╝██║   ██║███████║
+  ██╔══██║██║   ██║██╔══██╗╚██╗ ██╔╝██╔══██║
+  ██║  ██║╚██████╔╝██║  ██║ ╚████╔╝ ██║  ██║
+  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝
+"
+    print_color "$BOLD" "  ─────────────────────────────────────────────────"
+    print_color "$BOLD$WHITE"   "   AIOStack · Runtime AI Security · v${VERSION}"
+    print_color "$WHITE"        "   Discover · Map · Secure every AI workload"
+    print_color "$BOLD" "  ─────────────────────────────────────────────────"
+    echo ""
+    print_info "Website: https://aurva.ai  ·  Docs: https://aurva.ai/docs/home"
     echo ""
 }
 

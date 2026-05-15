@@ -120,16 +120,18 @@ ask_yes_no() {
 print_banner() {
     clear
     print_color "$BOLD$BRIGHT_GREEN" "
-    ╔═══════════════════════════════════════════════════════════════╗
-    ║                                                               ║
-    ║                    AIOStack Uninstaller                       ║
-    ║                                                               ║
-    ║              Safe removal of AIOStack components              ║
-    ║                                                               ║
-    ║                      Version ${VERSION}                            ║
-    ║                                                               ║
-    ╚═══════════════════════════════════════════════════════════════╝
-    "
+   █████╗ ██╗   ██╗██████╗ ██╗   ██╗ █████╗
+  ██╔══██╗██║   ██║██╔══██╗██║   ██║██╔══██╗
+  ███████║██║   ██║██████╔╝██║   ██║███████║
+  ██╔══██║██║   ██║██╔══██╗╚██╗ ██╔╝██╔══██║
+  ██║  ██║╚██████╔╝██║  ██║ ╚████╔╝ ██║  ██║
+  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝  ╚═╝
+"
+    print_color "$BOLD" "  ─────────────────────────────────────────────────"
+    print_color "$BOLD$WHITE"   "   AIOStack · Uninstaller · v${VERSION}"
+    print_color "$WHITE"        "   Safe removal of all AIOStack components"
+    print_color "$BOLD" "  ─────────────────────────────────────────────────"
+    echo ""
     print_warning "This will remove AIOStack from your cluster"
     echo ""
 }
