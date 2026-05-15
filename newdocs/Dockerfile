@@ -11,7 +11,7 @@ FROM --platform=${BUILDPLATFORM} dependencies AS build
 COPY ./ .
 RUN bun run build
 
-FROM oven/bun:1-alpine AS production
+FROM node:20-alpine AS production
 WORKDIR /app
 
 COPY --from=build /app/.output ./.output
@@ -24,4 +24,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD ["bun", "run", ".output/server/index.mjs"]
+CMD ["node", ".output/server/index.mjs"]

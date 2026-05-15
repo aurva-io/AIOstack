@@ -61,12 +61,12 @@ We're actively developing new features including:
 - Custom alerting for unusual AI usage patterns
 - Integration with major observability platforms
 
-Check out our [documentation](/docs/home) to learn more and get started today.
+Check out our [documentation](/docs/getting-started/introduction) to learn more and get started today.
 
 ## Join the Community
 
 AIOStack is open source and we welcome contributions! Whether you want to report issues, suggest features, or contribute code, we'd love to hear from you.
 
 - [GitHub Repository](https://github.com/aurva-io/ai-observability-stack)
-- [Documentation](https://aurva.ai/docs/home)
+- [Documentation](https://aurva.ai/docs/getting-started/introduction)
 - [Report Issues](https://github.com/aurva-io/ai-observability-stack/issues)
