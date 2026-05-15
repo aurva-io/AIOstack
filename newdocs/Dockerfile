@@ -4,6 +4,7 @@ COPY ./package.json ./
 COPY ./bun.lock ./
 
 FROM --platform=${BUILDPLATFORM} base AS dependencies
+RUN apk add --no-cache python3 make g++ libc6-compat
 RUN bun install --frozen-lockfile
 
 FROM --platform=${BUILDPLATFORM} dependencies AS build
