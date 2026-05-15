@@ -1,13 +1,13 @@
-FROM --platform=${BUILDPLATFORM} oven/bun:1-alpine AS base
+FROM oven/bun:1-alpine AS base
 WORKDIR /app
 COPY ./package.json ./
 COPY ./bun.lock ./
 
-FROM --platform=${BUILDPLATFORM} base AS dependencies
+FROM base AS dependencies
 RUN apk add --no-cache python3 make g++ libc6-compat
 RUN bun install --frozen-lockfile
 
-FROM --platform=${BUILDPLATFORM} dependencies AS build
+FROM dependencies AS build
 COPY ./ .
 RUN bun run build
 
