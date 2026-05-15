@@ -1,0 +1,13 @@
+<svg width="400" height="132" viewBox="0 0 400 132" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title>Yubi</title>
+  <circle cx="26" cy="25" r="20" fill="#AAB4C3"/>
+  <circle cx="113" cy="24" r="20" fill="#DBE343"/>
+  <circle cx="71" cy="108" r="20" fill="#FF604C"/>
+  <path d="M27 26L70 69L113 26" stroke="#172033" stroke-width="31" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M70 68V108" stroke="#172033" stroke-width="31" stroke-linecap="round"/>
+  <path d="M186 111V74L151 20H179L200 54L221 20H248L212 74V111H186Z" fill="#172033"/>
+  <path d="M259 113C243 113 232 103 232 86V47H257V82C257 89 261 93 267 93C274 93 279 88 279 80V47H304V111H281V102C277 109 269 113 259 113Z" fill="#172033"/>
+  <path d="M345 113C337 113 330 110 325 104V111H302V17H327V54C332 48 339 45 347 45C363 45 376 59 376 79C376 99 362 113 345 113ZM339 93C347 93 352 87 352 79C352 70 347 64 339 64C331 64 326 70 326 79C326 87 331 93 339 93Z" fill="#172033"/>
+  <path d="M360 111V47H385V111H360Z" fill="#172033"/>
+  <circle cx="372.5" cy="29" r="10.5" fill="#172033"/>
+</svg>

@@ -1,0 +1,13 @@
+{
+  "name": "AIOStack",
+  "description": "Discover, map, and secure every AI agent, model, and service in your environment.",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build"
+  },
+  "dependencies": {
+    "docus": "latest",
+    "better-sqlite3": "^12.6.2",
+    "nuxt": "^4.3.1"
+  }
+}

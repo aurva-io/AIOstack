@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { Link } from "lib/transition"
 import { Settings } from "@/lib/meta"
-import { ArrowRight } from "lucide-react"
+
 
 
 export default function NotFound() {
