@@ -9,7 +9,7 @@ const title = computed(() => is404.value ? 'Page not found' : 'Something went wr
 const subtitle = computed(() =>
   is404.value
     ? 'The route you requested does not seem to exist. '
-    : props.error || 'An unexpected error occurred.'
+    : props.error.message || 'An unexpected error occurred.'
 )
 
 const navLinks = [
