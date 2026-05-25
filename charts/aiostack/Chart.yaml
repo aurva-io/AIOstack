@@ -1,6 +1,6 @@
 apiVersion: v2
 name: aiostack
-description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary, PostgreSQL and ClickHouse
+description: AIOStack dataplane chart — Observer (eBPF agent DaemonSet) and Outpost (gRPC relay) for the AIOStack platform
 type: application
-version: 4.0.0
-appVersion: "v4.0.0"
+version: 4.0.1
+appVersion: "v4.0.1"
