@@ -1,6 +1,8 @@
-FROM node:20-alpine AS base
+FROM node:20-bookworm-slim AS base
 WORKDIR /app
-RUN apk add --no-cache python3 make g++ libc6-compat \
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ \
+ && rm -rf /var/lib/apt/lists/* \
  && npm install -g bun@1
 COPY package.json bun.lock ./
 
@@ -11,7 +13,7 @@ FROM dependencies AS build
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS production
+FROM node:20-bookworm-slim AS production
 WORKDIR /app
 COPY --from=build --chown=node:node /app/.output ./.output
 
