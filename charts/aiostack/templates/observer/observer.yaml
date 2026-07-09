@@ -50,8 +50,12 @@ spec:
           value: "production"
         - name: OUTPOST_URL
           value: "aiostack-outpost.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.outpost.port }}"
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
         {{- range .Values.observer.env }}
-        {{- if ne .name "OUTPOST_URL" }}
+        {{- if and (ne .name "OUTPOST_URL") (ne .name "NODE_NAME") }}
         - name: {{ .name }}
           value: {{ .value | quote }}
         {{- end }}

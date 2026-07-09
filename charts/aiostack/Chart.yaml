@@ -2,5 +2,5 @@ apiVersion: v2
 name: aiostack
 description: AIOStack dataplane chart — Observer (eBPF agent DaemonSet) and Outpost (gRPC relay) for the AIOStack platform
 type: application
-version: 4.0.1
-appVersion: "v4.0.1"
+version: 4.2.0
+appVersion: "v4.2.0"

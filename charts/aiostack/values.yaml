@@ -32,6 +32,10 @@ observer:
       value: "0s"
     - name: CONNECTION_CHANNEL_SIZE
       value: "100"
+    - name: ENABLE_AGENT_ACTIVITY_CAPTURE
+      value: "false"
+    - name: AGENT_ACTIVITY_IGNORED_PATH_PREFIXES
+      value: "/proc,/sys,/dev,/run,/var/cache,/var/tmp"
     - name: OUTPOST_URL
       value: ""
     # THE FOLLOWING ARE FOR YOU TO MODIFY
