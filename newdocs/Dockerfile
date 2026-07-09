@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim AS base
+FROM node:26-bookworm-slim AS base
 WORKDIR /app
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 make g++ \
@@ -13,7 +13,7 @@ FROM dependencies AS build
 COPY . .
 RUN npm run build
 
-FROM node:20-bookworm-slim AS production
+FROM node:26-bookworm-slim AS production
 WORKDIR /app
 COPY --from=build --chown=node:node /app/.output ./.output
 
