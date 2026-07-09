@@ -7,7 +7,7 @@
 # application that guides users through the complete installation process.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/aurva-io/AIOstack/main/install.sh | bash
+#   curl -fsSL https://aurva.ai/install.sh | bash
 #
 #   OR download and run locally:
 #
@@ -389,19 +389,35 @@ setup_helm_repo() {
     print_info "Adding Aurva Helm repository..."
     print_verbose "Repo URL: ${HELM_REPO_URL}"
 
-    if helm repo add "$HELM_REPO_NAME" "$HELM_REPO_URL" &> /dev/null; then
-        print_success "Repository added successfully"
-        HELM_REPO_ADDED=true
-    else
-        # Repository might already exist, try to update
-        print_info "Repository already exists, updating..."
+    local helm_output
+    local repo_existed=false
+    if helm repo list 2>/dev/null | awk 'NR > 1 {print $1}' | grep -Fxq "$HELM_REPO_NAME"; then
+        repo_existed=true
     fi
 
-    print_info "Updating Helm repositories..."
-    if helm repo update &> /dev/null; then
-        print_success "Repositories updated successfully"
+    if helm_output=$(helm repo add "$HELM_REPO_NAME" "$HELM_REPO_URL" --force-update 2>&1); then
+        print_success "Repository configured successfully"
+        print_verbose "$helm_output"
+        if [[ "$repo_existed" == "false" ]]; then
+            HELM_REPO_ADDED=true
+        fi
     else
-        print_error "Failed to update repositories"
+        print_error "Failed to configure Aurva Helm repository"
+        if [[ -n "$helm_output" ]]; then
+            echo "$helm_output"
+        fi
+        exit 1
+    fi
+
+    print_info "Updating Aurva Helm repository..."
+    if helm_output=$(helm repo update "$HELM_REPO_NAME" 2>&1); then
+        print_success "Repository updated successfully"
+        print_verbose "$helm_output"
+    else
+        print_error "Failed to update Aurva Helm repository"
+        if [[ -n "$helm_output" ]]; then
+            echo "$helm_output"
+        fi
         exit 1
     fi
 
