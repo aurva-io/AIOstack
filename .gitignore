@@ -25,6 +25,25 @@ vendor/
 .DS_Store
 Thumbs.db
 
+# Local agent memory
+memory.md
+MEMORY.md
+.agent-memory.md
+
+# Nuxt/Docus docs app generated files
+/newdocs/node_modules/
+/newdocs/.nuxt/
+/newdocs/.output/
+/newdocs/.data/
+/newdocs/.nitro/
+/newdocs/.cache/
+/newdocs/dist/
+/newdocs/logs/
+/newdocs/*.log
+/newdocs/.env
+/newdocs/.env.*
+!/newdocs/.env.example
+
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
