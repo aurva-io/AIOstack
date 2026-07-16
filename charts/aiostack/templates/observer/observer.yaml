@@ -17,6 +17,7 @@ spec:
         app.kubernetes.io/name: aiostack-observer
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
+      hostPID: true
       serviceAccountName: {{ .Values.observer.serviceAccount.name | default "aiostack-observer-sa" }}
       dnsPolicy: "ClusterFirst"
       initContainers:

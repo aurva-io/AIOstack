@@ -2,8 +2,19 @@ apiVersion: v1
 entries:
   aiostack:
   - apiVersion: v2
+    appVersion: v4.3.0
+    created: "2026-07-16T09:01:06.493333659Z"
+    description: AIOStack dataplane chart — Observer (eBPF agent DaemonSet) and Outpost
+      (gRPC relay) for the AIOStack platform
+    digest: ada76f5f3d3f7dc4ff649e8d9921d6a2295484ef2051aeac82dca46440a65898
+    name: aiostack
+    type: application
+    urls:
+    - https://charts.aurva.ai/aiostack-4.3.0.tgz
+    version: 4.3.0
+  - apiVersion: v2
     appVersion: v4.2.0
-    created: "2026-07-09T08:49:17.637829986Z"
+    created: "2026-07-16T09:01:06.492935599Z"
     description: AIOStack dataplane chart — Observer (eBPF agent DaemonSet) and Outpost
       (gRPC relay) for the AIOStack platform
     digest: 9b18069302e6d8ef46b7ed27087c30ac060d3d132449129833f8b6764c1e5f87
@@ -14,7 +25,7 @@ entries:
     version: 4.2.0
   - apiVersion: v2
     appVersion: v4.0.1
-    created: "2026-07-09T08:49:17.637400876Z"
+    created: "2026-07-16T09:01:06.492530958Z"
     description: AIOStack dataplane chart — Observer (eBPF agent DaemonSet) and Outpost
       (gRPC relay) for the AIOStack platform
     digest: 176ade7b7743a1de644c4006b1ba40769b76b9b22096b798c21bd7446e9aa51b
@@ -25,7 +36,7 @@ entries:
     version: 4.0.1
   - apiVersion: v2
     appVersion: v4.0.0
-    created: "2026-07-09T08:49:17.637026389Z"
+    created: "2026-07-16T09:01:06.49214436Z"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
     digest: 9ccf7895552e7b689c6fdab014cbf73ed73c99c6f1ec7a52a5a944356f302e62
@@ -36,7 +47,7 @@ entries:
     version: 4.0.0
   - apiVersion: v2
     appVersion: v3.0.0
-    created: "2026-07-09T08:49:17.636432224Z"
+    created: "2026-07-16T09:01:06.49155471Z"
     description: A Helm chart for AIOStack with Observer,Outpost, Commander, Emissary,
       PostgreSQL and ClickHouse
     digest: 722aa9c07668c4d702195f4be78d8744cc6afb7ce4d95671058c9cb2feefa22d
@@ -45,4 +56,4 @@ entries:
     urls:
     - https://charts.aurva.ai/aiostack-3.0.0.tgz
     version: 3.0.0
-generated: "2026-07-09T08:49:17.635699933Z"
+generated: "2026-07-16T09:01:06.490780112Z"

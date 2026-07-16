@@ -33,7 +33,9 @@ observer:
     - name: CONNECTION_CHANNEL_SIZE
       value: "100"
     - name: ENABLE_AGENT_ACTIVITY_CAPTURE
-      value: "false"
+      value: "true"
+    - name: AGENT_ACTIVITY_CAPTURE_FILE_EVENTS
+      value: "true"
     - name: AGENT_ACTIVITY_IGNORED_PATH_PREFIXES
       value: "/proc,/sys,/dev,/run,/var/cache,/var/tmp"
     - name: OUTPOST_URL
@@ -70,6 +72,12 @@ outpost:
   env:
     - name: SKIP_NAMESPACES
       value: "kube-system,aiostack-test,aiostack,monitoring,gke-mcs"
+    - name: AI_SERVICE_ACTIVITY_TTL
+      value: "24h"
+    - name: AI_SERVICE_TRACKER_SIZE
+      value: "10000"
+    - name: EXPORT_NON_AI_EVENTS
+      value: "false"
     - name: INSECURE_SKIP_VERIFY
       value: "true"
     - name: COMMANDER_URL
