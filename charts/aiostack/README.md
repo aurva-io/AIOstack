@@ -4,9 +4,9 @@
 `ai-observability-stack-code/cd/aiostack/charts/dataplane/` by the
 `publish-dataplane-chart` workflow.
 
-- Source commit: `d297a21ca23b288717d1f1f38f698843c4a35139`
+- Source commit: `339cdc275ba6be33223750dc2620a224deb6993d`
 - Source ref: `main`
-- Chart version: `4.3.0`
+- Chart version: `4.3.1`
 
 To propose chart changes, open a PR in the private
 `ai-observability-stack-code` repository.
