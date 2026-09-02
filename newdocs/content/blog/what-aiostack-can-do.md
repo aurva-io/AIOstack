@@ -1,5 +1,5 @@
 ---
-title: 'On Your Marks - A Walkthrough On Everything AIOStack Can Do'
+title: 'What Aurva Sees at Runtime'
 description: Learn about what we detect, what we output, coverage categories, and how coverage is maintained.
 date: 2026-02-13
 author: AIOStack Team

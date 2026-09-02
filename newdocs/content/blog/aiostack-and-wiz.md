@@ -1,5 +1,5 @@
 ---
-title: The Complement Not Compete Series - AIOStack and Wiz
+title: How Aurva Complements Wiz
 description: Learn how AIOStack and Wiz can work together and help your security team address your AI observability needs.
 date: 2025-11-3
 author: AIOStack Team

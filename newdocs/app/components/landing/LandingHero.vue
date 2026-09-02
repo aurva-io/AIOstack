@@ -7,75 +7,31 @@ function handleCopy() {
   copyLabel.value = 'COPIED'
   setTimeout(() => { copyLabel.value = 'COPY' }, 1200)
 }
-
-type Tone = 'white' | 'dim' | 'accent' | 'alert'
-interface NodeProps { x: number; y: number; w: number; h: number; title: string; sub: string; mark: string; tone?: Tone }
-
-const strokeMap: Record<Tone, string> = {
-  white: 'rgba(255,255,255,.55)',
-  dim: 'rgba(255,255,255,.22)',
-  accent: 'rgba(64,203,81,.7)',
-  alert: 'rgba(225,118,90,.65)',
-}
-const fgMap: Record<Tone, string> = {
-  white: 'rgba(255,255,255,.95)',
-  dim: 'rgba(255,255,255,.55)',
-  accent: 'rgba(170,220,138,.95)',
-  alert: 'rgba(245,170,135,.95)',
-}
-
-const nodes: NodeProps[] = [
-  { x: 70, y: 60, w: 130, h: 56, title: 'pii-analyzer', sub: 'bedrock · agent', mark: 'A1', tone: 'white' },
-  { x: 235, y: 60, w: 130, h: 56, title: 'doc-classifier', sub: 'langchain · agent', mark: 'A2', tone: 'white' },
-  { x: 400, y: 60, w: 130, h: 56, title: 'aurva-ocr', sub: 'onnx · service', mark: 'S1', tone: 'dim' },
-  { x: 70, y: 220, w: 170, h: 56, title: 'dataplane-sa', sub: 'kube · serviceaccount', mark: 'ID·1', tone: 'accent' },
-  { x: 275, y: 220, w: 170, h: 56, title: 'iam: pii-analyzer', sub: 'aws · role · 12 perms', mark: 'ID·2', tone: 'white' },
-  { x: 480, y: 220, w: 70, h: 56, title: 'okta-svc', sub: 'federated', mark: 'ID·3', tone: 'dim' },
-  { x: 50, y: 380, w: 130, h: 56, title: 'bedrock.invoke', sub: 'claude-3-haiku', mark: 'EP·1', tone: 'white' },
-  { x: 195, y: 380, w: 130, h: 56, title: 'openai/embed', sub: 'external', mark: 'EP·2', tone: 'alert' },
-  { x: 340, y: 380, w: 100, h: 56, title: 'rds: docs', sub: 'postgres · pii', mark: 'DS·1', tone: 'white' },
-  { x: 455, y: 380, w: 95, h: 56, title: 's3: pii/*', sub: 'bucket · obj', mark: 'DS·2', tone: 'white' },
-]
-
-const layers = [
-  { y: 60, label: 'L4 · APPLICATION', tag: 'k8s' },
-  { y: 220, label: 'L3 · IDENTITY', tag: 'iam' },
-  { y: 380, label: 'L2 · DATA', tag: 'rds·s3·vec' },
-  { y: 540, label: 'L1 · KERNEL · eBPF', tag: 'syscall' },
-]
-
-const ebpfTags = ['sock_ops', 'kprobe', 'tc', 'uprobe', 'FSM']
 </script>
 
 <template>
   <section class="v4-section v4-hero">
-    <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
     <div class="v4-rule v4-rule-h" :style="{ bottom: 0 }" />
-    <div class="v4-coordinates" />
     <div class="v4-container">
       <div class="v4-hero-grid">
         <!-- LEFT — copy column -->
         <div class="v4-col">
-          <h1 class="v4-display">
-            <span style="white-space:nowrap">AI threats move fast.</span><br>
-            <span class="v4-em">This is your unfair advantage.</span>
+          <h1 class="v4-display v4-display-control">
+            <span>The defense layer</span><br>
+            <span>for enterprise AI.</span>
           </h1>
 
           <p class="v4-lead">
-            AIOStack helps secure the AI agents, models, and services running in your environment - including the ones nobody
-            told you about. It reads your kernel and your cloud, maps every app, identity, endpoint, and datasource, and
-            watches what each one actually does. <u>Zero code changes</u>. Your applications will not even know we
-            exist.
+            Aurva discovers sanctioned and shadow AI from the runtime, traces every agent, model, identity, and data flow,
+            detects threats with AI-powered analysis, and enforces policy by routing, redacting, blocking, or revoking
+            access before risk becomes impact.
           </p>
 
           <div class="v4-install">
-            <div class="v4-install-head">
-              <span class="v4-mono v4-mono-dim">$ install · 1 cmd</span>
-              <button class="v4-install-copy" type="button" @click="handleCopy">
-                {{ copyLabel }}
-              </button>
-            </div>
             <code class="v4-install-cmd">{{ installCmd }}</code>
+            <button class="v4-install-copy" type="button" @click="handleCopy">
+              {{ copyLabel }}
+            </button>
           </div>
 
           <div class="v4-cta-row">
@@ -91,141 +47,138 @@ const ebpfTags = ['sock_ops', 'kprobe', 'tc', 'uprobe', 'FSM']
             </a>
           </div>
 
-          <div class="v4-ledger">
-            <div>
-              <span class="v4-ledger-key">discovers</span>
-              <span class="v4-ledger-val">shadow AI · agents · models · endpoints</span>
-            </div>
-            <div>
-              <span class="v4-ledger-key">secures</span>
-              <span class="v4-ledger-val">identity · data flow · egress · prompts</span>
-            </div>
-            <div>
-              <span class="v4-ledger-key">install</span>
-              <span class="v4-ledger-val">curl · helm · zero code changes</span>
-            </div>
-            <div>
-              <span class="v4-ledger-key">deploy</span>
-              <span class="v4-ledger-val">in-VPC · read-only · data never leaves</span>
-            </div>
-          </div>
         </div>
 
         <!-- RIGHT — schematic -->
         <div class="v4-schematic-wrap">
-          <div class="v4-schematic-chrome">
-            <span class="v4-mono v4-mono-dim">FIG.&nbsp;01</span>
-            <span class="v4-mono v4-mono-dim">aiostack · runtime map</span>
-            <span class="v4-mono v4-mono-dim">cluster: aurva-prod</span>
-          </div>
-
           <svg viewBox="0 0 600 720" class="v4-schematic" preserveAspectRatio="xMidYMid meet">
             <defs>
               <pattern id="v4-grid" width="20" height="20" patternUnits="userSpaceOnUse">
                 <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="0.5" />
               </pattern>
-              <marker id="v4-arrow" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto">
-                <path d="M0 0L7 4L0 8z" fill="rgba(255,255,255,.55)" />
-              </marker>
-              <marker id="v4-arrow-dim" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5"
-                orient="auto">
-                <path d="M0 0L7 4L0 8z" fill="rgba(255,255,255,.25)" />
-              </marker>
+              <linearGradient id="v4-defense-fill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="rgba(255,255,255,.025)" />
+                <stop offset="1" stop-color="rgba(255,255,255,.005)" />
+              </linearGradient>
             </defs>
 
             <rect width="600" height="720" fill="url(#v4-grid)" />
 
-            <!-- Frame ticks -->
-            <g v-for="i in 5" :key="i">
-              <line :x1="120 * (i - 1)" y1="0" :x2="120 * (i - 1)" y2="6" stroke="rgba(255,255,255,.3)" />
-              <line :x1="120 * (i - 1)" y1="714" :x2="120 * (i - 1)" y2="720" stroke="rgba(255,255,255,.3)" />
-              <line x1="0" :y1="120 * (i - 1)" x2="6" :y2="120 * (i - 1)" stroke="rgba(255,255,255,.3)" />
-              <line x1="594" :y1="120 * (i - 1)" x2="600" :y2="120 * (i - 1)" stroke="rgba(255,255,255,.3)" />
+            <!-- L4 · applications -->
+            <text x="40" y="30" class="v4-svg-label">L4 · APPLICATION</text>
+            <text x="560" y="30" text-anchor="end" class="v4-svg-label-dim">AGENTS · MODELS · SERVICES</text>
+            <line x1="40" y1="42" x2="560" y2="42" stroke="rgba(255,255,255,.18)" />
+
+            <g>
+              <rect x="40" y="58" width="160" height="74" fill="rgba(0,0,0,.42)" stroke="rgba(255,255,255,.28)" />
+              <circle cx="56" cy="76" r="3" fill="rgba(255,255,255,.55)" />
+              <text x="68" y="79" class="v4-svg-mark">AI·01 · APPROVED</text>
+              <text x="56" y="103" class="v4-svg-title">support-agent</text>
+              <text x="56" y="120" class="v4-svg-sub">bedrock · customer data</text>
+
+              <rect x="220" y="58" width="160" height="74" fill="rgba(0,0,0,.42)" stroke="rgba(255,255,255,.38)" stroke-dasharray="3 3" />
+              <circle cx="236" cy="76" r="3" fill="rgba(225,118,90,.85)" />
+              <text x="248" y="79" class="v4-svg-mark">AI·02 · SHADOW</text>
+              <text x="236" y="103" class="v4-svg-title">unknown-client</text>
+              <text x="236" y="120" class="v4-svg-sub">openai · personal key</text>
+
+              <rect x="400" y="58" width="160" height="74" fill="rgba(0,0,0,.42)" stroke="rgba(255,255,255,.28)" />
+              <circle cx="416" cy="76" r="3" fill="rgba(255,255,255,.55)" />
+              <text x="428" y="79" class="v4-svg-mark">AI·03 · ACTIVE</text>
+              <text x="416" y="103" class="v4-svg-title">mcp-runner</text>
+              <text x="416" y="120" class="v4-svg-sub">8 tools · 3 stores</text>
             </g>
 
-            <!-- Layer bands -->
-            <g v-for="b in layers" :key="b.label">
-              <line x1="20" :y1="b.y - 22" x2="580" :y2="b.y - 22" stroke="rgba(255,255,255,.07)"
-                stroke-dasharray="2 4" />
-              <text x="24" :y="b.y - 28" class="v4-svg-label">{{ b.label }}</text>
-              <text x="576" :y="b.y - 28" text-anchor="end" class="v4-svg-label-dim">{{ b.tag }}</text>
+            <!-- L3 · identities -->
+            <text x="40" y="160" class="v4-svg-label">L3 · IDENTITY</text>
+            <text x="560" y="160" text-anchor="end" class="v4-svg-label-dim">K8S · IAM · NHI</text>
+            <line x1="40" y1="172" x2="560" y2="172" stroke="rgba(255,255,255,.1)" stroke-dasharray="2 4" />
+            <line x1="120" y1="132" x2="120" y2="206" stroke="rgba(255,255,255,.34)" />
+            <line x1="300" y1="132" x2="300" y2="206" stroke="rgba(255,255,255,.42)" stroke-dasharray="4 4" />
+            <line x1="480" y1="132" x2="480" y2="206" stroke="rgba(255,255,255,.34)" />
+            <circle cx="120" cy="206" r="2" fill="rgba(255,255,255,.55)" />
+            <circle cx="300" cy="206" r="2" fill="rgba(255,255,255,.7)" />
+            <circle cx="480" cy="206" r="2" fill="rgba(255,255,255,.55)" />
+            <text x="120" y="193" text-anchor="middle" class="v4-svg-sub">support-sa</text>
+            <text x="300" y="193" text-anchor="middle" class="v4-svg-sub">unattributed</text>
+            <text x="480" y="193" text-anchor="middle" class="v4-svg-sub">mcp-runner-sa</text>
+
+            <!-- Aurva defense layer -->
+            <rect x="40" y="206" width="520" height="216" fill="url(#v4-defense-fill)" stroke="rgba(255,255,255,.28)" />
+            <path d="M40 222V206H56 M544 206H560V222 M40 406V422H56 M544 422H560V406" fill="none"
+              stroke="rgba(255,255,255,.62)" stroke-width="1.2" />
+            <text x="60" y="234" class="v4-svg-label">AURVA · DEFENSE LAYER</text>
+            <text x="540" y="234" text-anchor="end" class="v4-svg-label-dim">RUNTIME · POLICY · ACTION</text>
+
+            <g>
+              <rect x="60" y="256" width="140" height="86" fill="rgba(0,0,0,.34)" stroke="rgba(255,255,255,.22)" />
+              <text x="74" y="278" class="v4-svg-mark">01 · OBSERVE</text>
+              <text x="74" y="301" class="v4-svg-heading">Runtime truth</text>
+              <text x="74" y="320" class="v4-svg-sub">eBPF · cloud</text>
+
+              <rect x="230" y="256" width="140" height="86" fill="rgba(0,0,0,.34)" stroke="rgba(255,255,255,.22)" />
+              <text x="244" y="278" class="v4-svg-mark">02 · REASON</text>
+              <text x="244" y="301" class="v4-svg-heading">Threat analysis</text>
+              <text x="244" y="320" class="v4-svg-sub">behavior · policy</text>
+
+              <rect x="400" y="256" width="140" height="86" fill="rgba(0,0,0,.34)" stroke="rgba(255,255,255,.3)" />
+              <text x="414" y="278" class="v4-svg-mark">03 · ENFORCE</text>
+              <text x="414" y="301" class="v4-svg-heading">Inline control</text>
+              <text x="414" y="320" class="v4-svg-sub">route · redact</text>
             </g>
 
-            <!-- Nodes -->
-            <g v-for="n in nodes" :key="n.mark">
-              <path :d="`M ${n.x} ${n.y + 8} L ${n.x} ${n.y} L ${n.x + 8} ${n.y}`" fill="none"
-                :stroke="strokeMap[n.tone || 'white']" stroke-width="1.2" />
-              <path :d="`M ${n.x + n.w - 8} ${n.y} L ${n.x + n.w} ${n.y} L ${n.x + n.w} ${n.y + 8}`" fill="none"
-                :stroke="strokeMap[n.tone || 'white']" stroke-width="1.2" />
-              <path :d="`M ${n.x} ${n.y + n.h - 8} L ${n.x} ${n.y + n.h} L ${n.x + 8} ${n.y + n.h}`" fill="none"
-                :stroke="strokeMap[n.tone || 'white']" stroke-width="1.2" />
-              <path :d="`M ${n.x + n.w - 8} ${n.y + n.h} L ${n.x + n.w} ${n.y + n.h} L ${n.x + n.w} ${n.y + n.h - 8}`"
-                fill="none" :stroke="strokeMap[n.tone || 'white']" stroke-width="1.2" />
-              <rect :x="n.x" :y="n.y" :width="n.w" :height="n.h" fill="rgba(0,0,0,.4)" stroke="rgba(255,255,255,.08)"
-                stroke-width="0.5" />
-              <text :x="n.x + 10" :y="n.y + 18" class="v4-svg-mark"
-                :style="{ fill: 'rgba(255,255,255,.45)' }">{{ n.mark }}</text>
-              <text :x="n.x + 10" :y="n.y + 36" class="v4-svg-title"
-                :style="{ fill: fgMap[n.tone || 'white'] }">{{ n.title }}</text>
-              <text :x="n.x + 10" :y="n.y + 50" class="v4-svg-sub"
-                :style="{ fill: 'rgba(255,255,255,.45)' }">{{ n.sub }}</text>
+            <line x1="200" y1="299" x2="230" y2="299" stroke="rgba(255,255,255,.34)" />
+            <line x1="370" y1="299" x2="400" y2="299" stroke="rgba(255,255,255,.34)" />
+            <circle cx="215" cy="299" r="2" fill="rgba(255,255,255,.5)" />
+            <circle cx="385" cy="299" r="2" fill="rgba(255,255,255,.5)" />
+
+            <rect x="60" y="366" width="480" height="34" fill="rgba(255,255,255,.01)" stroke="rgba(255,255,255,.24)" />
+            <circle cx="76" cy="383" r="3" fill="rgba(225,118,90,.85)" />
+            <text x="88" y="387" class="v4-svg-tag">SHADOW AI · SENSITIVE EGRESS</text>
+            <text x="524" y="387" text-anchor="end" class="v4-svg-tag">DECISION: BLOCK + REVOKE KEY</text>
+
+            <!-- L2 · data and egress -->
+            <text x="40" y="456" class="v4-svg-label">L2 · DATA / EGRESS</text>
+            <text x="560" y="456" text-anchor="end" class="v4-svg-label-dim">RDS · S3 · VECTOR · LLM</text>
+            <line x1="470" y1="342" x2="470" y2="442" stroke="rgba(255,255,255,.32)" />
+            <circle cx="470" cy="442" r="2" fill="rgba(255,255,255,.6)" />
+            <line x1="92" y1="470" x2="508" y2="470" stroke="rgba(255,255,255,.16)" />
+
+            <g>
+              <rect x="40" y="486" width="115" height="58" fill="rgba(0,0,0,.4)" stroke="rgba(255,255,255,.24)" />
+              <text x="54" y="507" class="v4-svg-mark">A·01</text>
+              <text x="54" y="528" class="v4-svg-heading">Route</text>
+
+              <rect x="175" y="486" width="115" height="58" fill="rgba(0,0,0,.4)" stroke="rgba(255,255,255,.24)" />
+              <text x="189" y="507" class="v4-svg-mark">A·02</text>
+              <text x="189" y="528" class="v4-svg-heading">Redact</text>
+
+              <rect x="310" y="486" width="115" height="58" fill="rgba(255,255,255,.025)" stroke="rgba(255,255,255,.48)" />
+              <text x="324" y="507" class="v4-svg-mark">A·03 · ACTIVE</text>
+              <text x="324" y="528" class="v4-svg-heading">Block</text>
+
+              <rect x="445" y="486" width="115" height="58" fill="rgba(0,0,0,.4)" stroke="rgba(255,255,255,.24)" />
+              <text x="459" y="507" class="v4-svg-mark">A·04</text>
+              <text x="459" y="528" class="v4-svg-heading">Revoke</text>
             </g>
 
-            <!-- L1 — eBPF band -->
-            <rect x="40" y="540" width="520" height="74" rx="2" fill="rgba(255,255,255,.02)"
-              stroke="rgba(255,255,255,.18)" stroke-width="0.8" />
-            <text x="56" y="562" class="v4-svg-mark">L1</text>
-            <text x="56" y="580" class="v4-svg-title">aiostack-agent · DaemonSet</text>
-            <text x="56" y="594" class="v4-svg-sub">eBPF probes · sock_ops · kprobe · tc · uprobe</text>
-            <text x="56" y="608" class="v4-svg-tag-accent">+ network FSM · parses queries · maps sensitive data
-              flow</text>
-            <g v-for="(t, i) in ebpfTags" :key="t" :transform="`translate(${380 + i * 36}, 552)`">
-              <rect x="0" y="0" width="32" height="26" fill="none"
-                :stroke="t === 'FSM' ? 'rgba(170,220,138,.7)' : 'rgba(255,255,255,.16)'" />
-              <text x="16" y="17" text-anchor="middle" class="v4-svg-tag"
-                :style="{ fill: t === 'FSM' ? 'rgba(170,220,138,.95)' : undefined }">{{ t }}</text>
+            <!-- L1 · kernel -->
+            <text x="40" y="574" class="v4-svg-label">L1 · KERNEL · eBPF</text>
+            <text x="560" y="574" text-anchor="end" class="v4-svg-label-dim">SYSCALL · TLS · NETWORK</text>
+            <rect x="40" y="590" width="520" height="82" fill="rgba(255,255,255,.012)" stroke="rgba(255,255,255,.26)" />
+            <text x="58" y="616" class="v4-svg-mark">KERNEL TRUTH · ALWAYS ON</text>
+            <text x="58" y="640" class="v4-svg-heading">eBPF runtime sensor</text>
+            <text x="58" y="658" class="v4-svg-sub">zero code changes · sees sanctioned + shadow traffic</text>
+            <g transform="translate(394 612)">
+              <rect x="0" y="0" width="34" height="28" fill="none" stroke="rgba(255,255,255,.18)" />
+              <rect x="40" y="0" width="34" height="28" fill="none" stroke="rgba(255,255,255,.18)" />
+              <rect x="80" y="0" width="34" height="28" fill="none" stroke="rgba(255,255,255,.28)" />
+              <rect x="120" y="0" width="34" height="28" fill="none" stroke="rgba(255,255,255,.42)" />
+              <text x="17" y="18" text-anchor="middle" class="v4-svg-tag">SOCK</text>
+              <text x="57" y="18" text-anchor="middle" class="v4-svg-tag">TC</text>
+              <text x="97" y="18" text-anchor="middle" class="v4-svg-tag">TLS</text>
+              <text x="137" y="18" text-anchor="middle" class="v4-svg-tag">FSM</text>
             </g>
-
-            <!-- Connections: application -> identity -->
-            <line x1="135" y1="116" x2="155" y2="220" stroke="rgba(255,255,255,.5)" stroke-width="0.9"
-              marker-end="url(#v4-arrow)" />
-            <line x1="300" y1="116" x2="210" y2="220" stroke="rgba(255,255,255,.5)" stroke-width="0.9"
-              marker-end="url(#v4-arrow)" />
-            <line x1="465" y1="116" x2="235" y2="220" stroke="rgba(255,255,255,.25)" stroke-width="0.7"
-              marker-end="url(#v4-arrow-dim)" />
-
-            <!-- Identity chain -->
-            <line x1="240" y1="248" x2="275" y2="248" stroke="rgba(255,255,255,.55)" stroke-width="0.9"
-              marker-end="url(#v4-arrow)" />
-            <line x1="445" y1="248" x2="480" y2="248" stroke="rgba(255,255,255,.25)" stroke-width="0.7"
-              marker-end="url(#v4-arrow-dim)" />
-
-            <!-- Application -> endpoints -->
-            <path d="M 135 116 L 135 360 L 125 380" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="0.9"
-              marker-end="url(#v4-arrow)" />
-            <path d="M 300 116 L 300 360 L 290 380" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="0.9"
-              stroke-dasharray="3 3" marker-end="url(#v4-arrow)" />
-            <path d="M 465 116 L 415 380" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.7"
-              stroke-dasharray="3 3" marker-end="url(#v4-arrow-dim)" />
-            <path d="M 465 116 L 510 380" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="0.7"
-              marker-end="url(#v4-arrow-dim)" />
-
-            <!-- eBPF observation arrows -->
-            <g v-for="(x, i) in [100, 220, 360, 500]" :key="i">
-              <line :x1="x" y1="540" :x2="x" y2="446" stroke="rgba(64,203,81,.55)" stroke-width="0.6"
-                stroke-dasharray="2 3" />
-              <circle :cx="x" cy="540" r="2" fill="rgba(64,203,81,.7)" />
-              <text :x="x + 6" y="530" class="v4-svg-tag-accent">obs</text>
-            </g>
-
-            <!-- External call-out highlight -->
-            <rect x="216" y="376" width="148" height="64" fill="none" stroke="rgba(225,118,90,.55)" stroke-width="0.8"
-              stroke-dasharray="2 2" />
-            <text x="290" y="460" text-anchor="middle" class="v4-svg-tag-alert">novel destination · 3 days ago</text>
-
-            <!-- Coords -->
-            <text x="580" y="702" text-anchor="end" class="v4-svg-coord">600·720 / RUNTIME · LIVE</text>
-            <text x="20" y="702" class="v4-svg-coord">0,0</text>
           </svg>
         </div>
       </div>

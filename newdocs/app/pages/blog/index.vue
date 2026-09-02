@@ -16,8 +16,8 @@ function formatDate(d: string | Date | undefined) {
   return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-function slugFromPath(path: string) {
-  return path.replace(/^\/blog\//, '')
+function displayAuthor(author: string | undefined) {
+  return author === 'AIOStack Team' ? 'Aurva Security' : author
 }
 </script>
 
@@ -27,42 +27,35 @@ function slugFromPath(path: string) {
     <div class="v4-frame">
 
       <section class="v4-section v4-blog-hero">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-        <div class="v4-coordinates" />
         <div class="v4-container">
-          <span class="v4-section-num">§ AURVA · BLOG</span>
-          <h1 class="v4-display" style="margin-top:16px">
-            Research &amp; writing<br>
-            <span class="v4-em">from the team.</span>
-          </h1>
-          <p class="v4-lead" style="margin-top:20px;max-width:560px">
-            Deep dives on runtime security, eBPF internals, AI agent behavior, and the threat landscape.
+          <span class="v4-section-num">AURVA · BLOG</span>
+          <h1 class="v4-display" style="margin-top:16px">Writings from Aurva.</h1>
+          <p class="v4-lead" style="margin-top:28px;max-width:680px">
+            Research, field notes, and perspectives on agentic AI, runtime systems, security,
+            and the forces reshaping enterprise software.
           </p>
         </div>
       </section>
 
       <section class="v4-section v4-bordered v4-blog-list">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
         <div class="v4-container">
           <div class="v4-blog-grid">
             <NuxtLink
-              v-for="(post, i) in posts"
+              v-for="post in posts"
               :key="post.path"
               :to="post.path"
               class="v4-blog-card"
             >
               <div class="v4-blog-card-top">
                 <div class="v4-blog-card-meta">
-                  <span class="v4-mono v4-mono-dim">{{ String(i + 1).padStart(2, '0') }}</span>
-                  <span v-if="post.date" class="v4-mono v4-mono-dim">{{ formatDate(post.date) }}</span>
-                  <span v-if="post.readTime" class="v4-mono v4-mono-dim">{{ post.readTime }}</span>
+                  <span v-if="post.date">{{ formatDate(post.date) }}</span>
+                  <span v-if="post.readTime">{{ post.readTime }}</span>
                 </div>
                 <h2 class="v4-blog-card-title">{{ post.title }}</h2>
-                <p v-if="post.description" class="v4-blog-card-desc">{{ post.description }}</p>
               </div>
               <div class="v4-blog-card-footer">
                 <div class="v4-blog-card-footer-left">
-                  <span v-if="post.author" class="v4-sig">{{ post.author }}</span>
+                  <span v-if="post.author" class="v4-blog-card-author">{{ displayAuthor(post.author) }}</span>
                   <div v-if="post.keywords?.length" class="v4-blog-card-tags">
                     <span v-for="kw in post.keywords.slice(0, 3)" :key="kw" class="v4-blog-card-tag">{{ kw }}</span>
                   </div>
@@ -73,6 +66,15 @@ function slugFromPath(path: string) {
           </div>
         </div>
       </section>
+
+      <LandingFinalCTA
+        :title-lines="['See the risk.', 'Control the runtime.']"
+        copy="Put Aurva research into practice with live visibility across agents, models, identities, data flows, and destinations. Zero friction. Zero code changes."
+        primary-label="Install in 10 mins"
+        primary-to="/docs/getting-started/introduction"
+        secondary-label="Contact sales"
+        secondary-href="/contact/sales"
+      />
 
     </div>
     <LandingFooter />
@@ -85,19 +87,24 @@ function slugFromPath(path: string) {
 
 .v4-blog-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 
 .v4-blog-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 28px 26px;
-  border: 1px solid rgba(255,255,255,.07);
-  background: rgba(255,255,255,.015);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .42fr);
+  align-items: end;
+  gap: 40px;
+  padding: 24px 26px;
+  border: 1px solid rgba(255,255,255,.1);
+  background:
+    linear-gradient(rgba(255,255,255,.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.012) 1px, transparent 1px),
+    rgba(255,255,255,.015);
+  background-size: 24px 24px;
   text-decoration: none;
-  min-height: 220px;
+  min-height: 118px;
   transition: border-color 0.15s, background 0.15s;
 }
 .v4-blog-card:hover {
@@ -105,45 +112,56 @@ function slugFromPath(path: string) {
   background: rgba(255,255,255,.03);
 }
 
-.v4-blog-card-top { display: flex; flex-direction: column; gap: 14px; }
+.v4-blog-card-top { display: flex; flex-direction: column; gap: 12px; }
 
 .v4-blog-card-meta {
   display: flex;
-  gap: 14px;
+  gap: 9px;
   align-items: center;
+  font-family: var(--v4-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,.38);
+}
+
+.v4-blog-card-meta span + span::before {
+  content: '·';
+  margin-right: 9px;
+  color: rgba(255,255,255,.22);
 }
 
 .v4-blog-card-title {
   font-family: var(--v4-sans);
-  font-size: 17px;
+  font-size: 23px;
   font-weight: 600;
   line-height: 1.35;
   color: rgba(255,255,255,.88);
   margin: 0;
+  text-wrap: balance;
   transition: color 0.15s;
 }
-.v4-blog-card:hover .v4-blog-card-title { color: rgba(170,220,138,.95); }
-
-.v4-blog-card-desc {
-  font-size: 13px;
-  line-height: 1.6;
-  color: rgba(255,255,255,.44);
-  margin: 0;
-}
+.v4-blog-card:hover .v4-blog-card-title { color: #fff; }
 
 .v4-blog-card-footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  padding-top: 16px;
-  margin-top: 16px;
-  border-top: 1px solid rgba(255,255,255,.06);
+  align-items: center;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
+  border: 0;
 }
 
 .v4-blog-card-footer-left {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.v4-blog-card-author {
+  font-size: 13px;
+  font-weight: 550;
+  color: rgba(255,255,255,.62);
 }
 
 .v4-blog-card-tags {
@@ -157,8 +175,8 @@ function slugFromPath(path: string) {
   font-size: 9px;
   letter-spacing: .07em;
   text-transform: uppercase;
-  color: rgba(170,220,138,.55);
-  border: 1px solid rgba(170,220,138,.15);
+  color: rgba(255,255,255,.4);
+  border: 1px solid rgba(255,255,255,.1);
   padding: 2px 6px;
 }
 
@@ -170,11 +188,20 @@ function slugFromPath(path: string) {
   transition: color 0.15s, transform 0.15s;
 }
 .v4-blog-card:hover .v4-blog-card-arrow {
-  color: rgba(170,220,138,.7);
+  color: rgba(255,255,255,.82);
   transform: translateX(4px);
 }
 
 @media (max-width: 768px) {
-  .v4-blog-grid { grid-template-columns: 1fr; }
+  .v4-blog-card {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    min-height: 0;
+  }
+
+  .v4-blog-card-footer {
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
 }
 </style>

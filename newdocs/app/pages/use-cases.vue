@@ -5,92 +5,83 @@ definePageMeta({
   footer: false,
 })
 
-const stripCols = [
-  { label: 'COVERAGE',  val: 'AGENTS · MODELS · MCP · VEC'    },
-  { label: 'OBSERVE',   val: 'EBPF · KERNEL · ZERO-CODE'      },
-  { label: 'IDENTITY',  val: 'IAM · NHI · IRSA · WI'          },
-  { label: 'DATA',      val: 'PII · PHI · PCI · SECRETS'      },
-  { label: 'EGRESS',    val: 'LLM APIS · VECTOR STORES'       },
-  { label: 'POSTURE',   val: 'LEAST-PRIV · DRIFT · DLP'       },
-]
-
 const cases = [
   {
     mark: 'UC·01',
-    industry: 'FINTECH · 800 ENG',
-    title: 'Shadow AI in production',
-    persona: 'CISO · public fintech',
-    problem: 'Six product teams shipped LLM features in a quarter — three never went through security review. Nobody had a list of every model, key, and downstream endpoint actually in use.',
-    approach: 'AIOStack discovered 41 distinct LLM-calling workloads from kernel traffic alone — including a customer-support summarizer routing transcripts to a personal OpenAI key, and an Anthropic call buried inside a vendor SDK.',
-    outcome: [
-      '41 AI workloads inventoried in 36 hours',
-      '3 unsanctioned providers retired the same week',
-      '0 code changes, 0 developer interrupts',
+    industry: 'DISCOVERY',
+    title: 'Find shadow AI at runtime',
+    persona: 'AI discovery and governance',
+    risk: 'Teams adopt models, SDKs, agents, and personal API keys faster than security inventories can track them.',
+    defense: 'Aurva observes AI traffic from the runtime and maps every workload, model, provider, credential, and destination without application changes.',
+    result: [
+      'Inventory sanctioned and unsanctioned AI',
+      'Attribute activity to workloads and identities',
+      'Reroute or retire unapproved usage',
     ],
   },
   {
     mark: 'UC·02',
-    industry: 'HEALTHTECH · HIPAA',
-    title: 'PHI leaving the environment',
-    persona: 'Head of Platform Security',
-    problem: 'A clinical-notes agent embedded patient records against a vector store. Embeddings were going to a third-party provider with no BAA in place. No one knew until a compliance audit.',
-    approach: 'AIOStack parses embedding-API protocols at the kernel, classifies request bodies as PHI in real-time, and flags any sensitive payload heading to an unapproved destination.',
-    outcome: [
-      'PHI-touching agents reduced 31 → 4',
-      'Vendor BAA tracking automated from runtime evidence',
-      'Audit closed with runtime trace, not just config',
+    industry: 'DATA PROTECTION',
+    title: 'Stop sensitive data from leaving',
+    persona: 'Data security and compliance',
+    risk: 'Prompts, responses, and embeddings can carry regulated data to providers and destinations that security never approved.',
+    defense: 'Aurva classifies sensitive content in motion, evaluates the destination and identity, then applies the right policy inline.',
+    result: [
+      'Detect PII, PHI, PCI data, and secrets',
+      'Redact or block unsafe requests',
+      'Preserve runtime evidence for every decision',
     ],
   },
   {
     mark: 'UC·03',
-    industry: 'D2C · ASIA',
-    title: 'Agent permissions exploded',
-    persona: 'Cloud Security Architect',
-    problem: 'A support agent had been given a broad IAM role months ago "just to ship". By the time anyone looked, that role had 48 permissions, and the agent was using 6.',
-    approach: 'AIOStack maps every permission granted against every permission actually exercised at runtime. Over-provisioned roles surface automatically with proposed least-privilege scopes.',
-    outcome: [
-      '42 unused permissions removed across 8 NHIs',
-      '6 of 8 service accounts now meet least-privilege',
-      'Drift detection runs continuously, not yearly',
+    industry: 'IDENTITY',
+    title: 'Constrain agent access',
+    persona: 'Identity and cloud security',
+    risk: 'Agents often inherit broad roles, long-lived keys, and permissions that exceed what they actually use at runtime.',
+    defense: 'Aurva connects each action to its workload and identity, compares access granted with access used, and detects permission drift continuously.',
+    result: [
+      'Identify excessive agent permissions',
+      'Generate least-privilege policy guidance',
+      'Revoke credentials when behavior becomes unsafe',
     ],
   },
   {
     mark: 'UC·04',
-    industry: 'AI INFRA · US',
-    title: 'MCP & tool-use opacity',
-    persona: 'Engineering Manager · agent platform',
-    problem: 'Multi-step agents chained MCP tools, vector lookups, and external APIs in ways nobody could reproduce post-incident. Logs from each tool existed; the workflow did not.',
-    approach: 'AIOStack reconstructs full agent workflows at the kernel layer — every MCP invocation, tool call, model hop, and downstream egress is stitched into a single evidence chain.',
-    outcome: [
-      'Mean incident time-to-cause: 3d → 22m',
-      'Replay of every multi-step agent workflow',
-      'MCP server inventory generated automatically',
+    industry: 'AGENT SECURITY',
+    title: 'Trace agents, tools, and MCP',
+    persona: 'Agent platform security',
+    risk: 'Multi-step agents cross models, MCP servers, tools, vector stores, and external APIs without leaving one complete evidence trail.',
+    defense: 'Aurva reconstructs the workflow from runtime activity and connects every model hop, tool invocation, identity, and downstream destination.',
+    result: [
+      'Trace complete agent execution paths',
+      'Inventory MCP servers and connected tools',
+      'Investigate incidents from one evidence chain',
     ],
   },
   {
     mark: 'UC·05',
-    industry: 'FINANCIAL SERVICES',
-    title: 'SOC 2 evidence, on demand',
-    persona: 'GRC Lead',
-    problem: 'Auditors wanted proof that AI access to customer financial records was authorized and appropriate. Existing controls produced policy docs, not runtime evidence.',
-    approach: 'AIOStack records every sensitive data access by every agent, with full identity chain, purpose, and timing. Evidence packages export directly for audit. (DAM-grade detail available with Aurva Enterprise.)',
-    outcome: [
-      'SOC 2 evidence pack auto-generated weekly',
-      '4 quarters of access history queryable in seconds',
-      'No agent code modified to produce trail',
+    industry: 'COMPLIANCE',
+    title: 'Prove AI access at runtime',
+    persona: 'GRC and audit',
+    risk: 'Configuration shows what an AI system was allowed to access. It does not prove what the system actually accessed or why.',
+    defense: 'Aurva records sensitive data access with the complete identity chain, destination, policy decision, and timing needed for investigation and audit.',
+    result: [
+      'Generate evidence from observed behavior',
+      'Query historical access by agent and identity',
+      'Reduce manual audit preparation',
     ],
   },
   {
     mark: 'UC·06',
-    industry: 'D2C · GLOBAL',
-    title: 'Novel egress destinations',
-    persona: 'Detection & Response Lead',
-    problem: 'A workload started sending data to an endpoint nobody recognized at 3am. By the time the SIEM flagged volume, 90 minutes of traffic had already left.',
-    approach: 'AIOStack baselines every workload\'s expected destinations and flags first-time egress to a novel endpoint in real-time — with the originating agent, role, and data class attached.',
-    outcome: [
-      'Novel-destination alerts within 30s of first call',
-      'Originating identity chain attached to every finding',
-      '6 unsanctioned egress paths shut down in month 1',
+    industry: 'RESPONSE',
+    title: 'Control novel AI egress',
+    persona: 'Detection and response',
+    risk: 'A workload can begin sending sensitive data to a new model provider or external endpoint before volume-based controls react.',
+    defense: 'Aurva baselines expected destinations, identifies first-time egress, and attaches the originating agent, identity, and data class to the finding.',
+    result: [
+      'Detect new destinations on the first request',
+      'Block or reroute unsafe traffic inline',
+      'Give responders the context to act quickly',
     ],
   },
 ]
@@ -104,26 +95,15 @@ const cases = [
 
       <!-- ── HERO ── -->
       <section class="v4-section v4-uc-hero">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-
-        <!-- full-bleed coverage strip -->
-        <div class="v4-uc-strip">
-          <div class="v4-uc-strip-col" v-for="col in stripCols" :key="col.label">
-            <span class="v4-uc-strip-label">{{ col.label }}</span>
-            <span class="v4-uc-strip-val">{{ col.val }}</span>
-          </div>
-        </div>
-
-        <div class="v4-coordinates" />
         <div class="v4-container">
-          <span class="v4-section-num">§ AURVA · USE CASES</span>
+          <span class="v4-section-num">AURVA · USE CASES</span>
           <h1 class="v4-display" style="margin-top:16px">
-            What you find<br>
-            <span class="v4-em">when you read the kernel.</span>
+            Secure every AI system.<br>
+            <span class="v4-uc-title-shift">From the runtime up.</span>
           </h1>
           <p class="v4-lead" style="margin-top:28px;max-width:640px">
-            Six patterns we see again and again across security and platform teams running AI in production —
-            and what AIOStack actually does about them.
+            Discover sanctioned and shadow AI, trace every agent, identity, and data flow, and enforce
+            policy across models, tools, and providers without changing application code.
           </p>
         </div>
       </section>
@@ -151,19 +131,19 @@ const cases = [
               <p class="v4-uc-persona">{{ c.persona }}</p>
 
               <div class="v4-uc-row">
-                <span class="v4-uc-row-label">problem</span>
-                <p class="v4-uc-row-body">{{ c.problem }}</p>
+                <span class="v4-uc-row-label">risk</span>
+                <p class="v4-uc-row-body">{{ c.risk }}</p>
               </div>
 
               <div class="v4-uc-row">
-                <span class="v4-uc-row-label">approach</span>
-                <p class="v4-uc-row-body">{{ c.approach }}</p>
+                <span class="v4-uc-row-label">aurva</span>
+                <p class="v4-uc-row-body">{{ c.defense }}</p>
               </div>
 
               <div class="v4-uc-outcome">
-                <span class="v4-uc-outcome-label">outcome</span>
+                <span class="v4-uc-outcome-label">result</span>
                 <ul class="v4-uc-outcome-list">
-                  <li v-for="o in c.outcome" :key="o">{{ o }}</li>
+                  <li v-for="o in c.result" :key="o">{{ o }}</li>
                 </ul>
               </div>
             </article>
@@ -171,33 +151,14 @@ const cases = [
         </div>
       </section>
 
-      <!-- ── CTA ── -->
-      <section class="v4-section v4-bordered v4-uc-cta">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-        <div class="v4-container">
-          <div class="v4-uc-cta-inner">
-            <div>
-              <span class="v4-section-num">§ NEXT</span>
-              <h2 class="v4-h2" style="margin-top:14px">
-                Read your own kernel.<br>
-                <span class="v4-em">Ten minutes.</span>
-              </h2>
-              <p class="v4-section-lead" style="max-width:560px">
-                One curl. Read-only. In-VPC. Your AI inventory, identity chains, and egress map — built from runtime evidence, not slide decks.
-              </p>
-            </div>
-            <div class="v4-uc-cta-links">
-              <NuxtLink class="v4-btn v4-btn-primary" to="/docs/getting-started/introduction">
-                Install AIOStack
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </NuxtLink>
-              <a class="v4-btn v4-btn-ghost" href="mailto:contact@aurva.io">
-                contact@aurva.io
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LandingFinalCTA
+        :title-lines="['See every AI system.', 'Control every action.']"
+        copy="Deploy in your environment and build a live inventory of agents, models, identities, data flows, and destinations. Zero friction. Zero code changes."
+        primary-label="Install in 10 mins"
+        primary-to="/docs/getting-started/introduction"
+        secondary-label="Contact sales"
+        secondary-href="/contact/sales"
+      />
 
     </div>
 
@@ -208,38 +169,11 @@ const cases = [
 <style scoped>
 /* ── Hero ── */
 .v4-uc-hero {
-  padding: 0 0 64px;
+  padding: 80px 0 64px;
 }
 
-.v4-uc-strip {
-  display: flex;
-  width: 100%;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  margin-bottom: 56px;
-}
-.v4-uc-strip-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 24px 20px;
-  border-right: 1px solid rgba(255,255,255,.06);
-}
-.v4-uc-strip-col:last-child { border-right: none; }
-.v4-uc-strip-label {
-  font-family: var(--v4-mono);
-  font-size: 9px;
-  letter-spacing: .1em;
-  color: rgba(255,255,255,.28);
-  text-transform: uppercase;
-}
-.v4-uc-strip-val {
-  font-family: var(--v4-mono);
-  font-size: 11px;
-  letter-spacing: .05em;
-  color: rgba(255,255,255,.7);
-  text-transform: uppercase;
-  white-space: nowrap;
+.v4-uc-title-shift {
+  color: rgba(255, 255, 255, .42);
 }
 
 /* ── Case grid ── */
@@ -359,29 +293,8 @@ const cases = [
   color: rgba(170,220,138,.7);
 }
 
-/* ── CTA ── */
-.v4-uc-cta { padding: 60px 0; }
-.v4-uc-cta-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 40px;
-}
-.v4-uc-cta-links {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
 /* ── Responsive ── */
 @media (max-width: 900px) {
-  .v4-uc-strip-col:nth-child(n+5) { display: none; }
-  .v4-uc-strip-col { padding: 18px 14px; }
   .v4-uc-grid { grid-template-columns: 1fr; }
-  .v4-uc-cta-inner { flex-direction: column; align-items: flex-start; }
-}
-
-@media (max-width: 540px) {
-  .v4-uc-strip-col:nth-child(n+3) { display: none; }
 }
 </style>

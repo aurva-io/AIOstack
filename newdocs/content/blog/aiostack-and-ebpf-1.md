@@ -1,5 +1,5 @@
 ---
-title: 'I Spy With My eBPF Eye - How We Track Every Decision Made By Your AI Agents'
+title: 'How eBPF Reconstructs AI Agent Decisions'
 description: Learn how our eBPF intelligence layer tracks AI workflows and turns raw packets into semantic chains at 5M+ events per day.
 author: Akash Mandal
 date: 2026-02-21

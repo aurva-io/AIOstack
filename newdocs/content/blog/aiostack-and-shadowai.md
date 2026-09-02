@@ -1,5 +1,5 @@
 ---
-title: Let There Be Light - All About Shadow AI in the Vibe Coding and Agentic Era 
+title: Shadow AI in the Agentic Era
 description: Learn what Shadow AI is and how unchecked AI can go undetected and wreck havoc in your cloud.
 date: 2025-11-1
 author: AIOStack Team

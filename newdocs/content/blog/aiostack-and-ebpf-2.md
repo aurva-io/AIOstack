@@ -1,12 +1,12 @@
 ---
-title: 'Diving Off The Deep End - How We Extract Database Queries Without Passwords'
+title: 'Reading Database Queries Without Credentials'
 description: 'Learn how we dove into the kernel and built our intelligence layer to monitor queries without needing DB credentials.'
 author: Akash Mandal
 publication: Akash's Substack
 date: 2026-02-24
 ---
 
-## What eBPF Captures vs. What You Need for Data Monitoring
+## What eBPF Captures and What Security Needs
 
 eBPF provides kernel-level visibility into network traffic—capturing packets, monitoring connections, and observing every query and API call in real-time. This makes eBPF a foundational technology for data monitoring and security. However, raw eBPF captures provide only low-level data:
 
@@ -46,9 +46,9 @@ eBPF is an enabler, not a solution. The hard part starts after you capture the p
 
 * * *
 
-## Why eBPF Packet Capture Needs a Protocol Intelligence Layer
+## Why Packet Capture Needs Protocol Intelligence
 
-### Security Teams Need Query-Level and API-Level Visibility
+### From Packets to Queries and APIs
 
 Data security teams need query-level and API-level visibility, not raw packet data. They need answers to questions like:
 
@@ -63,7 +63,7 @@ Data security teams need query-level and API-level visibility, not raw packet da
 
 Bridging the gap between raw eBPF packet captures and these high-level queries requires dedicated protocol intelligence.
 
-### Processing Billions of Queries and API Calls Requires Automated Protocol Parsing
+### Parsing Billions of Queries and API Calls
 
 We're processing **over 20 billion queries and API calls per day** across our customers. At that scale:
 
@@ -80,7 +80,7 @@ We're processing **over 20 billion queries and API calls per day** across our cu
 
 Pattern matching with regex cannot handle this complexity. An intelligence layer is required to bridge eBPF's raw data and the structured insights that security and operations teams need.
 
-### How Database Wire Protocols Work: Multi-Packet Query Reconstruction
+### Reconstructing Multi-Packet Database Queries
 
 A single database query generates multiple packets. Let's look at a concrete example with **PostgreSQL** :
 
@@ -154,7 +154,7 @@ Without packet correlation and protocol parsing, the raw data volume is unusable
 
 * * *
 
-## eBPF Intelligence Layer Architecture: Collector, Parser, and Aggregator
+## Inside the eBPF Intelligence Layer
 
 Our intelligence layer consists of two main components working together:
 
@@ -188,9 +188,9 @@ This architecture consists of three processing stages, each addressing specific 
 
 * * *
 
-## Stage 1: eBPF Connection Tracking in Kernel Space
+## Stage 1: Connection Tracking in Kernel Space
 
-### eBPF Verifier Constraints Limit In-Kernel Processing
+### Why Parsing Cannot Stay in the Kernel
 
 eBPF runs in the kernel, which means it's fast but heavily constrained:
 
@@ -209,7 +209,7 @@ We explored these constraints in detail in our blog on [how we unlocked 1000% pe
 
 We can't embed full protocol parsing or deep packet inspection in eBPF. So what can we do?
 
-### Connection ID Generation Using tgid and File Descriptor
+### Generating Connection IDs
 
 The kernel's job is simple but critical:
 
@@ -255,9 +255,9 @@ This gives userspace a critical advantage: **packets arrive pre-grouped by conne
 
 * * *
 
-## Stage 2: Finite State Machine Protocol Parsing in User Space
+## Stage 2: Protocol Parsing in User Space
 
-### Why Regex Fails for Database Wire Protocol Parsing
+### Why Regex Fails
 
 Early on, we tried using regex to detect protocols and extract queries. This worked for simple cases but fell apart quickly:
 
@@ -274,7 +274,7 @@ Early on, we tried using regex to detect protocols and extract queries. This wor
 
 Regex-based parsing is unreliable for binary protocols and impossible to maintain across 24+ database wire protocols.
 
-### Using Finite State Machines for MySQL, PostgreSQL, and MongoDB Protocol Detection
+### Finite State Machines for Database Protocols
 
 Each wire protocol is modeled as a **Finite State Machine** :
     
@@ -321,7 +321,7 @@ Each wire protocol is modeled as a **Finite State Machine** :
 
 [![FSM protocol parsing flow](https://substackcdn.com/image/fetch/$s_!J4V9!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd9a1e14f-5292-4369-af22-ed95a160f84b_2000x1410.png)](https://substackcdn.com/image/fetch/$s_!J4V9!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd9a1e14f-5292-4369-af22-ed95a160f84b_2000x1410.png)
 
-### DNS Resolution Cache for IP-to-Domain Mapping
+### Mapping IPs to Domains with DNS
 
 We track DNS events from the kernel but maintain a **userspace DNS cache** :
 
@@ -352,7 +352,7 @@ We track DNS events from the kernel but maintain a **userspace DNS cache** :
 
 This solves the “IP to domain” problem cleanly, with cache efficiency tuned for our workload.
 
-### Edge Aggregation: Reducing Network Traffic at the Collector
+### Reducing Collector Traffic with Edge Aggregation
 
 Not all data needs to go to the aggregator. We perform **initial aggregation at the collector** to reduce network traffic:
 
@@ -397,9 +397,9 @@ This staged aggregation strategy lets us scale to billions of queries without ov
 
 * * *
 
-## Stage 3: Centralized Aggregator for Kubernetes Metadata and PII Detection
+## Stage 3: Metadata Enrichment and PII Detection
 
-### Why DaemonSet Collectors Shouldn't Run Kubernetes Informers
+### Why Collectors Avoid Kubernetes Informers
 
 Initially, we ran **Kubernetes informers** directly in the collector (DaemonSet, one per node). This caused problems:
 
@@ -412,7 +412,7 @@ Initially, we ran **Kubernetes informers** directly in the collector (DaemonSet,
 
 
 
-### Centralizing Kubernetes Pod Resolution and PII Detection
+### Centralizing Pod Resolution and PII Detection
 
 We moved **Kube informers** and **PII detection** to a **centralized aggregator service** :
 
@@ -455,7 +455,7 @@ We moved **Kube informers** and **PII detection** to a **centralized aggregator 
 
 
 
-### Intelligent Sampling for Database Activity Monitoring vs. Flow Tracking
+### Sampling Database Activity and Flow Data
 
 At 20 billion queries per day, we can't keep everything. We **aggregate and sample** based on use case:
 
@@ -499,9 +499,9 @@ This sampling strategy preserves security-critical signals while managing storag
 
 * * *
 
-## Common eBPF Data Monitoring Challenges and Solutions
+## Common Challenges in eBPF Data Monitoring
 
-### Handling Missed DNS Events in High-Traffic Environments
+### Recovering Missed DNS Events
 
  **Problem** : DNS events can be missed (high traffic volume, event drops, timing issues)
 
@@ -516,7 +516,7 @@ This sampling strategy preserves security-critical signals while managing storag
 
 
 
-### Monitoring Encrypted Database Traffic with SSL/TLS Uprobes
+### Monitoring Encrypted Traffic with TLS Uprobes
 
  **Problem** : eBPF sees encrypted bytes, not cleartext queries
 
@@ -533,7 +533,7 @@ This sampling strategy preserves security-critical signals while managing storag
 
 This gives us full visibility into encrypted traffic without breaking SSL. We covered the challenges of SSL/TLS monitoring in depth in [The SSL/TLS Trap: Why Your Data Security Goes Blind in Production](https://aurva.io/blog/the-ssl-tls-trap-why-your-database-security-goes-blind-in-production).
 
-### Reducing False Positives in Multi-Protocol Detection
+### Reducing Multi-Protocol False Positives
 
  **Problem** : Some protocols have generic patterns that can cause false detection
 
@@ -560,7 +560,7 @@ This gives us full visibility into encrypted traffic without breaking SSL. We co
 
 This reduces false positives while maintaining high detection accuracy.
 
-### Classifying Connection Ownership: Ingress vs. Egress
+### Classifying Ingress and Egress
 
  **Problem** : Determining which process actually owns and uses a connection is harder than it seems
 
@@ -605,9 +605,9 @@ This approach correctly identifies “the payment service is querying PostgreSQL
 
 * * *
 
-## Production Results: eBPF Data Monitoring at Scale
+## Production Results at Scale
 
-### Performance Metrics Across 24+ Protocols
+### Performance Across 24+ Protocols
 
   *  **Queries processed per day:** 20+ billion
 
@@ -624,7 +624,7 @@ This approach correctly identifies “the payment service is querying PostgreSQL
 
 
 
-### Data Security and Compliance Use Cases
+### Security and Compliance Use Cases
 
 Our intelligence layer enables customers to:
 
@@ -660,7 +660,7 @@ All of this happens at scale, with no added latency to customer applications.
 
 * * *
 
-## Future Development: Expanding eBPF Data Monitoring Capabilities
+## What Comes Next
 
 ### 1\. Enhanced Connection Context Tracking
 
@@ -713,7 +713,7 @@ We're building on this with [AIOStack at Aurva.ai](https://aurva.ai) \- our plat
 
 * * *
 
-## Summary: Key Takeaways for eBPF Data Monitoring
+## Key Takeaways
 
 eBPF provides raw packet visibility at the kernel level. Converting that visibility into data monitoring and security insights requires a dedicated intelligence layer.
 

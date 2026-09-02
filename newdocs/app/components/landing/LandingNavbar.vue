@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const textLinks = [
-  { label: 'Use cases', to: '/use-cases', external: false },
+  { label: 'Use Cases', to: '/use-cases', external: false },
   { label: 'Docs',      to: '/docs/getting-started/introduction', external: false },
-  { label: 'Blog',      to: '/blog', external: false },
-  { label: 'Us',        to: '/about', external: false },
-  { label: 'aurva',     to: 'https://aurva.io', external: true },
+  { label: 'Writings',  to: '/blog', external: false },
+  { label: 'Contact',   to: '/contact', external: false },
+  { label: 'Company',   to: '/about', external: false },
+  { label: 'DSPM & DAM', to: 'https://aurva.io', external: true },
 ]
 
 const open = ref(false)
@@ -29,10 +30,9 @@ onUnmounted(() => {
   <header class="navbar-bar navbar-bar--home">
     <div class="navbar-inner">
       <!-- Logo -->
-      <NuxtLink to="/" aria-label="AIOStack home"
-        style="display:flex; align-items:center; gap:10px; text-decoration:none;">
-        <img src="/logo.svg" alt="AIOStack" width="20" height="20" style="filter:invert(1); opacity:0.85;" />
-        <span class="v4-mono" style="font-size:13px; color:white; letter-spacing:.06em;">AIOStack</span>
+      <NuxtLink to="/" aria-label="Aurva Security home" class="v4-brand">
+        <img src="/logo.svg" alt="Aurva Security" width="24" height="24" />
+        <span class="v4-brand-wordmark">Aurva Security</span>
       </NuxtLink>
 
       <!-- Desktop nav links -->
@@ -51,6 +51,11 @@ onUnmounted(() => {
             <path d="M12 .5a11.5 11.5 0 00-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.1.1 1.7 1.2 1.7 1.2 1 1.7 2.7 1.2 3.4.9.1-.7.4-1.2.7-1.5-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 015.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.7.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0012 .5z"/>
           </svg>
         </a>
+
+        <div class="v4-nav-auth">
+          <a class="v4-nav-login" href="https://app.aurva.ai/">Log in</a>
+          <a class="v4-nav-signup" href="https://app.aurva.ai/signup">Sign up</a>
+        </div>
       </nav>
 
       <!-- Mobile menu toggle -->
@@ -89,11 +94,6 @@ onUnmounted(() => {
               </svg>
             </button>
 
-            <div class="v4-nav-overlay-header">
-              <span class="v4-mono v4-mono-dim">§ NAV · INDEX</span>
-              <span class="v4-mono v4-mono-dim">{{ String(textLinks.length).padStart(2, '0') }} routes</span>
-            </div>
-
             <nav class="v4-nav-overlay-list">
               <NuxtLink
                 v-for="(link, i) in textLinks"
@@ -112,6 +112,11 @@ onUnmounted(() => {
                 </span>
               </NuxtLink>
             </nav>
+
+            <div class="v4-nav-overlay-auth">
+              <a href="https://app.aurva.ai/" @click="open = false">Log in</a>
+              <a href="https://app.aurva.ai/signup" @click="open = false">Sign up</a>
+            </div>
 
             <div class="v4-nav-overlay-footer">
               <a
@@ -135,10 +140,73 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
+.v4-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--v4-fg);
+  text-decoration: none;
+}
+
+.v4-brand img {
+  filter: invert(1);
+  opacity: .9;
+}
+
+.v4-brand-wordmark {
+  font-family: var(--v4-sans);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.025em;
+}
+
 .v4-nav-desktop {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.v4-nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+.v4-nav-login,
+.v4-nav-signup {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-family: var(--v4-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.v4-nav-login {
+  color: rgba(255,255,255,.62);
+}
+
+.v4-nav-login:hover {
+  color: rgba(255,255,255,.95);
+}
+
+.v4-nav-signup {
+  color: #08090b;
+  background: rgba(255,255,255,.92);
+  padding-inline: 16px;
+}
+
+.v4-nav-signup:hover {
+  background: #fff;
 }
 
 .v4-nav-toggle {
@@ -242,27 +310,43 @@ onUnmounted(() => {
   background: rgba(170,220,138,.05);
 }
 
-.v4-nav-overlay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 16px;
-  margin-bottom: 28px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  font-size: 10px;
-}
-
 .v4-nav-overlay-list {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
+.v4-nav-overlay-auth {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.v4-nav-overlay-auth a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.9);
+  font-family: var(--v4-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.v4-nav-overlay-auth a:last-child {
+  color: #08090b;
+  background: rgba(255,255,255,.92);
+  border-color: rgba(255,255,255,.92);
+}
+
 .v4-nav-overlay-link {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 22px 0;
+  gap: 16px;
+  padding: 16px 0;
   border-bottom: 1px solid rgba(255,255,255,.06);
   text-decoration: none;
   color: rgba(255,255,255,.92);
@@ -276,7 +360,7 @@ onUnmounted(() => {
 
 .v4-nav-overlay-mark {
   font-family: var(--v4-mono);
-  font-size: 11px;
+  font-size: 10px;
   color: rgba(255,255,255,.3);
   letter-spacing: .08em;
   min-width: 24px;
@@ -285,7 +369,7 @@ onUnmounted(() => {
 .v4-nav-overlay-label {
   flex: 1;
   font-family: var(--v4-sans);
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: -.01em;
 }

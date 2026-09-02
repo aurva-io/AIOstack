@@ -30,23 +30,11 @@ const founders = [
 ]
 
 const team = [
-  { mark: 'T·01', name: 'Akshay Singhal', title: 'Head of Engineering' },
-  { mark: 'T·02', name: 'Pooja Gupta', title: 'Head of Product' },
-  { mark: 'T·03', name: 'Tushar Haralkar', title: 'Field CISO' },
-  { mark: 'T·04', name: 'Ninad Wirmalwar', title: 'Business Head, India & MEA' },
-  { mark: 'T·05', name: 'Shubham Ojha', title: 'Founding Engineer' },
-  { mark: 'T·06', name: 'Swapnil Nair', title: 'Head of Research' },
-]
-
-const stripCols = [
-  { label: 'ENTITY',    val: 'AURVA · INC'              },
-  { label: 'FOUNDED',   val: '2023'                      },
-  { label: 'HQ',        val: 'SUNNYVALE · CA'            },
-  { label: 'OFFICE',    val: 'BANGALORE · IN'            },
-  { label: 'FOCUS',     val: 'RUNTIME AI SECURITY'       },
-  { label: 'DEPLOY',    val: 'IN-VPC · SELF-HOSTED'      },
-  { label: 'KERNEL',    val: 'EBPF · DAEMONSET'          },
-  { label: 'STATUS',    val: 'GA · 2025'                 },
+  { name: 'Akshay Singhal', title: 'Head of Engineering' },
+  { name: 'Pooja Gupta', title: 'Head of Product' },
+  { name: 'Ninad Wirmalwar', title: 'Business Head, India & MEA' },
+  { name: 'Shubham Ojha', title: 'Founding Engineer' },
+  { name: 'Swapnil Nair', title: 'Head of Research' },
 ]
 
 const investors = [
@@ -75,53 +63,60 @@ const advisors = [
 
       <!-- ── HERO ── -->
       <section class="v4-section v4-about-hero">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-
-        <!-- full-bleed data strip -->
-        <div class="v4-about-strip">
-          <div class="v4-about-strip-col" v-for="col in stripCols" :key="col.label">
-            <span class="v4-about-strip-label">{{ col.label }}</span>
-            <span class="v4-about-strip-val">{{ col.val }}</span>
-          </div>
-          <div class="v4-about-strip-rule" />
-        </div>
-
-        <div class="v4-coordinates" />
         <div class="v4-container">
-          <span class="v4-section-num">§ AURVA · ABOUT</span>
-          <h1 class="v4-display" style="margin-top:16px">
-            The paradigm has shifted.<br>
-            <span class="v4-em">Security hasn't kept up.</span>
+          <h1 class="v4-display v4-about-title">
+            AI changed what software can do.<br>
+            <span class="v4-about-title-shift">Security must change with it.</span>
           </h1>
-          <p class="v4-lead" style="margin-top:28px;max-width:640px">
-            AI agents and dynamic identities move faster, touch more data, and create more sprawl
-            than static controls were designed for. Aurva was founded to answer one question:
-            when does legitimate access become inappropriate at runtime?
+          <p class="v4-lead v4-about-intro">
+            Aurva was founded by former Meta leaders in AI and security to protect a new kind of
+            runtime, where agents use legitimate identities, reach sensitive data, and take actions
+            static controls cannot fully predict.
           </p>
-          <div class="v4-about-origin">
-            <div class="v4-about-origin-row">
-              <span class="v4-mono v4-mono-dim">founded</span>
-              <span>former Meta leaders in AI &amp; security</span>
+          <div class="v4-about-facts">
+            <div class="v4-about-fact">
+              <span class="v4-about-fact-label">Founded by</span>
+              <span class="v4-about-fact-value">Former Meta AI and security leaders</span>
             </div>
-            <div class="v4-about-origin-row">
-              <span class="v4-mono v4-mono-dim">hq</span>
-              <span>Sunnyvale, CA · Bangalore, India</span>
+            <div class="v4-about-fact">
+              <span class="v4-about-fact-label">Built in</span>
+              <span class="v4-about-fact-value">Sunnyvale and Bangalore</span>
             </div>
-            <div class="v4-about-origin-row">
-              <span class="v4-mono v4-mono-dim">product</span>
-              <span>AIOStack · runtime AI security</span>
+            <div class="v4-about-fact">
+              <span class="v4-about-fact-label">Our mission</span>
+              <span class="v4-about-fact-value">Make agentic AI safe to trust</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ── FOUNDERS ── -->
-      <section class="v4-section v4-bordered v4-about-founders">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
+      <div class="v4-about-separator" aria-hidden="true">
+        <span class="v4-about-separator-line" />
+        <span class="v4-about-separator-mark">
+          <img src="/logo.svg" alt="">
+        </span>
+        <span class="v4-about-separator-line" />
+      </div>
+
+      <!-- ── TEAM ── -->
+      <section class="v4-section v4-about-founders">
         <div class="v4-container">
-          <span class="v4-section-num"> 01 · FOUNDERS</span>
+          <div class="v4-about-section-head">
+            <div>
+              <h2 class="v4-about-section-title">We move as one.</h2>
+            </div>
+            <p class="v4-about-section-copy">
+              Research, engineering, product, and go-to-market working as one unit.
+              <a class="v4-about-hiring-link" href="https://aurva.io/careers">
+                We're hiring
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+            </p>
+          </div>
           <div class="v4-about-founders-grid">
-            <div v-for="f in founders" :key="f.mark" class="v4-about-founder-card">
+            <article v-for="f in founders" :key="f.mark" class="v4-about-founder-card">
               <!-- corner brackets -->
               <svg class="v4-card-corners" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0 12 L0 0 L12 0" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.2" />
@@ -129,23 +124,19 @@ const advisors = [
                 <path d="M0 88 L0 100 L12 100" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.2" />
                 <path d="M88 100 L100 100 L100 88" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="1.2" />
               </svg>
-              <div class="v4-about-founder-mark">{{ f.mark }}</div>
-              <div class="v4-about-founder-name">{{ f.name }}</div>
-              <div class="v4-about-founder-title">{{ f.title }}</div>
-              <p class="v4-about-founder-bio">{{ f.bio }}</p>
-            </div>
+              <div class="v4-about-founder-topline">
+                <span class="v4-about-founder-mark">{{ f.mark }}</span>
+                <span class="v4-about-founder-status">Founding team</span>
+              </div>
+              <div class="v4-about-founder-body">
+                <div class="v4-about-founder-name">{{ f.name }}</div>
+                <div class="v4-about-founder-title">{{ f.title }}</div>
+                <p class="v4-about-founder-bio">{{ f.bio }}</p>
+              </div>
+            </article>
           </div>
-        </div>
-      </section>
-
-      <!-- ── TEAM ── -->
-      <section class="v4-section v4-bordered v4-about-team">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-        <div class="v4-container">
-          <span class="v4-section-num"> 02 · TEAM</span>
-          <div class="v4-about-team-grid">
-            <div v-for="m in team" :key="m.mark" class="v4-about-team-cell">
-              <div class="v4-about-team-mark">{{ m.mark }}</div>
+          <div class="v4-about-team-roster">
+            <div v-for="m in team" :key="m.name" class="v4-about-team-member">
               <div class="v4-about-team-name">{{ m.name }}</div>
               <div class="v4-about-team-title">{{ m.title }}</div>
             </div>
@@ -158,8 +149,7 @@ const advisors = [
         <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
         <div class="v4-container">
           <div class="v4-backing-hero">
-            <span class="v4-section-num">§ 03 · BACKING</span>
-            <h2 class="v4-h2" style="margin-top:14px">
+            <h2 class="v4-h2">
               Backed by the best.
             </h2>
             <p class="v4-section-lead" style="max-width:520px">
@@ -171,7 +161,12 @@ const advisors = [
             <p class="v4-backing-label">World-Class Investors</p>
             <div class="v4-investor-grid">
               <div v-for="inv in investors" :key="inv.name" class="v4-investor-cell">
-                <img :src="inv.logo" :alt="inv.name" class="v4-investor-img" />
+                <img
+                  :src="inv.logo"
+                  :alt="`${inv.name} logo`"
+                  :aria-label="`${inv.name} logo`"
+                  class="v4-investor-img"
+                />
               </div>
             </div>
           </div>
@@ -180,43 +175,26 @@ const advisors = [
             <p class="v4-backing-label">Industry Veterans</p>
             <div class="v4-advisor-grid">
               <div v-for="adv in advisors" :key="adv.name" class="v4-advisor-cell">
-                <img :src="adv.logo" :alt="adv.name" class="v4-advisor-img" />
+                <img
+                  :src="adv.logo"
+                  :alt="`${adv.name} logo`"
+                  :aria-label="`${adv.name} logo`"
+                  class="v4-advisor-img"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- ── CTA ── -->
-      <section class="v4-section v4-bordered v4-about-cta">
-        <div class="v4-rule v4-rule-h" :style="{ top: 0 }" />
-        <div class="v4-container">
-          <div class="v4-about-cta-inner">
-            <div>
-              <span class="v4-section-num"> JOIN</span>
-              <h2 class="v4-h2" style="margin-top:14px">
-                Building the security layer<br>
-                <span class="v4-em">the AI era needs.</span>
-              </h2>
-              <p class="v4-section-lead">
-                We're a small team solving a hard problem. If runtime security for AI interests you, reach out.
-              </p>
-            </div>
-            <div class="v4-about-cta-links">
-              <NuxtLink class="v4-btn v4-btn-primary" to="/docs/getting-started/introduction">
-                Try AIOStack
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </NuxtLink>
-              <a class="v4-btn v4-btn-ghost" href="mailto:contact@aurva.io">
-                contact@aurva.io
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LandingFinalCTA
+        :title-lines="['The future is agentic.', 'Help us secure it.']"
+        copy="Join the team building the defense layer for the next generation of enterprise AI."
+        primary-label="View open roles"
+        primary-to="https://aurva.io/careers"
+        secondary-label="Contact us"
+        secondary-href="/contact"
+      />
 
     </div>
 
@@ -227,96 +205,173 @@ const advisors = [
 <style scoped>
 /* ── Hero ── */
 .v4-about-hero {
-  padding: 0 0 64px;
+  padding: 96px 0 72px;
 }
 
-/* full-bleed strip */
-.v4-about-strip {
-  display: flex;
-  width: 100%;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  margin-bottom: 56px;
-  position: relative;
-  overflow: hidden;
+.v4-about-title {
+  max-width: 1000px;
+  margin: 0;
 }
 
-.v4-about-strip-col {
-  flex: 1;
+.v4-about-title-shift {
+  color: rgba(255, 255, 255, .42);
+}
+
+.v4-about-intro {
+  max-width: 700px;
+  margin-top: 32px;
+}
+
+.v4-about-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 56px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+}
+
+.v4-about-fact {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 24px 20px;
-  border-right: 1px solid rgba(255,255,255,.06);
+  gap: 9px;
+  min-width: 0;
+  padding: 0 32px;
+  border-right: 1px solid rgba(255, 255, 255, .09);
 }
 
-.v4-about-strip-col:last-child {
-  border-right: none;
+.v4-about-fact:first-child {
+  padding-left: 0;
 }
 
-.v4-about-strip-label {
-  font-family: var(--v4-mono);
-  font-size: 9px;
-  letter-spacing: .1em;
-  color: rgba(255,255,255,.28);
+.v4-about-fact:last-child {
+  padding-right: 0;
+  border-right: 0;
+}
+
+.v4-about-fact-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .04em;
   text-transform: uppercase;
+  color: rgba(255, 255, 255, .4);
 }
 
-.v4-about-strip-val {
-  font-family: var(--v4-mono);
-  font-size: 11px;
-  letter-spacing: .05em;
-  color: rgba(255,255,255,.7);
-  text-transform: uppercase;
+.v4-about-fact-value {
+  max-width: 260px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, .86);
+}
+
+.v4-about-fact:first-child .v4-about-fact-value {
+  max-width: none;
   white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-  .v4-about-strip-col:nth-child(n+5) { display: none; }
-  .v4-about-strip-col { padding: 18px 14px; }
+.v4-about-separator {
+  display: grid;
+  grid-template-columns: 1fr 40px 1fr;
+  align-items: center;
+  gap: 18px;
+  width: min(100% - 96px, 1780px);
+  height: 72px;
+  margin: 0 auto;
 }
 
-@media (max-width: 540px) {
-  .v4-about-strip-col:nth-child(n+3) { display: none; }
+.v4-about-separator-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .18));
 }
 
-.v4-about-origin {
-  margin-top: 36px;
-  border-top: 1px solid rgba(255, 255, 255, .08);
-  padding-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.v4-about-separator-line:last-child {
+  transform: scaleX(-1);
 }
 
-.v4-about-origin-row {
-  display: flex;
-  gap: 16px;
-  font-family: var(--v4-mono);
-  font-size: 12px;
+.v4-about-separator-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: #08090b;
 }
 
-.v4-about-origin-row span:first-child {
-  min-width: 72px;
+.v4-about-separator-mark img {
+  width: 18px;
+  height: 18px;
+  filter: invert(1);
+  opacity: .62;
 }
-
 
 /* ── Founders ── */
 .v4-about-founders {
-  padding: 60px 0;
+  padding: 56px 0 80px;
+}
+
+.v4-about-section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.v4-about-section-title {
+  max-width: 660px;
+  margin: 0;
+  font-size: clamp(30px, 3.2vw, 44px);
+  font-weight: 500;
+  line-height: 1.04;
+  letter-spacing: -.04em;
+  color: rgba(255, 255, 255, .94);
+}
+
+.v4-about-section-copy {
+  max-width: 410px;
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, .5);
+}
+
+.v4-about-hiring-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, .88);
+  text-decoration: none;
+  transition: color .2s ease, gap .2s ease;
+}
+
+.v4-about-hiring-link:hover {
+  gap: 11px;
+  color: #fff;
 }
 
 .v4-about-founders-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  margin-top: 32px;
+  gap: 12px;
+  margin-top: 48px;
 }
 
 .v4-about-founder-card {
   position: relative;
-  padding: 28px 24px;
-  background: rgba(255, 255, 255, .02);
-  border: 1px solid rgba(255, 255, 255, .08);
+  display: flex;
+  flex-direction: column;
+  min-height: 310px;
+  background:
+    linear-gradient(rgba(255, 255, 255, .016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .016) 1px, transparent 1px),
+    rgba(255, 255, 255, .018);
+  background-size: 24px 24px;
+  border: 1px solid rgba(255, 255, 255, .12);
 }
 
 .v4-card-corners {
@@ -330,75 +385,96 @@ const advisors = [
 .v4-about-founder-mark {
   font-family: var(--v4-mono);
   font-size: 10px;
-  color: rgba(255, 255, 255, .35);
+  color: rgba(255, 255, 255, .48);
   letter-spacing: .08em;
-  margin-bottom: 14px;
+}
+
+.v4-about-founder-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, .09);
+}
+
+.v4-about-founder-status {
+  font-family: var(--v4-mono);
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .3);
+}
+
+.v4-about-founder-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 28px 24px 24px;
 }
 
 .v4-about-founder-name {
   font-family: var(--v4-sans);
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
+  letter-spacing: -.025em;
   color: rgba(255, 255, 255, .92);
-  margin-bottom: 4px;
+  margin-bottom: 7px;
 }
 
 .v4-about-founder-title {
-  font-family: var(--v4-mono);
-  font-size: 11px;
-  color: rgba(170, 220, 138, .8);
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, .48);
 }
 
 .v4-about-founder-bio {
-  font-size: 13.5px;
+  margin: auto 0 0;
+  padding-top: 32px;
+  font-size: 14px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, .55);
-  margin: 0;
+  color: rgba(255, 255, 255, .6);
 }
 
-/* ── Team ── */
-.v4-about-team {
-  padding: 60px 0;
+/* ── Team roster ── */
+.v4-about-team-roster {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.v4-about-team-grid {
+.v4-about-team-member {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 32px;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 88px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, .1);
+  background:
+    linear-gradient(rgba(255, 255, 255, .012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .012) 1px, transparent 1px),
+    rgba(255, 255, 255, .015);
+  background-size: 20px 20px;
+  transition: border-color .2s ease, background-color .2s ease;
 }
 
-.v4-about-team-cell {
-  width: calc((100% - 4px * 2) / 3);
-  padding: 20px 18px;
-  border: 1px solid rgba(255, 255, 255, .07);
-  background: rgba(255, 255, 255, .02);
-  box-sizing: border-box;
-}
-
-.v4-about-team-mark {
-  font-family: var(--v4-mono);
-  font-size: 10px;
-  color: rgba(255, 255, 255, .3);
-  letter-spacing: .08em;
-  margin-bottom: 10px;
+.v4-about-team-member:hover {
+  border-color: rgba(255, 255, 255, .2);
+  background-color: rgba(255, 255, 255, .025);
 }
 
 .v4-about-team-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, .85);
-  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 550;
+  color: rgba(255, 255, 255, .9);
 }
 
 .v4-about-team-title {
-  font-family: var(--v4-mono);
-  font-size: 10.5px;
-  color: rgba(255, 255, 255, .4);
-  letter-spacing: .04em;
+  margin-top: 7px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, .48);
 }
 
 /* ── Backing ── */
@@ -500,48 +576,90 @@ const advisors = [
   opacity: 0.85;
 }
 
-/* ── CTA ── */
-.v4-about-cta {
-  padding: 60px 0;
-}
-
-.v4-about-cta-inner {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-}
-
-.v4-about-cta-links {
-  display: flex;
-  gap: 12px;
-  flex-shrink: 0;
-  align-items: center;
-}
-
 /* ── Responsive ── */
 @media (max-width: 900px) {
+  .v4-about-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .v4-about-section-copy {
+    max-width: 620px;
+  }
+
   .v4-about-founders-grid {
     grid-template-columns: 1fr;
   }
 
-  .v4-about-team-cell {
-    width: calc((100% - 4px) / 2);
+  .v4-about-founder-card {
+    min-height: 260px;
+  }
+
+  .v4-about-team-roster {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .v4-about-team-member:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .v4-advisor-cell {
     width: calc((100% - 4px * 3) / 4);
   }
 
-  .v4-about-cta-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
 
 @media (max-width: 600px) {
-  .v4-about-team-cell {
-    width: calc((100% - 4px) / 2);
+  .v4-about-hero {
+    padding: 64px 0 56px;
+  }
+
+  .v4-about-separator {
+    grid-template-columns: 1fr 36px 1fr;
+    gap: 12px;
+    width: calc(100% - 32px);
+    height: 64px;
+  }
+
+  .v4-about-separator-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  .v4-about-facts {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 40px;
+    padding-top: 0;
+  }
+
+  .v4-about-fact,
+  .v4-about-fact:first-child,
+  .v4-about-fact:last-child {
+    padding: 20px 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .09);
+  }
+
+  .v4-about-fact:last-child {
+    border-bottom: 0;
+  }
+
+  .v4-about-founders {
+    padding: 64px 0;
+  }
+
+  .v4-about-team-roster {
+    grid-template-columns: 1fr;
+  }
+
+  .v4-about-team-member:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
+  .v4-about-team-member {
+    min-height: 82px;
   }
 
   .v4-investor-grid {

@@ -53,7 +53,6 @@ const outputs = [
   <section id="how" class="v4-section v4-bordered">
     <div class="v4-container">
       <div class="v4-section-head">
-        <span class="v4-section-num">§ 03</span>
         <h2 class="v4-h2">How it works.</h2>
         <p class="v4-section-lead">
           One install, four signal sources, zero application changes. The agent observes from below; cloud APIs enrich from above; the runtime trace is what you see.
@@ -105,7 +104,7 @@ const outputs = [
             <path :d="`M ${s.x} 248 L ${s.x} 260 L ${s.x+12} 260`" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.2"/>
             <path :d="`M ${s.x+178} 260 L ${s.x+190} 260 L ${s.x+190} 248`" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.2"/>
             <rect :x="s.x" y="186" width="190" height="74" fill="rgba(0,0,0,.4)" stroke="rgba(255,255,255,.08)" stroke-width="0.5"/>
-            <text :x="s.x+12" y="206" class="v4-svg-mark">§ 0{{ i+1 }} · {{ s.label }}</text>
+            <text :x="s.x+12" y="206" class="v4-svg-mark">0{{ i+1 }} · {{ s.label }}</text>
             <text :x="s.x+12" y="228" class="v4-svg-title" :style="{fontSize:13}">{{ s.title }}</text>
             <text :x="s.x+12" y="244" class="v4-svg-sub">{{ s.sub }}</text>
             <line v-if="i<3" :x1="s.x+196" y1="222" :x2="s.x+284" y2="222" stroke="rgba(255,255,255,.55)" marker-end="url(#v4p-arr)"/>
