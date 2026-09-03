@@ -21,9 +21,11 @@ const topics = computed(() => props.kind === 'sales'
       'Other',
     ])
 
-const formAction = 'https://formsubmit.co/sales@aurva.io'
-const ajaxEndpoint = 'https://formsubmit.co/ajax/sales@aurva.io'
 const formElement = ref<HTMLFormElement | null>(null)
+const destinationEmail = computed(() => props.kind === 'engineering' ? 'swapnil.nair@aurva.io' : 'sales@aurva.io')
+const destinationLabel = computed(() => destinationEmail.value.toUpperCase())
+const formAction = computed(() => `https://formsubmit.co/${destinationEmail.value}`)
+const ajaxEndpoint = computed(() => `https://formsubmit.co/ajax/${destinationEmail.value}`)
 const subject = computed(() => `[Aurva website] ${props.kind === 'sales' ? 'Sales' : 'Engineering'} inquiry`)
 
 const form = reactive({
@@ -50,7 +52,7 @@ async function submitForm() {
       throw new Error('Contact form is unavailable.')
     }
 
-    const response = await fetch(ajaxEndpoint, {
+    const response = await fetch(ajaxEndpoint.value, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -74,7 +76,7 @@ async function submitForm() {
     })
   }
   catch {
-    errorMessage.value = 'We could not send your message. Please email sales@aurva.io directly.'
+    errorMessage.value = `We could not send your message. Please email ${destinationEmail.value} directly.`
   }
   finally {
     submitting.value = false
@@ -96,7 +98,7 @@ async function submitForm() {
 
     <div class="contact-form-head">
       <span>{{ kind === 'sales' ? 'SALES INQUIRY' : 'ENGINEERING INQUIRY' }}</span>
-      <small>ROUTES TO SALES@AURVA.IO</small>
+      <small>ROUTES TO {{ destinationLabel }}</small>
     </div>
 
     <div class="contact-form-grid">
@@ -189,7 +191,7 @@ async function submitForm() {
       </button>
       <p>
         Prefer email?
-        <a href="mailto:sales@aurva.io">sales@aurva.io</a>
+        <a :href="`mailto:${destinationEmail}`">{{ destinationEmail }}</a>
       </p>
     </div>
 

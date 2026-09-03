@@ -7,7 +7,7 @@
           Neutralize the unknown.
         </h2>
         <p class="v4-section-lead">
-          Aurva's inline control plane enforces policy on sanctioned AI traffic while the eBPF runtime sensor
+          Aurva's inline control plane enforces policy on sanctioned AI traffic while the Aurva runtime sensor
           watches the entire environment, including shadow routes that bypass the control path.
           Runtime findings become policy in real time, so Aurva can block, redact, reroute, or revoke
           access without waiting for manual triage.
@@ -17,7 +17,7 @@
       <div
         class="v4-control-loop-map"
         role="img"
-        aria-label="Aurva controls sanctioned AI traffic inline while the eBPF runtime sensor discovers bypass routes and sends evidence back as enforcement policy."
+        aria-label="Aurva controls sanctioned AI traffic inline while the Aurva runtime sensor discovers bypass routes and sends evidence back as enforcement policy."
       >
         <svg class="v4-control-loop-lines" viewBox="0 0 1200 620" preserveAspectRatio="none" aria-hidden="true">
           <defs>
@@ -87,7 +87,7 @@
 
         <article class="v4-loop-node v4-loop-node--sensor">
           <span class="v4-loop-eyebrow">RUNTIME DISCOVERY</span>
-          <strong>eBPF runtime sensor</strong>
+          <strong>Aurva runtime sensor</strong>
           <p>Sees routed traffic and bypass paths, including request contents, identities, and data, without application changes.</p>
           <div class="v4-loop-finding">
             <svg viewBox="0 0 16 16" aria-hidden="true">
