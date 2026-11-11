@@ -80,7 +80,7 @@ add_helm_repos() {
     helm repo add bitnami https://charts.bitnami.com/bitnami 2>/dev/null || true
     print_success "Added bitnami repo"
 
-    helm repo update
+    helm repo update bitnami
     print_success "Updated Helm repositories"
 }
 
@@ -203,7 +203,7 @@ print_access_instructions() {
     echo -e "${GREEN}# MinIO Console (S3 Storage)${NC}"
     echo "  kubectl port-forward svc/minio -n $NAMESPACE 9001:9001"
     echo "  URL: http://localhost:9001"
-    echo "  Credentials: minioadmin / minioadmin123"
+    echo "  Credentials: use your aibender-credentials Secret"
     echo ""
     echo -e "${GREEN}# MLFlow (Experiment Tracking)${NC}"
     echo "  kubectl port-forward svc/mlflow -n $NAMESPACE 5000:5000"
@@ -212,12 +212,12 @@ print_access_instructions() {
     echo -e "${GREEN}# Airflow (Orchestration UI)${NC}"
     echo "  kubectl port-forward svc/airflow -n $NAMESPACE 8080:8080"
     echo "  URL: http://localhost:8080"
-    echo "  Credentials: admin / admin123"
+    echo "  Credentials: admin / your generated airflow-admin-password"
     echo ""
     echo -e "${GREEN}# Jupyter Lab (Development)${NC}"
     echo "  kubectl port-forward svc/jupyter -n $NAMESPACE 8888:8888"
     echo "  URL: http://localhost:8888"
-    echo "  Token: aibender123"
+    echo "  Token: use your generated jupyter-token"
     echo ""
     echo -e "${GREEN}# LakeFS (Data Version Control)${NC}"
     echo "  kubectl port-forward svc/lakefs -n $NAMESPACE 8000:8000"
@@ -251,6 +251,11 @@ main() {
 
     check_prerequisites
     create_namespace
+    kubectl get secret aibender-credentials -n "$NAMESPACE" >/dev/null || {
+        print_error "Create aibender-credentials first; see README.md security setup."
+        exit 1
+    }
+    kubectl apply -f "$SCRIPT_DIR/01-network-policy.yaml" -n "$NAMESPACE"
     add_helm_repos
     deploy_infrastructure
     deploy_ml_services

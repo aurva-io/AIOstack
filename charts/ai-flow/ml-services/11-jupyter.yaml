@@ -57,17 +57,26 @@ spec:
         - --ip=0.0.0.0
         - --port=8888
         - --no-browser
-        - --ServerApp.token=aibender123
-        - --ServerApp.password=
         env:
+        - name: JUPYTER_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: jupyter-token
         - name: JUPYTER_ENABLE_LAB
           value: "yes"
         - name: MLFLOW_TRACKING_URI
           value: "http://mlflow:5000"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         - name: MLFLOW_S3_ENDPOINT_URL
           value: "http://minio:9000"
         volumeMounts:

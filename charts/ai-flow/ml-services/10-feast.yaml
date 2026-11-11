@@ -1,25 +1,4 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: feast-config
-  labels:
-    app: feast
-    project: aibender
-    layer: ml-services
-data:
-  feature_store.yaml: |
-    project: aibender
-    provider: local
-    online_store:
-      type: redis
-      connection_string: "redis://:redis123@redis-master:6379"
-    offline_store:
-      type: file
-    registry:
-      path: s3://feast/registry.db
-      s3_endpoint_override: "http://minio:9000"
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,9 +29,15 @@ spec:
         - name: FEAST_FEATURE_STORE_PATH
           value: "/feature_store"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         - name: AWS_ENDPOINT_URL
           value: "http://minio:9000"
         volumeMounts:
@@ -67,8 +52,11 @@ spec:
             cpu: 250m
       volumes:
       - name: feast-config
-        configMap:
-          name: feast-config
+        secret:
+          secretName: aibender-credentials
+          items:
+          - key: feature_store.yaml
+            path: feature_store.yaml
 ---
 apiVersion: v1
 kind: Service

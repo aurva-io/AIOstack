@@ -12,8 +12,15 @@ vendor/
 *.test
 *.out
 
-# Docker
+# Docker build contexts
 .dockerignore
+!/newdocs/.dockerignore
+
+# Local credentials
+*.env
+.env
+.env.*
+!.env.example
 
 # IDE
 .vscode/
@@ -81,3 +88,6 @@ MEMORY.md
 # typescript
 /docs/*.tsbuildinfo
 /docs/next-env.d.ts
+
+# Python verification artifacts
+__pycache__/

@@ -43,7 +43,6 @@ concurrency:
 
 permissions:
   contents: read
-  id-token: write   # required by google-github-actions/auth
 
 jobs:
   bake:
@@ -52,17 +51,25 @@ jobs:
 
     steps:
       - name: 📥 Checkout source
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
 
       - name: 🏷️ Resolve image tag
         id: tag
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
-          if [[ -n "${{ inputs.tag }}" ]]; then
-            VERSION="${{ inputs.tag }}"
+          if [[ -n "$REQUESTED_TAG" ]]; then
+            VERSION="$REQUESTED_TAG"
             echo "source=manual" >> "$GITHUB_OUTPUT"
           else
-            VERSION=$(echo "${{ github.sha }}" | cut -c1-9)
+            VERSION="${GITHUB_SHA:0:9}"
             echo "source=git-sha" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ ! "$VERSION" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+            echo "::error::Invalid container image tag"
+            exit 1
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -109,14 +116,14 @@ jobs:
           echo "::notice title=Target Registries::${TARGETS}"
 
       - name: 🧰 Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
 
       - name: 🧰 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: 🔐 Log in — AWS ECR (private)
-        if: ${{ fromJSON(inputs.private-ecr) || fromJSON(inputs.gcr) }}
-        uses: docker/login-action@v3
+        if: ${{ fromJSON(inputs.private-ecr) }}
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: 119191042565.dkr.ecr.ap-south-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -124,7 +131,7 @@ jobs:
 
       - name: 🔐 Log in — AWS ECR (public)
         if: ${{ fromJSON(inputs.public-ecr) }}
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: public.ecr.aws
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -135,7 +142,7 @@ jobs:
       - name: 🔐 Authenticate — Google Cloud
         if: ${{ fromJSON(inputs.gcr) }}
         id: gcp-auth
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS_JSON }}"
 
@@ -144,7 +151,7 @@ jobs:
         run: gcloud auth configure-docker asia-south1-docker.pkg.dev
 
       - name: 🚀 Build & push (multi-arch)
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@4a9a8d494466d37134e2bfca2d3a8de8fb2681ad # v5
         with:
           workdir: ./newdocs
           files: ./docker-bake.hcl
@@ -167,7 +174,7 @@ jobs:
             echo "| Registries | ${{ steps.registries.outputs.targets }} |"
             echo "| Source | \`newdocs/\` (Nuxt 4) |"
             echo "| Commit | [\`${GITHUB_SHA:0:9}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) |"
-            echo "| Ref | \`${{ github.ref_name }}\` |"
+            echo "| Ref | \`${GITHUB_REF_NAME}\` |"
             echo "| Triggered by | @${{ github.actor }} |"
             echo ""
             echo "### Pull"

@@ -2,9 +2,11 @@
 # Shared database for multiple ML services
 
 auth:
-  postgresPassword: postgres123
+  existingSecret: aibender-credentials
   username: mluser
-  password: mlpassword123
+  secretKeys:
+    adminPasswordKey: postgres-password
+    userPasswordKey: password
   database: postgres
 
 primary:

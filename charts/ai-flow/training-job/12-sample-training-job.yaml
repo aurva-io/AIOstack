@@ -200,9 +200,15 @@ spec:
         - name: MLFLOW_S3_ENDPOINT_URL
           value: "http://minio:9000"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         resources:
           requests:
             memory: 512Mi

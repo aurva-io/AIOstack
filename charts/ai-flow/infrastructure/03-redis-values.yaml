@@ -5,7 +5,8 @@ architecture: standalone
 
 auth:
   enabled: true
-  password: redis123
+  existingSecret: aibender-credentials
+  existingSecretPasswordKey: redis-password
 
 master:
   persistence:

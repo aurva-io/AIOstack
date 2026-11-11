@@ -77,12 +77,20 @@ spec:
             --lastname User \
             --role Admin \
             --email admin@aibender.local \
-            --password admin123 || echo "User already exists"
+            --password "$AIRFLOW_ADMIN_PASSWORD" || echo "User already exists"
 
           echo "Airflow initialization complete!"
         env:
+        - name: AIRFLOW_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-admin-password
         - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-database-url
         - name: AIRFLOW__CORE__EXECUTOR
           value: "LocalExecutor"
         - name: AIRFLOW__CORE__LOAD_EXAMPLES
@@ -90,7 +98,10 @@ spec:
         - name: AIRFLOW__CORE__DAGS_FOLDER
           value: "/opt/airflow/dags"
         - name: AIRFLOW__WEBSERVER__SECRET_KEY
-          value: "aibender-secret-key-change-in-production"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-webserver-key
 ---
 # Airflow Webserver Deployment
 apiVersion: apps/v1
@@ -133,7 +144,10 @@ spec:
           name: http
         env:
         - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-database-url
         - name: AIRFLOW__CORE__EXECUTOR
           value: "LocalExecutor"
         - name: AIRFLOW__CORE__LOAD_EXAMPLES
@@ -141,13 +155,22 @@ spec:
         - name: AIRFLOW__CORE__DAGS_FOLDER
           value: "/opt/airflow/dags"
         - name: AIRFLOW__WEBSERVER__SECRET_KEY
-          value: "aibender-secret-key-change-in-production"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-webserver-key
         - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
-          value: "True"
+          value: "False"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         - name: MLFLOW_TRACKING_URI
           value: "http://mlflow:5000"
         volumeMounts:
@@ -220,7 +243,10 @@ spec:
           airflow scheduler
         env:
         - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-          value: "postgresql+psycopg2://mluser:mlpassword123@postgresql:5432/airflow"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: airflow-database-url
         - name: AIRFLOW__CORE__EXECUTOR
           value: "LocalExecutor"
         - name: AIRFLOW__CORE__LOAD_EXAMPLES
@@ -228,9 +254,15 @@ spec:
         - name: AIRFLOW__CORE__DAGS_FOLDER
           value: "/opt/airflow/dags"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         - name: MLFLOW_TRACKING_URI
           value: "http://mlflow:5000"
         volumeMounts:

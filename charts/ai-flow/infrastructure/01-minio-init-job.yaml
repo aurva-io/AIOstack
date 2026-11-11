@@ -21,6 +21,17 @@ spec:
       containers:
       - name: mc
         image: minio/mc:latest
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         command:
         - /bin/sh
         - -c
@@ -28,7 +39,7 @@ spec:
         - |
           # Wait for MinIO to be ready
           echo "Waiting for MinIO to be available..."
-          until mc alias set myminio http://minio:9000 minioadmin minioadmin123; do
+          until mc alias set myminio http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
             echo "MinIO not ready yet, retrying in 5 seconds..."
             sleep 5
           done

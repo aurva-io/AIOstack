@@ -29,7 +29,10 @@ spec:
         - name: LAKEFS_DATABASE_TYPE
           value: "postgres"
         - name: LAKEFS_DATABASE_POSTGRES_CONNECTION_STRING
-          value: "postgres://mluser:mlpassword123@postgresql:5432/lakefs?sslmode=disable"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: lakefs-database-url
         - name: LAKEFS_BLOCKSTORE_TYPE
           value: "s3"
         - name: LAKEFS_BLOCKSTORE_S3_ENDPOINT
@@ -37,11 +40,20 @@ spec:
         - name: LAKEFS_BLOCKSTORE_S3_FORCE_PATH_STYLE
           value: "true"
         - name: LAKEFS_BLOCKSTORE_S3_CREDENTIALS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: LAKEFS_BLOCKSTORE_S3_CREDENTIALS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         - name: LAKEFS_AUTH_ENCRYPT_SECRET_KEY
-          value: "this-is-a-random-secret-key-change-in-production-32chars"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: lakefs-encryption-key
         - name: LAKEFS_LOGGING_LEVEL
           value: "INFO"
         livenessProbe:

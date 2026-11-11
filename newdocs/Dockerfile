@@ -3,7 +3,7 @@ WORKDIR /app
 RUN apt-get update \
  && apt-get install -y --no-install-recommends python3 make g++ \
  && rm -rf /var/lib/apt/lists/* \
- && npm install -g bun@1
+ && npm install -g bun@1.3.14
 COPY package.json bun.lock ./
 
 FROM base AS dependencies

@@ -83,6 +83,37 @@ kubectl cluster-info
 cd ai-flow
 ```
 
+### Security setup (required before deployment)
+
+Use a disposable, isolated test cluster. These traffic-generation examples are
+not a production-hardened ML platform: some services have no authentication,
+images use floating tags, and packages are installed at startup. Do not expose
+these services through public ingress or run them with customer data. The deploy
+script installs a namespace-only ingress NetworkPolicy; your CNI must enforce
+NetworkPolicy for this boundary to take effect. It is not service authentication.
+
+Generate credentials once for a **new** environment, outside this repository:
+
+```bash
+python3 generate-secrets.py --output /secure/path/aibender-credentials.json
+kubectl apply -f 00-namespace.yaml
+kubectl apply -f 01-network-policy.yaml
+kubectl apply -f /secure/path/aibender-credentials.json
+./deploy.sh
+```
+
+The generator refuses to overwrite files and writes with mode `0600`. Keep the
+file in your secret-management system; never commit it. All consumers reference
+`aibender-credentials`. The Secret includes database URLs, Redis configuration,
+MinIO credentials, the Airflow admin password and signing key, and the Jupyter
+token. The deployment stops if this Secret is absent.
+
+For an existing installation, migrate the actual credentials into the Secret
+and rotate them in each service and database together. Generating a new Secret
+does **not** rotate passwords in persistent PostgreSQL databases or existing
+Airflow accounts. Restart consumers after a coordinated rotation. Preserve the
+LakeFS encryption key when migrating existing encrypted data.
+
 ### 2. Deploy Everything
 
 ```bash
@@ -114,18 +145,18 @@ All pods should be in `Running` state.
 
 | Service | Purpose | Internal Port | UI Port | Credentials |
 |---------|---------|--------------|---------|-------------|
-| MinIO | S3-compatible object storage | 9000 | 9001 | minioadmin / minioadmin123 |
-| PostgreSQL | Shared SQL database | 5432 | - | postgres / postgres123, mluser / mlpassword123 |
-| Redis | Cache and online feature store | 6379 | - | redis123 |
+| MinIO | S3-compatible object storage | 9000 | 9001 | Secret keys `minio-user` / `minio-password` |
+| PostgreSQL | Shared SQL database | 5432 | - | Secret keys `postgres-password` / `password` |
+| Redis | Cache and online feature store | 6379 | - | <redis-password> |
 | etcd | Milvus metadata storage | 2379 | - | none |
 | LakeFS | Data version control | 8000 | 8000 | (initial setup required) |
 | MLFlow | Experiment tracking | 5000 | 5000 | none |
 | Qdrant | Vector database | 6333, 6334 | 6333 | none |
 | Milvus | Vector database | 19530, 9091 | - | none |
-| Airflow Webserver | Workflow orchestration UI | 8080 | 8080 | admin / admin123 |
+| Airflow Webserver | Workflow orchestration UI | 8080 | 8080 | admin / Secret key `airflow-admin-password` |
 | Airflow Scheduler | Background task scheduler | - | - | none |
 | Feast | Feature store server | 6566 | - | none |
-| Jupyter Lab | Development environment | 8888 | 8888 | aibender123 |
+| Jupyter Lab | Development environment | 8888 | 8888 | <jupyter-token> |
 
 ## Accessing Services
 
@@ -137,7 +168,7 @@ All services are ClusterIP by default. Use `kubectl port-forward` to access them
 kubectl port-forward svc/minio -n aibender 9001:9001
 ```
 
-Open http://localhost:9001 and login with `minioadmin` / `minioadmin123`
+Open http://localhost:9001 and login with the Secret keys `minio-user` / `minio-password`
 
 ### MLFlow (Experiment Tracking)
 
@@ -153,7 +184,7 @@ Open http://localhost:5000
 kubectl port-forward svc/airflow -n aibender 8080:8080
 ```
 
-Open http://localhost:8080 and login with `admin` / `admin123`
+Open http://localhost:8080 and login with `admin` / your generated `airflow-admin-password`
 
 ### Jupyter Lab (Development)
 
@@ -161,7 +192,7 @@ Open http://localhost:8080 and login with `admin` / `admin123`
 kubectl port-forward svc/jupyter -n aibender 8888:8888
 ```
 
-Open http://localhost:8888 and use token `aibender123`
+Open http://localhost:8888 and use token `<jupyter-token>`
 
 ### LakeFS (Data Version Control)
 
@@ -266,24 +297,24 @@ Databases created:
 Connection strings:
 ```
 # As postgres superuser
-postgresql://postgres:postgres123@postgresql:5432/<database>
+postgresql://postgres:<postgres-password>@postgresql:5432/<database>
 
 # As mluser (has access to all ML databases)
-postgresql://mluser:mlpassword123@postgresql:5432/<database>
+postgresql://mluser:<database-password>@postgresql:5432/<database>
 ```
 
 Connect from a pod:
 
 ```bash
 kubectl run -it --rm psql --image=postgres:15 -n aibender -- \
-  psql postgresql://mluser:mlpassword123@postgresql:5432/mlflow
+  psql postgresql://mluser:<database-password>@postgresql:5432/mlflow
 ```
 
 ### Redis
 
 ```bash
 kubectl run -it --rm redis-cli --image=redis:7 -n aibender -- \
-  redis-cli -h redis-master -a redis123
+  redis-cli -h redis-master -a <redis-password>
 ```
 
 ### MinIO (S3)
@@ -297,8 +328,8 @@ Buckets created:
 Access via AWS CLI:
 
 ```bash
-export AWS_ACCESS_KEY_ID=minioadmin
-export AWS_SECRET_ACCESS_KEY=minioadmin123
+export AWS_ACCESS_KEY_ID=<minio-user>
+export AWS_SECRET_ACCESS_KEY=<minio-password>
 export AWS_ENDPOINT_URL=http://localhost:9000
 
 aws s3 ls s3://mlflow/ --endpoint-url http://localhost:9000
@@ -373,7 +404,7 @@ Test S3 connectivity from MLFlow pod:
 
 ```bash
 kubectl exec -it deployment/mlflow -n aibender -- \
-  python -c "import boto3; s3=boto3.client('s3', endpoint_url='http://minio:9000', aws_access_key_id='minioadmin', aws_secret_access_key='minioadmin123'); print(s3.list_buckets())"
+  python -c "import boto3; s3=boto3.client('s3', endpoint_url='http://minio:9000', aws_access_key_id='<minio-user>', aws_secret_access_key='<minio-password>'); print(s3.list_buckets())"
 ```
 
 ## Resource Requirements

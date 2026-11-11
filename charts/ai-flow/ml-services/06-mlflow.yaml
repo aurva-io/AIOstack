@@ -31,18 +31,29 @@ spec:
           mlflow server \
             --host 0.0.0.0 \
             --port 5000 \
-            --backend-store-uri postgresql://mluser:mlpassword123@postgresql:5432/mlflow \
+            --backend-store-uri "$MLFLOW_BACKEND_STORE_URI" \
             --default-artifact-root s3://mlflow/artifacts
         ports:
         - containerPort: 5000
           name: http
         env:
+        - name: MLFLOW_BACKEND_STORE_URI
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: mlflow-database-url
         - name: MLFLOW_S3_ENDPOINT_URL
           value: "http://minio:9000"
         - name: AWS_ACCESS_KEY_ID
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: AWS_SECRET_ACCESS_KEY
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         livenessProbe:
           httpGet:
             path: /health

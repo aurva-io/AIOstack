@@ -53,9 +53,15 @@ spec:
           name: console
         env:
         - name: MINIO_ROOT_USER
-          value: "minioadmin"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-user
         - name: MINIO_ROOT_PASSWORD
-          value: "minioadmin123"
+          valueFrom:
+            secretKeyRef:
+              name: aibender-credentials
+              key: minio-password
         volumeMounts:
         - name: storage
           mountPath: /data
